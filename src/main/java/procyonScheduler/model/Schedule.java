@@ -1,7 +1,5 @@
 package procyonScheduler.model;
 import java.util.GregorianCalendar;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Schedule {
 	String name;					// non-unique user defined name 
@@ -22,9 +20,9 @@ public class Schedule {
 	}
 	
 	// meetings iterator
-	public Iterator<Meeting> meetings() {
-		return meetings.iterator();
-	}
+//	public Iterator<Meeting> meetings() {
+//		return meetings.iterator();
+//	}
 	
 	// adjust parameters of schedule (like one big setter)
 	public boolean modifySchedule(GregorianCalendar start, GregorianCalendar end, int blockSize, String secretCode) {
@@ -47,8 +45,8 @@ public class Schedule {
 		return true;
 	}
 	
-	public ArrayList<Meeting> findAvailable(GregorianCalendar start, GregorianCalendar end) {
-		return this.meetings;
-	}
+	//public ArrayList<Meeting> findAvailable(GregorianCalendar start, GregorianCalendar end) {
+	//	return this.meetings;
+	//}
 	
 }

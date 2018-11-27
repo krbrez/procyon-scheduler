@@ -10,6 +10,7 @@ public class Meeting {
 	Schedule schedule;  			//all meetings are within a schedule
 	String participantSecretCode; 	//the secret code that is needed to change a meeting, also functions as meeting id
 	
+	//constructor
 	public Meeting(String label, GregorianCalendar time, GregorianCalendar date, boolean available, Schedule schedule, String participantSecretCode) {
 		this.label = label; //is this optional?
 		this.time = time;
@@ -17,6 +18,16 @@ public class Meeting {
 		this.available = available;
 		this.schedule = schedule;
 		this.participantSecretCode = participantSecretCode;
+	}
+	
+	//relevant setters 
+	public void setAvailable() {
+		this.available = true;
+	}
+	
+	//relevant getters
+	public boolean getAvailable() {
+		return available;
 	}
 
 }
