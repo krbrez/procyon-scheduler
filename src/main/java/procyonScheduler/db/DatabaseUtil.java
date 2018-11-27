@@ -7,9 +7,9 @@ public class DatabaseUtil {
 
 	// These are to be configured and NEVER stored in the code.
 	// once you retrieve this code, you can update
-	public final static String rdsMySqlDatabaseUrl = "calculatordb.cvolx76k74q4.us-east-2.rds.amazonaws.com";
-	public final static String dbUsername = "calcAdmin";
-	public final static String dbPassword = "calc:pass";
+	public final static String rdsMySqlDatabaseUrl = "procyon-scheduler-database.cvolx76k74q4.us-east-2.rds.amazonaws.com";
+	public final static String dbUsername = "procyonAdmin";
+	public final static String dbPassword = "procyonPassword";
 		
 	public final static String jdbcTag = "jdbc:mysql://";
 	public final static String rdsMySqlDatabasePort = "3306";
