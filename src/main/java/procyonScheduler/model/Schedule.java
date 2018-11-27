@@ -4,25 +4,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Schedule {
-	int id;							// unique ID to reference object
 	String name;					// non-unique user defined name 
 	GregorianCalendar start;		// date and time to start schedule on
 	GregorianCalendar end;			// date and time to end schedule on
 	int blockSize;					// how many minutes each meeting is (may be 10, 15, 20, 30, 60)
-	String secretCode;				// unique string required for organizer access
+	String secretCode;				// unique string required for organizer access also used as schedule ID
 	GregorianCalendar created;		// date and time schedule was created
-	ArrayList<Meeting> meetings;	// set of meetings within this schedule
 	
 	// constructor
-	public Schedule(int id, String name, GregorianCalendar start, GregorianCalendar end, int blockSize) {
-		this.id = id;
+	public Schedule(String name, GregorianCalendar start, GregorianCalendar end, int blockSize) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.blockSize = blockSize;
 		this.secretCode = "";
 		this.created = new GregorianCalendar();
-		this.meetings = new ArrayList<Meeting>();
 	}
 	
 	// meetings iterator
