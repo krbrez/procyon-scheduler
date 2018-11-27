@@ -1,5 +1,6 @@
 package procyonScheduler.model;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 public class Schedule {
 	String name;					// non-unique user defined name 
@@ -15,7 +16,21 @@ public class Schedule {
 		this.start = start;
 		this.end = end;
 		this.blockSize = blockSize;
+		// generate a random secret code
 		this.secretCode = "";
+		Random r = new Random();
+		for(int i = 0; i < 16; i++) {
+			int n = r.nextInt(62);
+			if(n < 10) {
+				this.secretCode += Integer.toString(n);
+			}
+			else if(n < 36) {
+				this.secretCode += (char)(n + 55);
+			}
+			else { // n 37 - 61
+				this.secretCode += (char)(n + 60);
+			}
+		}
 		this.created = new GregorianCalendar();
 	}
 	
