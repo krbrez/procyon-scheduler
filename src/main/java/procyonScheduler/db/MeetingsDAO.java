@@ -1,7 +1,9 @@
 package procyonScheduler.db;
 
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.GregorianCalendar;
 
@@ -61,7 +63,14 @@ public class MeetingsDAO {
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(1, meeting.getLabel());
 			// Convert the dateTime Gregorian Calendar object to the string 
-			String dateTime = Integer.toString(meeting.getDateTime());
+			String year = Integer.toString(i))meeting.getDateTime().get(Calendar.YEAR);
+			int m = meeting.getDateTime().get(Calendar.MONTH);
+			DecimalFormat form= new DecimalFormat("00");
+			String month = form.format(Double.valueOf(month));
+			
+			//HERE
+			
+			
 			ps.setString(2, constant.name);
 			int numAffected = ps.executeUpdate();
 			ps.close();

@@ -3,19 +3,19 @@ package procyonScheduler.model;
 import java.util.GregorianCalendar;
 
 public class Meeting {
-	private String label;					//the name or email address provided by a participant when they book a meeting
-	private GregorianCalendar dateTime; 	//the date and time of the meeting
+	String label;					//the name or email address provided by a participant when they book a meeting
+	GregorianCalendar dateTime; 	//the date and time of the meeting
 	boolean available; 				//is the meeting currently booked or not
 	Schedule schedule;  			//all meetings are within a schedule
-	private String participantSecretCode; 	//the secret code that is needed to change a meeting, also functions as meeting id
+	String participantSecretCode; 	//the secret code that is needed to change a meeting, also functions as meeting id
 	
 	//constructor
 	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule, String participantSecretCode) {
-		this.setLabel(label); //is this optional?
-		this.setDateTime(dateTime);
+		this.label = label; //is this optional?
+		this.dateTime = dateTime;
 		this.available = available;
 		this.schedule = schedule;
-		this.setParticipantSecretCode(participantSecretCode);
+		this.participantSecretCode = participantSecretCode;
 	}
 	
 	//relevant setters 
