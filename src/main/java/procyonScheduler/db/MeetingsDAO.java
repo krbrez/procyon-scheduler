@@ -60,6 +60,8 @@ public class MeetingsDAO {
 			String query = "UPDATE Constants SET value=? WHERE name=?;";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(1, meeting.getLabel());
+			// Convert the dateTime Gregorian Calendar object to the string 
+			String dateTime = Integer.toString(meeting.getDateTime());
 			ps.setString(2, constant.name);
 			int numAffected = ps.executeUpdate();
 			ps.close();
