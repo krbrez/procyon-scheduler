@@ -51,15 +51,15 @@ public class MeetingsDAO {
 			return (numAffected == 1);
 
 		} catch (Exception e) {
-			throw new Exception("Failed to insert constant: " + e.getMessage());
+			throw new Exception("Failed to delete meeting: " + e.getMessage());
 		}
 	}
 
-	public boolean updateConstant(Constant constant) throws Exception {
+	public boolean updateMeeting(Meeting meeting) throws Exception {
 		try {
 			String query = "UPDATE Constants SET value=? WHERE name=?;";
 			PreparedStatement ps = conn.prepareStatement(query);
-			ps.setDouble(1, constant.value);
+			ps.setString(1, meeting.getLabel());
 			ps.setString(2, constant.name);
 			int numAffected = ps.executeUpdate();
 			ps.close();
