@@ -6,11 +6,11 @@ import java.util.List;
 
 import edu.wpi.cs.heineman.model.Constant;
 
-public class ConstantsDAO {
+public class SchedulesDAO {
 
 	java.sql.Connection conn;
 
-    public ConstantsDAO() {
+    public SchedulesDAO() {
     	try  {
     		conn = DatabaseUtil.connect();
     	} catch (Exception e) {
