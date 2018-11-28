@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -29,7 +29,7 @@ import procyonScheduler.scheduler.CreateScheduleResponse;
 import procyonScheduler.model.Schedule;
 import procyonScheduler.model.Meeting;
 
-public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
+public class CreateScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
@@ -104,7 +104,7 @@ public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		CreateConstantResponse response = null;
+		CreateScheduleResponse response = null;
 		
 		// extract body from incoming HTTP POST request. If any error, then return 422 error
 		String body;
@@ -118,7 +118,7 @@ public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new CreateConstantResponse("name", 200);  // OPTIONS needs a 200 response
+				response = new CreateScheduleResponse("name", 200);  // OPTIONS needs a 200 response
 		        responseJson.put("body", new Gson().toJson(response));
 		        processed = true;
 		        body = null;
@@ -130,25 +130,25 @@ public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CreateConstantResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
+			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
 	        responseJson.put("body", new Gson().toJson(response));
 	        processed = true;
 	        body = null;
 		}
 
 		if (!processed) {
-			CreateConstantRequest req = new Gson().fromJson(body, CreateConstantRequest.class);
+			CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
 			logger.log(req.toString());
 
-			CreateConstantResponse resp;
+			CreateScheduleResponse resp;
 			try {
-				if (createConstant(req.name, req.value)) {
-					resp = new CreateConstantResponse("Successfully defined constant:" + req.name);
+				if (createSchedule(req.name, req.startT, req.startD, req.endT, req.endT, req.blockSize)) {
+					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name);
 				} else {
-					resp = new CreateConstantResponse("Unable to create constant: " + req.name, 422);
+					resp = new CreateScheduleResponse("Unable to create schedule: " + req.name, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateConstantResponse("Unable to create constant: " + req.name + "(" + e.getMessage() + ")", 403);
+				resp = new CreateScheduleResponse("Unable to create schedule: " + req.name + "(" + e.getMessage() + ")", 403);
 			}
 
 			// compute proper response
