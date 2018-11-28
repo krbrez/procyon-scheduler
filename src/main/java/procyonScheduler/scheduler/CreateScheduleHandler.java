@@ -33,52 +33,56 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
-	/** Load from RDS, if it exists
+	/**
+	 * Load from RDS, if it exists
 	 * 
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	boolean createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize) throws Exception {
-		if (logger != null) { logger.log("in createSchedule"); }
+	boolean createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize)
+			throws Exception {
+		if (logger != null) {
+			logger.log("in createSchedule");
+		}
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		
+
 		// parse date time strings
 		// time: HH:MM:SS.LL
 		// date: YYYY-MM-DD
 		int stH = 0, stY = 0, stM = 0, stDy = 0, endH = 0, endY = 0, endM = 0, endDy = 0;
-		if(startT.length() == 11) {
+		if (startT.length() == 11) {
 			String stHstr = startT.split(":")[0];
 			stH = Integer.parseInt(stHstr);
 		}
-		if(endT.length() == 11) {
+		if (endT.length() == 11) {
 			String endHstr = endT.split(":")[0];
 			endH = Integer.parseInt(endHstr);
 		}
-		if(startD.length() == 10) {
+		if (startD.length() == 10) {
 			String[] stDt = startD.split("-");
 			stY = Integer.parseInt(stDt[0]);
 			stM = Integer.parseInt(stDt[1]);
 			stDy = Integer.parseInt(stDt[2]);
 		}
-		if(endD.length() == 10) {
+		if (endD.length() == 10) {
 			String[] endDt = endD.split("-");
 			endY = Integer.parseInt(endDt[0]);
 			endM = Integer.parseInt(endDt[1]);
 			endDy = Integer.parseInt(endDt[2]);
 		}
-		
+
 		// create new schedule
 		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
 		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
 		Schedule s = new Schedule(name, start, end, blockSize);
 		boolean created = true;
 		created = created && sDAO.addSchedule(s);
-		
+
 		// create meetings to fill schedule
 		GregorianCalendar meetTime = start;
-		while(!meetTime.equals(end)) {
-			while(meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) {
-				while(meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) {
+		while (!meetTime.equals(end)) {
+			while (meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) {
+				while (meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) {
 					Meeting m = new Meeting("", meetTime, true, s);
 					created = created && mDAO.addMeeting(m);
 					meetTime.add(GregorianCalendar.MINUTE, blockSize);
@@ -90,23 +94,25 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		}
 		return created;
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler to create constant");
 
 		JSONObject headerJson = new JSONObject();
-		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
+		headerJson.put("Content-Type", "application/json"); // not sure if
+															// needed anymore?
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-	    headerJson.put("Access-Control-Allow-Origin",  "*");
-	        
+		headerJson.put("Access-Control-Allow-Origin", "*");
+
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
 		CreateScheduleResponse response = null;
-		
-		// extract body from incoming HTTP POST request. If any error, then return 422 error
+
+		// extract body from incoming HTTP POST request. If any error, then
+		// return 422 error
 		String body;
 		boolean processed = false;
 		try {
@@ -114,26 +120,33 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-			
+
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new CreateScheduleResponse("name", 200);  // OPTIONS needs a 200 response
-		        responseJson.put("body", new Gson().toJson(response));
-		        processed = true;
-		        body = null;
+				response = new CreateScheduleResponse("name", 200); // OPTIONS
+																	// needs a
+																	// 200
+																	// response
+				responseJson.put("body", new Gson().toJson(response));
+				processed = true;
+				body = null;
 			} else {
-				body = (String)event.get("body");
+				body = (String) event.get("body");
 				if (body == null) {
-					body = event.toJSONString();  // this is only here to make testing easier
+					body = event.toJSONString(); // this is only here to make
+													// testing easier
 				}
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422);  // unable to process input
-	        responseJson.put("body", new Gson().toJson(response));
-	        processed = true;
-	        body = null;
+			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable
+																							// to
+																							// process
+																							// input
+			responseJson.put("body", new Gson().toJson(response));
+			processed = true;
+			body = null;
 		}
 
 		if (!processed) {
@@ -142,23 +155,24 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 			CreateScheduleResponse resp;
 			try {
-				if (createSchedule(req.name, req.startT, req.startD, req.endT, req.endT, req.blockSize)) {
+				if (createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endTime, req.blockSize)) {
 					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name);
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.name, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse("Unable to create schedule: " + req.name + "(" + e.getMessage() + ")", 403);
+				resp = new CreateScheduleResponse("Unable to create schedule: " + req.name + "(" + e.getMessage() + ")",
+						403);
 			}
 
 			// compute proper response
-	        responseJson.put("body", new Gson().toJson(resp));  
+			responseJson.put("body", new Gson().toJson(resp));
 		}
-		
-        logger.log("end result:" + responseJson.toJSONString());
-        logger.log(responseJson.toJSONString());
-        OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
-        writer.write(responseJson.toJSONString());  
-        writer.close();
+
+		logger.log("end result:" + responseJson.toJSONString());
+		logger.log(responseJson.toJSONString());
+		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
+		writer.write(responseJson.toJSONString());
+		writer.close();
 	}
 }

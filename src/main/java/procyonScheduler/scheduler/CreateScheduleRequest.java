@@ -2,22 +2,23 @@ package procyonScheduler.scheduler;
 
 public class CreateScheduleRequest {
 	String name;
-	String startT;
-	String startD;
-	String endT;
-	String endD;
+	String startTime;
+	String startDate;
+	String endTime;
+	String endDate;
 	int blockSize;
 
 	public CreateScheduleRequest(String name, String startT, String startD, String endT, String endD, int blockSize) {
 		this.name = name;
-		this.startT = startT;
-		this.startD = startD;
-		this.endT = endT;
-		this.endD = endD;
+		this.startTime = startT;
+		this.startDate = startD;
+		this.endTime = endT;
+		this.endDate = endD;
 		this.blockSize = blockSize;
 	}
 
 	public String toString() {
-		return "Create(" + name + "," + startT + "," + startD + "," + endT + "," + endD + "," + blockSize + ")";
+		return "Create(" + name + "," + startTime + "," + startDate + "," + endTime + "," + endDate + "," + blockSize
+				+ ")";
 	}
 }

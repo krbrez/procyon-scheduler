@@ -89,7 +89,7 @@ public class SchedulesDAO {
 			}
 
 			ps = conn.prepareStatement(
-					"INSERT INTO Schedules (name,start,end,blockSize,organizerSecretCode,creationTime) values(?,?,?,?,?,?,?);");
+					"INSERT INTO Schedules (name,start,end,blockSize,organizerSecretCode,creationTime) values(?,?,?,?,?,?);");
 			ps.setString(1, schedule.getName());
 			// Convert the start Gregorian Calendar object to the string
 			String year = Integer.toString(schedule.getStart().get(Calendar.YEAR));
