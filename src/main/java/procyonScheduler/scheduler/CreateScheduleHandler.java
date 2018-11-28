@@ -67,10 +67,28 @@ public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 			endDy = Integer.parseInt(endDt[2]);
 		}
 		
+		// create new schedule
 		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
 		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
 		Schedule s = new Schedule(name, start, end, blockSize);
-		return sDAO.addSchedule(s);
+		boolean created = true;
+		created = created && sDAO.addSchedule(s);
+		
+		// create meetings to fill schedule
+		GregorianCalendar meetTime = start;
+		while(!meetTime.equals(end)) {
+			while(meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) {
+				while(meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) {
+					Meeting m = new Meeting("", meetTime, true, s);
+					created = created && mDAO.addMeeting(m);
+					meetTime.add(GregorianCalendar.MINUTE, blockSize);
+				}
+				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
+				meetTime.set(GregorianCalendar.HOUR_OF_DAY, stH);
+			}
+			meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
+		}
+		return created;
 	}
 	
 	@Override
