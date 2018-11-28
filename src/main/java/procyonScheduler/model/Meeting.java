@@ -12,7 +12,7 @@ public class Meeting {
 	
 	//constructor for getting an existing meeting
 	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule, String participantSecretCode) {
-		this.label = label; //is this optional?
+		this.label = label; 
 		this.dateTime = dateTime;
 		this.available = available;
 		this.schedule = schedule;
