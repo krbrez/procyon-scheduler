@@ -133,13 +133,13 @@
     <form>Open all meetings at
       <select>
       <option value="openTimeslot">Time Slot</option>
-      <option value="slot1">Some way to add timeslots to this dropdown</option>
+      <option value="slot1">Add timeslots to this dropdown</option>
     </select>
     <input type="submit"></form>
     <form>Close all meetings at
       <select>
       <option value="openTimeslot">Time Slot</option>
-      <option value="slot1">Some way to add timeslots to this dropdown</option>
+      <option value="slot1">Add timeslots to this dropdown</option>
     </select>
     <input type="submit"></form>
   </fieldset>
@@ -147,8 +147,11 @@
   <br>
   <section class = "OrganizerCalendar" id="OrgnaizerCalendar">
     <fieldset>
-      <legend>Calendar</legend>
+      <legend>Weekly Calendar</legend>
+      Your Secret Code for this Schedule is: <input name="meetingScheduleURLOrganizer" readonly/>
+      and the URL to schedule Meetings is: <input name="secretCodeOrganizer" readonly/>
       <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
     </fieldset>
   </section>
 </body>
