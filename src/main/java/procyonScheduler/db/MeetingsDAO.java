@@ -45,7 +45,7 @@ public class MeetingsDAO {
 
 	public boolean deleteMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Constants WHERE id = ?;");
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Meetings WHERE id = ?;");
 			ps.setString(1, meeting.getId());
 			int numAffected = ps.executeUpdate();
 			ps.close();
