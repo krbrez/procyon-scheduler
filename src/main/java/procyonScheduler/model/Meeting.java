@@ -18,6 +18,11 @@ public class Meeting {
 		this.participantSecretCode = participantSecretCode;
 	}
 	
+	//constructor for making a new meeting
+	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule) {
+		
+	}
+	
 	//relevant setters 
 	public void setAvailable() {
 		this.available = true;
