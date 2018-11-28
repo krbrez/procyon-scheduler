@@ -45,7 +45,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		// parse date time strings
 		// time: HH:MM:SS.LL
 		// date: YYYY-MM-DD
-		int stH, stY, stM, stDy, endH, endY, endM, endDy;
+		int stH = 0, stY = 0, stM = 0, stDy = 0, endH = 0, endY = 0, endM = 0, endDy = 0;
 		if(startT.length() == 11) {
 			String stHstr = startT.split(":")[0];
 			stH = Integer.parseInt(stHstr);
