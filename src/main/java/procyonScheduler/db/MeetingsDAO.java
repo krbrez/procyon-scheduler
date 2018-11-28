@@ -98,7 +98,7 @@ public class MeetingsDAO {
 
 	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE if = ?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE if = ?;");
 			ps.setString(1, meeting.getId());
 			ResultSet resultSet = ps.executeQuery();
 
