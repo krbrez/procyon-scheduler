@@ -81,7 +81,8 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.setString(4, meeting.getSchedule().getSec);
+			ps.setString(4, meeting.getSchedule().getSecretCode());
+			ps.setString(5, meeting.getParticipantSecretCode());
 			int numAffected = ps.executeUpdate();
 			ps.close();
 
@@ -93,20 +94,40 @@ public class MeetingsDAO {
 
 	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE name = ?;");
-			ps.setString(1, constant.name);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE participantSecretCode = ?;");
+			ps.setString(1, meeting.getParticipantSecretCode());
 			ResultSet resultSet = ps.executeQuery();
 
 			// already present?
 			while (resultSet.next()) {
-				Constant c = generateConstant(resultSet);
+				Meeting c = generateMeeting(resultSet);
 				resultSet.close();
 				return false;
 			}
 
-			ps = conn.prepareStatement("INSERT INTO Constants (name,value) values(?,?);");
-			ps.setString(1, constant.name);
-			ps.setDouble(2, constant.value);
+			ps = conn.prepareStatement("INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode) values(?,?,?,?,?);");
+			ps.setString(1, meeting.getLabel());
+			// Convert the dateTime Gregorian Calendar object to the string
+			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
+			int m = meeting.getDateTime().get(Calendar.MONTH);
+			DecimalFormat form = new DecimalFormat("00");
+			String month = form.format(Double.valueOf(m));
+			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
+			String day = form.format(Double.valueOf(d));
+			int h = meeting.getDateTime().get(Calendar.HOUR);
+			String hour = form.format(Double.valueOf(h));
+			int n = meeting.getDateTime().get(Calendar.MINUTE);
+			String minute = form.format(Double.valueOf(n));
+			ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
+			int intA;
+			if (meeting.getAvailable()) {
+				intA = 1;
+			} else {
+				intA = 0;
+			}
+			ps.setInt(3, intA);
+			ps.setString(4, meeting.getSchedule().getSecretCode());
+			ps.setString(5, meeting.getParticipantSecretCode());
 			ps.execute();
 			return true;
 
@@ -115,24 +136,24 @@ public class MeetingsDAO {
 		}
 	}
 
-	public List<Meeting> getAllMeetingsFromSchedule() throws Exception {
+	public List<Meeting> getAllMeetingsFromSchedule(Schedule schedule) throws Exception {
 
-		List<Constant> allConstants = new ArrayList<>();
+		List<Meeting> allMeetings = new ArrayList<>();
 		try {
-			Statement statement = conn.createStatement();
-			String query = "SELECT * FROM Constants";
-			ResultSet resultSet = statement.executeQuery(query);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE schedule = ?;");
+			ps.setString(1, schedule.getSecretCode());			
+			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
-				Constant c = generateConstant(resultSet);
-				allConstants.add(c);
+				Meeting m = generateMeeting(resultSet);
+				allMeetings.add(m);
 			}
 			resultSet.close();
-			statement.close();
-			return allConstants;
+			ps.close();
+			return allMeetings;
 
 		} catch (Exception e) {
-			throw new Exception("Failed in getting books: " + e.getMessage());
+			throw new Exception("Failed in getting meetings: " + e.getMessage());
 		}
 	}
 

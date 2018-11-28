@@ -70,6 +70,10 @@ public class Schedule {
 		return true;
 	}
 	
+	public String getSecretCode(){
+		return secretCode;
+	}
+	
 	//public ArrayList<Meeting> findAvailable(GregorianCalendar start, GregorianCalendar end) {
 	//	return this.meetings;
 	//}
