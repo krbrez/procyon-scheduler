@@ -62,16 +62,26 @@ public class MeetingsDAO {
 			String query = "UPDATE Constants SET value=? WHERE name=?;";
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(1, meeting.getLabel());
-			// Convert the dateTime Gregorian Calendar object to the string 
-			String year = Integer.toString(i))meeting.getDateTime().get(Calendar.YEAR);
+			// Convert the dateTime Gregorian Calendar object to the string
+			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
 			int m = meeting.getDateTime().get(Calendar.MONTH);
-			DecimalFormat form= new DecimalFormat("00");
-			String month = form.format(Double.valueOf(month));
-			
-			//HERE
-			
-			
-			ps.setString(2, constant.name);
+			DecimalFormat form = new DecimalFormat("00");
+			String month = form.format(Double.valueOf(m));
+			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
+			String day = form.format(Double.valueOf(d));
+			int h = meeting.getDateTime().get(Calendar.HOUR);
+			String hour = form.format(Double.valueOf(h));
+			int n = meeting.getDateTime().get(Calendar.MINUTE);
+			String minute = form.format(Double.valueOf(n));
+			ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
+			int intA;
+			if (meeting.getAvailable()) {
+				intA = 1;
+			} else {
+				intA = 0;
+			}
+			ps.setInt(3, intA);
+			ps.
 			int numAffected = ps.executeUpdate();
 			ps.close();
 
