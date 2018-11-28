@@ -177,8 +177,9 @@ public class MeetingsDAO {
 			avail = true;
 		}
 
-		// Get the schedule that is attached to this meeting using ScheduleDAO
-		Schedule newSched;
+		// Get the schedule that is attached to this meeting using SchedulesDAO
+		SchedulesDAO sd = new SchedulesDAO();
+		Schedule newSched = sd.getSchedule(schedule);
 
 		return new Meeting(label, dT, avail, newSched, participantSecretCode);
 	}

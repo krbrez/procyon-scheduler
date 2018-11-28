@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.cs.heineman.model.Constant;
+import procyonScheduler.model.Schedule;
 
 public class SchedulesDAO {
 
