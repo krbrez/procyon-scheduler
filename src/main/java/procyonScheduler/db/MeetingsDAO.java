@@ -146,7 +146,7 @@ public class MeetingsDAO {
 
 		List<Meeting> allMeetings = new ArrayList<>();
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE schedule = ?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule = ?;");
 			ps.setString(1, schedule.getSecretCode());
 			ResultSet resultSet = ps.executeQuery();
 
