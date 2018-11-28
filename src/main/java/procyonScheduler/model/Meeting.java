@@ -4,6 +4,7 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 public class Meeting {
+	String id;
 	String label; // the name or email address provided by a participant when
 					// they book a meeting
 	GregorianCalendar dateTime; // the date and time of the meeting
@@ -13,8 +14,9 @@ public class Meeting {
 									// meeting, also functions as meeting id
 
 	// constructor for getting an existing meeting
-	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule,
+	public Meeting(String id, String label, GregorianCalendar dateTime, boolean available, Schedule schedule,
 			String participantSecretCode) {
+		this.id = id;
 		this.label = label;
 		this.dateTime = dateTime;
 		this.available = available;
@@ -38,6 +40,18 @@ public class Meeting {
 				this.participantSecretCode += (char) (n + 55);
 			} else {
 				this.participantSecretCode += (char) (n + 60);
+			}
+		}
+		this.id = "";
+		Random m = new Random();
+		for (int i = 0; i < 16; i++) {
+			int n = m.nextInt(62);
+			if (n < 10) {
+				this.id += Integer.toString(n);
+			} else if (n < 36) {
+				this.id += (char) (n + 55);
+			} else {
+				this.id += (char) (n + 60);
 			}
 		}
 	}
@@ -78,6 +92,10 @@ public class Meeting {
 
 	public Schedule getSchedule() {
 		return schedule;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }

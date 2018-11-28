@@ -22,11 +22,11 @@ public class MeetingsDAO {
 		}
 	}
 
-	public Meeting getMeeting(String participantSecretCode) throws Exception {
+	public Meeting getMeeting(String id) throws Exception {
 		try {
 			Meeting meeting = null;
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE participantSecretCode=?;");
-			ps.setString(1, participantSecretCode);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE id=?;");
+			ps.setString(1, id);
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
@@ -45,8 +45,8 @@ public class MeetingsDAO {
 
 	public boolean deleteMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Constants WHERE participantSecretCode = ?;");
-			ps.setString(1, meeting.getParticipantSecretCode());
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Constants WHERE id = ?;");
+			ps.setString(1, meeting.getId());
 			int numAffected = ps.executeUpdate();
 			ps.close();
 
@@ -60,45 +60,46 @@ public class MeetingsDAO {
 	/*
 	 * Revisit when adding use cases
 	 */
-//	public boolean updateMeeting(Meeting meeting) throws Exception {
-//		try {
-//			String query = "UPDATE Constants SET value=? WHERE name=?;";
-//			PreparedStatement ps = conn.prepareStatement(query);
-//			ps.setString(1, meeting.getLabel());
-//			// Convert the dateTime Gregorian Calendar object to the string
-//			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
-//			int m = meeting.getDateTime().get(Calendar.MONTH);
-//			DecimalFormat form = new DecimalFormat("00");
-//			String month = form.format(Double.valueOf(m));
-//			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
-//			String day = form.format(Double.valueOf(d));
-//			int h = meeting.getDateTime().get(Calendar.HOUR);
-//			String hour = form.format(Double.valueOf(h));
-//			int n = meeting.getDateTime().get(Calendar.MINUTE);
-//			String minute = form.format(Double.valueOf(n));
-//			ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
-//			int intA;
-//			if (meeting.getAvailable()) {
-//				intA = 1;
-//			} else {
-//				intA = 0;
-//			}
-//			ps.setInt(3, intA);
-//			ps.setString(4, meeting.getSchedule().getSecretCode());
-//			ps.setString(5, meeting.getParticipantSecretCode());
-//			int numAffected = ps.executeUpdate();
-//			ps.close();
-//
-//			return (numAffected == 1);
-//		} catch (Exception e) {
-//			throw new Exception("Failed to update report: " + e.getMessage());
-//		}
-//	}
+	// public boolean updateMeeting(Meeting meeting) throws Exception {
+	// try {
+	// String query = "UPDATE Constants SET value=? WHERE name=?;";
+	// PreparedStatement ps = conn.prepareStatement(query);
+	// ps.setString(1, meeting.getLabel());
+	// // Convert the dateTime Gregorian Calendar object to the string
+	// String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
+	// int m = meeting.getDateTime().get(Calendar.MONTH);
+	// DecimalFormat form = new DecimalFormat("00");
+	// String month = form.format(Double.valueOf(m));
+	// int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
+	// String day = form.format(Double.valueOf(d));
+	// int h = meeting.getDateTime().get(Calendar.HOUR);
+	// String hour = form.format(Double.valueOf(h));
+	// int n = meeting.getDateTime().get(Calendar.MINUTE);
+	// String minute = form.format(Double.valueOf(n));
+	// ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' +
+	// minute);
+	// int intA;
+	// if (meeting.getAvailable()) {
+	// intA = 1;
+	// } else {
+	// intA = 0;
+	// }
+	// ps.setInt(3, intA);
+	// ps.setString(4, meeting.getSchedule().getSecretCode());
+	// ps.setString(5, meeting.getParticipantSecretCode());
+	// int numAffected = ps.executeUpdate();
+	// ps.close();
+	//
+	// return (numAffected == 1);
+	// } catch (Exception e) {
+	// throw new Exception("Failed to update report: " + e.getMessage());
+	// }
+	// }
 
 	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE participantSecretCode = ?;");
-			ps.setString(1, meeting.getParticipantSecretCode());
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE if = ?;");
+			ps.setString(1, meeting.getId());
 			ResultSet resultSet = ps.executeQuery();
 
 			// already present?
@@ -108,7 +109,8 @@ public class MeetingsDAO {
 				return false;
 			}
 
-			ps = conn.prepareStatement("INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode) values(?,?,?,?,?);");
+			ps = conn.prepareStatement(
+					"INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode) values(?,?,?,?,?);");
 			ps.setString(1, meeting.getLabel());
 			// Convert the dateTime Gregorian Calendar object to the string
 			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
@@ -131,6 +133,7 @@ public class MeetingsDAO {
 			ps.setInt(3, intA);
 			ps.setString(4, meeting.getSchedule().getSecretCode());
 			ps.setString(5, meeting.getParticipantSecretCode());
+			ps.setString(6, meeting.getId());
 			ps.execute();
 			return true;
 
@@ -144,7 +147,7 @@ public class MeetingsDAO {
 		List<Meeting> allMeetings = new ArrayList<>();
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE schedule = ?;");
-			ps.setString(1, schedule.getSecretCode());			
+			ps.setString(1, schedule.getSecretCode());
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
@@ -166,6 +169,7 @@ public class MeetingsDAO {
 		String dateTime = resultSet.getString("dateTime");
 		int available = resultSet.getInt("available");
 		String schedule = resultSet.getString("schedule");
+		String id = resultSet.getString("id");
 
 		// Translate dateTime into gregorian calendar
 		GregorianCalendar dT = new GregorianCalendar(Integer.parseInt(dateTime.substring(0, 3)),
@@ -184,7 +188,7 @@ public class MeetingsDAO {
 		SchedulesDAO sd = new SchedulesDAO();
 		Schedule newSched = sd.getSchedule(schedule);
 
-		return new Meeting(label, dT, avail, newSched, participantSecretCode);
+		return new Meeting(id, label, dT, avail, newSched, participantSecretCode);
 	}
 
 }
