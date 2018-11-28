@@ -18,7 +18,7 @@ public class SchedulesDAO {
     	}
     }
 
-    public Constant getConstant(String name) throws Exception {
+    public Schedule getSchedule(String organizerSecretCode) throws Exception {
         
         try {
             Constant constant = null;
@@ -40,7 +40,7 @@ public class SchedulesDAO {
         }
     }
     
-    public boolean deleteConstant(Constant constant) throws Exception {
+    public boolean deleteSchedule(Schedule schedule) throws Exception {
         try {
             PreparedStatement ps = conn.prepareStatement("DELETE FROM Constants WHERE name = ?;");
             ps.setString(1, constant.name);
@@ -54,7 +54,7 @@ public class SchedulesDAO {
         }
     }
 
-    public boolean updateConstant(Constant constant) throws Exception {
+    public boolean updateSchedule(Schedule schedule) throws Exception {
         try {
         	String query = "UPDATE Constants SET value=? WHERE name=?;";
         	PreparedStatement ps = conn.prepareStatement(query);
@@ -70,7 +70,7 @@ public class SchedulesDAO {
     }
     
     
-    public boolean addConstant(Constant constant) throws Exception {
+    public boolean addSchedule(Schedule schedule) throws Exception {
         try {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE name = ?;");
             ps.setString(1, constant.name);
@@ -94,7 +94,7 @@ public class SchedulesDAO {
         }
     }
 
-    public List<Constant> getAllConstants() throws Exception {
+    public List<Schedule> getAllSchedules() throws Exception {
         
         List<Constant> allConstants = new ArrayList<>();
         try {
@@ -115,7 +115,7 @@ public class SchedulesDAO {
         }
     }
     
-    private Constant generateConstant(ResultSet resultSet) throws Exception {
+    private Schedule generateSchedule(ResultSet resultSet) throws Exception {
         String name  = resultSet.getString("name");
         Double value = resultSet.getDouble("value");
         return new Constant (name, value);
