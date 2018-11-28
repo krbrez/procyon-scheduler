@@ -55,7 +55,7 @@ public class Schedule {
 			this.start = start;
 			this.end = end;
 			this.blockSize = blockSize;
-			return true;
+			return true; 
 		}
 		else return false;
 	}
