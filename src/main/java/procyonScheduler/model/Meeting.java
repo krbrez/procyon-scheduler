@@ -1,6 +1,7 @@
 package procyonScheduler.model;
 
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 public class Meeting {
 	String label;					//the name or email address provided by a participant when they book a meeting
@@ -9,7 +10,7 @@ public class Meeting {
 	Schedule schedule;  			//all meetings are within a schedule
 	String participantSecretCode; 	//the secret code that is needed to change a meeting, also functions as meeting id
 	
-	//constructor
+	//constructor for getting an existing meeting
 	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule, String participantSecretCode) {
 		this.label = label; //is this optional?
 		this.dateTime = dateTime;
@@ -20,7 +21,24 @@ public class Meeting {
 	
 	//constructor for making a new meeting
 	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule) {
-		
+		this.label = label;
+		this.dateTime = dateTime;
+		this.available = available;
+		this.schedule = schedule;
+		this.participantSecretCode = "";
+		Random r = new Random();
+		for(int i = 0; i < 16; i++) {
+			int n = r.nextInt(62);
+			if(n<10) {
+				this.participantSecretCode += Integer.toString(n);
+			}
+			else if(n<36) {
+				this.participantSecretCode += (char)(n + 55);
+			}
+			else {
+				this.participantSecretCode += (char)(n + 60);
+			}
+		}
 	}
 	
 	//relevant setters 
