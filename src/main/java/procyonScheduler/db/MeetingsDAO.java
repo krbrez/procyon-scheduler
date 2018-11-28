@@ -81,7 +81,7 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.
+			ps.setString(4, meeting.getSchedule().getSec);
 			int numAffected = ps.executeUpdate();
 			ps.close();
 
@@ -91,7 +91,7 @@ public class MeetingsDAO {
 		}
 	}
 
-	public boolean addConstant(Constant constant) throws Exception {
+	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE name = ?;");
 			ps.setString(1, constant.name);
@@ -115,7 +115,7 @@ public class MeetingsDAO {
 		}
 	}
 
-	public List<Constant> getAllConstants() throws Exception {
+	public List<Meeting> getAllMeetingsFromSchedule() throws Exception {
 
 		List<Constant> allConstants = new ArrayList<>();
 		try {
