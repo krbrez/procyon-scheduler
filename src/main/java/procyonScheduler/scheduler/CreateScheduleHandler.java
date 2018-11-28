@@ -162,4 +162,3 @@ public class CreateScheduleHandler implements RequestStreamHandler {
         writer.close();
 	}
 }
-}
