@@ -74,6 +74,10 @@ public class Schedule {
 		return secretCode;
 	}
 	
+	public String getName(){
+		return name;
+	}
+	
 	//public ArrayList<Meeting> findAvailable(GregorianCalendar start, GregorianCalendar end) {
 	//	return this.meetings;
 	//}
