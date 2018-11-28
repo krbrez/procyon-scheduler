@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.GregorianCalendar;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,10 +22,12 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.gson.Gson;
 
-import edu.wpi.cs.heineman.db.ConstantsDAO;
-import edu.wpi.cs.heineman.demo.CreateConstantRequest;
-import edu.wpi.cs.heineman.demo.CreateConstantResponse;
-import edu.wpi.cs.heineman.model.Constant;
+import procyonScheduler.db.SchedulesDAO;
+import procyonScheduler.db.MeetingsDAO;
+import procyonScheduler.scheduler.CreateScheduleRequest;
+import procyonScheduler.scheduler.CreateScheduleResponse;
+import procyonScheduler.model.Schedule;
+import procyonScheduler.model.Meeting;
 
 public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 
@@ -34,18 +37,40 @@ public class CreateScheduleHandler implements RequestHandler<S3Event, String> {
 	 * 
 	 * @throws Exception 
 	 */
-	boolean createConstant(String name, double value) throws Exception {
-		if (logger != null) { logger.log("in createConstant"); }
-		ConstantsDAO dao = new ConstantsDAO();
+	boolean createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize) throws Exception {
+		if (logger != null) { logger.log("in createSchedule"); }
+		SchedulesDAO sDAO = new SchedulesDAO();
+		MeetingsDAO mDAO = new MeetingsDAO();
 		
-		// check if present
-		Constant exist = dao.getConstant(name);
-		Constant constant = new Constant (name, value);
-		if (exist == null) {
-			return dao.addConstant(constant);
-		} else {
-			return dao.updateConstant(constant);
+		// parse date time strings
+		// time: HH:MM:SS.LL
+		// date: YYYY-MM-DD
+		int stH, stY, stM, stDy, endH, endY, endM, endDy;
+		if(startT.length() == 11) {
+			String stHstr = startT.split(":")[0];
+			stH = Integer.parseInt(stHstr);
 		}
+		if(endT.length() == 11) {
+			String endHstr = endT.split(":")[0];
+			endH = Integer.parseInt(endHstr);
+		}
+		if(startD.length() == 10) {
+			String[] stDt = startD.split("-");
+			stY = Integer.parseInt(stDt[0]);
+			stM = Integer.parseInt(stDt[1]);
+			stDy = Integer.parseInt(stDt[2]);
+		}
+		if(endD.length() == 10) {
+			String[] endDt = endD.split("-");
+			endY = Integer.parseInt(endDt[0]);
+			endM = Integer.parseInt(endDt[1]);
+			endDy = Integer.parseInt(endDt[2]);
+		}
+		
+		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
+		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
+		Schedule s = new Schedule(name, start, end, blockSize);
+		return sDAO.addSchedule(s);
 	}
 	
 	@Override
