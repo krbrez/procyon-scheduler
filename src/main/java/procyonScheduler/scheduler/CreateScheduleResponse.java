@@ -1,16 +1,16 @@
 package procyonScheduler.scheduler;
 
-public class CreateConstantResponse {
+public class CreateScheduleResponse {
 	String response;
 	int httpCode;
 	
-	public CreateConstantResponse (String s, int code) {
+	public CreateScheduleResponse (String s, int code) {
 		this.response = s;
 		this.httpCode = code;
 	}
 	
 	// 200 means success
-	public CreateConstantResponse (String s) {
+	public CreateScheduleResponse (String s) {
 		this.response = s;
 		this.httpCode = 200;
 	}

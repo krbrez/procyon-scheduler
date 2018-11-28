@@ -1,10 +1,10 @@
 package procyonScheduler.scheduler;
 
-public class CreateConstantRequest {
+public class CreateScheduleRequest {
 	String name;
 	double value;
 	
-	public CreateConstantRequest (String n, double v) {
+	public CreateScheduleRequest (String n, double v) {
 		this.name = n;
 		this.value = v;
 	}
