@@ -10,7 +10,7 @@ public class Schedule {
 	String secretCode;				// unique string required for organizer access also used as schedule ID
 	GregorianCalendar created;		// date and time schedule was created
 	
-	// constructor
+	// constructor for initiation of schedule
 	public Schedule(String name, GregorianCalendar start, GregorianCalendar end, int blockSize) {
 		this.name = name;
 		this.start = start;
@@ -32,6 +32,16 @@ public class Schedule {
 			}
 		}
 		this.created = new GregorianCalendar();
+	}
+	
+	// constructor for pulling schedule out of database
+	public Schedule(String name, GregorianCalendar start, GregorianCalendar end, int blockSize, String secretCode, GregorianCalendar created) {
+		this.name = name;
+		this.start = start;
+		this.end = end;
+		this.blockSize = blockSize;
+		this.secretCode = secretCode;
+		this.created = created;
 	}
 	
 	// meetings iterator
