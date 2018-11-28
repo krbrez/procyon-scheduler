@@ -1,7 +1,10 @@
 package procyonScheduler.db;
 
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import procyonScheduler.model.Schedule;
@@ -85,50 +88,96 @@ public class SchedulesDAO {
 				return false;
 			}
 
-			// Name
-			// Start
-			// End
-			// blockSize
-			// organizerSecretCode*
-			// creationTime
-
 			ps = conn.prepareStatement(
 					"INSERT INTO Schedules (name,start,end,blockSize,organizerSecretCode,creationTime) values(?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.getName());
-			// You are here
+			// Convert the start Gregorian Calendar object to the string
+			String year = Integer.toString(schedule.getStart().get(Calendar.YEAR));
+			int m = schedule.getStart().get(Calendar.MONTH);
+			DecimalFormat form = new DecimalFormat("00");
+			String month = form.format(Double.valueOf(m));
+			int d = schedule.getStart().get(Calendar.DAY_OF_MONTH);
+			String day = form.format(Double.valueOf(d));
+			int h = schedule.getStart().get(Calendar.HOUR);
+			String hour = form.format(Double.valueOf(h));
+			int n = schedule.getStart().get(Calendar.MINUTE);
+			String minute = form.format(Double.valueOf(n));
+			ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
+			// Convert the end Gregorian Calendar object to the string
+			String yearE = Integer.toString(schedule.getEnd().get(Calendar.YEAR));
+			int mE = schedule.getEnd().get(Calendar.MONTH);
+			String monthE = form.format(Double.valueOf(mE));
+			int dE = schedule.getEnd().get(Calendar.DAY_OF_MONTH);
+			String dayE = form.format(Double.valueOf(dE));
+			int hE = schedule.getEnd().get(Calendar.HOUR);
+			String hourE = form.format(Double.valueOf(hE));
+			int nE = schedule.getEnd().get(Calendar.MINUTE);
+			String minuteE = form.format(Double.valueOf(nE));
+			ps.setString(3, yearE + '/' + monthE + '/' + dayE + '-' + hourE + ':' + minuteE);
+			ps.setInt(4, schedule.getBlockSize());
+			ps.setString(5, schedule.getSecretCode());
+			// Convert the created Gregorian Calendar object to the string
+			String yearC = Integer.toString(schedule.getCreated().get(Calendar.YEAR));
+			int mC = schedule.getCreated().get(Calendar.MONTH);
+			String monthC = form.format(Double.valueOf(mC));
+			int dC = schedule.getCreated().get(Calendar.DAY_OF_MONTH);
+			String dayC = form.format(Double.valueOf(dC));
+			int hC = schedule.getCreated().get(Calendar.HOUR);
+			String hourC = form.format(Double.valueOf(hC));
+			int nC = schedule.getCreated().get(Calendar.MINUTE);
+			String minuteC = form.format(Double.valueOf(nC));
+			ps.setString(6, yearC + '/' + monthC + '/' + dayC + '-' + hourC + ':' + minuteC);
 			ps.execute();
 			return true;
 
 		} catch (Exception e) {
-			throw new Exception("Failed to insert constant: " + e.getMessage());
+			throw new Exception("Failed to insert schedule: " + e.getMessage());
 		}
 	}
 
 	public List<Schedule> getAllSchedules() throws Exception {
 
-		List<Constant> allConstants = new ArrayList<>();
+		List<Schedule> allSchedules = new ArrayList<>();
 		try {
 			Statement statement = conn.createStatement();
-			String query = "SELECT * FROM Constants";
+			String query = "SELECT * FROM Schedules";
 			ResultSet resultSet = statement.executeQuery(query);
 
 			while (resultSet.next()) {
-				Constant c = generateConstant(resultSet);
-				allConstants.add(c);
+				Schedule s = generateSchedule(resultSet);
+				allSchedules.add(s);
 			}
 			resultSet.close();
 			statement.close();
-			return allConstants;
+			return allSchedules;
 
 		} catch (Exception e) {
-			throw new Exception("Failed in getting books: " + e.getMessage());
+			throw new Exception("Failed in getting schedules: " + e.getMessage());
 		}
 	}
 
 	private Schedule generateSchedule(ResultSet resultSet) throws Exception {
 		String name = resultSet.getString("name");
-		Double value = resultSet.getDouble("value");
-		return new Constant(name, value);
+		String startDateTime = resultSet.getString("start");
+		// Translate startDateTime into gregorian calendar
+		GregorianCalendar start = new GregorianCalendar(Integer.parseInt(startDateTime.substring(0, 3)),
+				Integer.parseInt(startDateTime.substring(5, 6)), Integer.parseInt(startDateTime.substring(8, 9)),
+				Integer.parseInt(startDateTime.substring(11, 12)), Integer.parseInt(startDateTime.substring(14, 15)));
+		String endDateTime = resultSet.getString("end");
+		// Translate endDateTime into gregorian calendar
+		GregorianCalendar end = new GregorianCalendar(Integer.parseInt(endDateTime.substring(0, 3)),
+				Integer.parseInt(endDateTime.substring(5, 6)), Integer.parseInt(endDateTime.substring(8, 9)),
+				Integer.parseInt(endDateTime.substring(11, 12)), Integer.parseInt(endDateTime.substring(14, 15)));
+		int blockSize = resultSet.getInt("blockSize");
+		String organizerSecretCode = resultSet.getString("organizerSecretCode");
+		String createdDateTime = resultSet.getString("creationTime");
+		// Translate createdDateTime into gregorian calendar
+		GregorianCalendar creationTime = new GregorianCalendar(Integer.parseInt(createdDateTime.substring(0, 3)),
+				Integer.parseInt(createdDateTime.substring(5, 6)), Integer.parseInt(createdDateTime.substring(8, 9)),
+				Integer.parseInt(createdDateTime.substring(11, 12)),
+				Integer.parseInt(createdDateTime.substring(14, 15)));
+
+		return new Schedule(name, start, end, blockSize, organizerSecretCode, creationTime);
 	}
 
 }
