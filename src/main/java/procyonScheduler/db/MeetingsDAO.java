@@ -110,7 +110,7 @@ public class MeetingsDAO {
 			}
 
 			ps = conn.prepareStatement(
-					"INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode) values(?,?,?,?,?);");
+					"INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode,id) values(?,?,?,?,?);");
 			ps.setString(1, meeting.getLabel());
 			// Convert the dateTime Gregorian Calendar object to the string
 			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
