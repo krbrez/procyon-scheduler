@@ -34,8 +34,12 @@ function handleClick(e) {
   var endDate = form.EndDate.value //"2018-11-30";
 
   var data = {};
-  data["arg1"] = "sd";
-  data["arg2"] = "sdsd";
+  data["arg1"] = name;
+  data["arg2"] = startHour;
+  data["arg3"] = startDate;
+  data["arg4"] = endHour;
+  data["arg5"] = endDate;
+  data["arg6"] = timeslotSize;
 
   var js = JSON.stringify(data);
   console.log("JS:" + js);
@@ -80,7 +84,7 @@ function handleClick(e) {
       <option value="60">60</option>
     </select>
     <select name="startHour">
-      <option value="startHour">Start Hour</option>
+      <option value="99:99:99.99">Start Hour</option>
       <option value="00:00:00.00">00:00</option>
       <option value="01:00:00.00">01:00</option>
       <option value="02:00:00.00">02:00</option>
@@ -107,7 +111,7 @@ function handleClick(e) {
       <option value="23:00:00.00">23:00</option>
     </select>
     <select name="endHour">
-      <option value="endHour">End Hour</option>
+      <option value="99:99:99.99">End Hour</option>
       <option value="00:00:00.00">00:00</option>
       <option value="01:00:00.00">01:00</option>
       <option value="02:00:00.00">02:00</option>
@@ -203,7 +207,8 @@ function handleClick(e) {
       <legend>Weekly Calendar</legend>
       Your Secret Code for this Schedule is: <input name="meetingScheduleURLOrganizer" readonly/>
       and the URL to schedule Meetings is: <input name="secretCodeOrganizer" readonly/>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <div id="OrganzierCalendarView"</div>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
     </fieldset>
   </section>
