@@ -25,9 +25,9 @@ import com.google.gson.Gson;
 
 import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.db.MeetingsDAO;
+import procyonScheduler.model.Schedule;
 import procyonScheduler.scheduler.CreateScheduleRequest;
 import procyonScheduler.scheduler.CreateScheduleResponse;
-import procyonScheduler.model.Schedule;
 import procyonScheduler.model.Meeting;
 
 public class CreateScheduleHandler implements RequestStreamHandler {
