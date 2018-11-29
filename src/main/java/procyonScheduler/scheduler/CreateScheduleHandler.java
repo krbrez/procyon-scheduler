@@ -63,13 +63,13 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		if (startD.length() == 10) {
 			String[] stDt = startD.split("-");
 			stY = Integer.parseInt(stDt[0]);
-			stM = Integer.parseInt(stDt[1]);
+			stM = Integer.parseInt(stDt[1]) - 1;	// GregorianCalendar months start at 0
 			stDy = Integer.parseInt(stDt[2]);
 		}
 		if (endD.length() == 10) {
 			String[] endDt = endD.split("-");
 			endY = Integer.parseInt(endDt[0]);
-			endM = Integer.parseInt(endDt[1]);
+			endM = Integer.parseInt(endDt[1]) - 1;
 			endDy = Integer.parseInt(endDt[2]);
 		}
 
