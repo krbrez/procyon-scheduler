@@ -47,7 +47,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 
-		// parse date time strings
+		// parse date time strings..
 		// time: HH:MM:SS.LL
 		// date: YYYY-MM-DD
 		int stH = 0, stY = 0, stM = 0, stDy = 0, endH = 0, endY = 0, endM = 0, endDy = 0;
