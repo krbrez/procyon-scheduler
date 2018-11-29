@@ -73,7 +73,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			endDy = Integer.parseInt(endDt[2]);
 		}
 
-		// create new schedule
+		// create new schedule, boys
 		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
 		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
 		Schedule s = new Schedule(name, start, end, blockSize);
