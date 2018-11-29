@@ -14,8 +14,7 @@ var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var add_url = base_url + "scheduler";    // POST
 
 function processResponse(arg1, arg2, result) {
-  // Can grab any DIV or SPAN HTML element and can then manipulate its
-  // contents dynamically via javascript
+  // Can grab any DIV or SPAN HTML element and can then manipulate its contents dynamically via javascript
   console.log("result:" + result);
   var js = JSON.parse(result);
 
@@ -28,11 +27,11 @@ function processResponse(arg1, arg2, result) {
 function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
-  var timeslotSize = "20";  // form.arg2.value;
-  var startHour = "10";
-  var endHour = "17";
-  var startDate = "Nov-18-2018";
-  var endDate = "Nov-28-2018";
+  var timeslotSize = form.getparameter("timeSlotDuration"); //""20";  // form.arg2.value;
+  var startHour = form.getparameter("startHour") //"10";
+  var endHour = form.getparameter("endHour") //"17";
+  var startDate = form.StartDate.value; //"2018-11-29";
+  var endDate = form.EndDate.value //"2018-11-30";
 
   var data = {};
   data["arg1"] = "sd";
@@ -72,67 +71,67 @@ function handleClick(e) {
     <legend>Create a Schedule</legend>
   <form name="createSchedule" method="post">
     <input type="text" name="scheduleName" value="Schedule Name" />
-    <select>
-      <option value="timeslotDuration">Timeslot Duration</option>
+    <select name="timeSlotDuration">
+      <option value="0">Timeslot Duration</option>
       <option value="10">10</option>
       <option value="15">15</option>
       <option value="20">20</option>
       <option value="30">30</option>
       <option value="60">60</option>
     </select>
-    <select>
-      <option value="timeslotDuration">Start Hour</option>
-      <option value="start0000">00:00</option>
-      <option value="start0100">01:00</option>
-      <option value="start0000">02:00</option>
-      <option value="start0000">03:00</option>
-      <option value="start0000">04:00</option>
-      <option value="start0000">05:00</option>
-      <option value="start0000">06:00</option>
-      <option value="start0000">07:00</option>
-      <option value="start0000">08:00</option>
-      <option value="start0000">09:00</option>
-      <option value="start0000">10:00</option>
-      <option value="start0000">11:00</option>
-      <option value="start0000">12:00</option>
-      <option value="start0000">13:00</option>
-      <option value="start0000">14:00</option>
-      <option value="start0000">15:00</option>
-      <option value="start0000">16:00</option>
-      <option value="start0000">17:00</option>
-      <option value="start0000">18:00</option>
-      <option value="start0000">19:00</option>
-      <option value="start0000">20:00</option>
-      <option value="start0000">21:00</option>
-      <option value="start0000">22:00</option>
-      <option value="start0000">23:00</option>
+    <select name="startHour">
+      <option value="startHour">Start Hour</option>
+      <option value="0">00:00</option>
+      <option value="1">01:00</option>
+      <option value="2">02:00</option>
+      <option value="3">03:00</option>
+      <option value="4">04:00</option>
+      <option value="5">05:00</option>
+      <option value="6">06:00</option>
+      <option value="7">07:00</option>
+      <option value="8">08:00</option>
+      <option value="9">09:00</option>
+      <option value="10">10:00</option>
+      <option value="11">11:00</option>
+      <option value="12">12:00</option>
+      <option value="13">13:00</option>
+      <option value="14">14:00</option>
+      <option value="15">15:00</option>
+      <option value="16">16:00</option>
+      <option value="17">17:00</option>
+      <option value="18">18:00</option>
+      <option value="19">19:00</option>
+      <option value="20">20:00</option>
+      <option value="21">21:00</option>
+      <option value="22">22:00</option>
+      <option value="23">23:00</option>
     </select>
-    <select>
-      <option value="timeslotDuration">End Hour</option>
-      <option value="start0000">00:00</option>
-      <option value="start0100">01:00</option>
-      <option value="start0000">02:00</option>
-      <option value="start0000">03:00</option>
-      <option value="start0000">04:00</option>
-      <option value="start0000">05:00</option>
-      <option value="start0000">06:00</option>
-      <option value="start0000">07:00</option>
-      <option value="start0000">08:00</option>
-      <option value="start0000">09:00</option>
-      <option value="start0000">10:00</option>
-      <option value="start0000">11:00</option>
-      <option value="start0000">12:00</option>
-      <option value="start0000">13:00</option>
-      <option value="start0000">14:00</option>
-      <option value="start0000">15:00</option>
-      <option value="start0000">16:00</option>
-      <option value="start0000">17:00</option>
-      <option value="start0000">18:00</option>
-      <option value="start0000">19:00</option>
-      <option value="start0000">20:00</option>
-      <option value="start0000">21:00</option>
-      <option value="start0000">22:00</option>
-      <option value="start0000">23:00</option>
+    <select name="endHour">
+      <option value="endHour">End Hour</option>
+      <option value="0">00:00</option>
+      <option value="1">01:00</option>
+      <option value="2">02:00</option>
+      <option value="3">03:00</option>
+      <option value="4">04:00</option>
+      <option value="5">05:00</option>
+      <option value="6">06:00</option>
+      <option value="7">07:00</option>
+      <option value="8">08:00</option>
+      <option value="9">09:00</option>
+      <option value="10">10:00</option>
+      <option value="11">11:00</option>
+      <option value="12">12:00</option>
+      <option value="13">13:00</option>
+      <option value="14">14:00</option>
+      <option value="15">15:00</option>
+      <option value="16">16:00</option>
+      <option value="17">17:00</option>
+      <option value="18">18:00</option>
+      <option value="19">19:00</option>
+      <option value="20">20:00</option>
+      <option value="21">21:00</option>
+      <option value="22">22:00</option>
+      <option value="23">23:00</option>
     </select>
     Start Date <input type="date" name="StartDate">
     End Date <input type="date" name="EndDate">
