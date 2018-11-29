@@ -97,5 +97,17 @@ public class Meeting {
 	public String getId() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		String printThis = "id: " + this.id + " label: " + this.label 
+				+ " date: " + Integer.toString(this.dateTime.get(GregorianCalendar.YEAR)) 
+				+ "-" + Integer.toString(this.dateTime.get(GregorianCalendar.MONTH)) 
+				+ "-" + Integer.toString(this.dateTime.get(GregorianCalendar.DAY_OF_MONTH))
+				+ " time: " + Integer.toString(this.dateTime.get(GregorianCalendar.HOUR_OF_DAY)) 
+				+ ":" + Integer.toString(this.dateTime.get(GregorianCalendar.MINUTE))
+				+ " schedule: " + this.schedule.getName() + " code: " + this.participantSecretCode;
+		return printThis;
+	}
 
 }

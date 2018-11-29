@@ -88,10 +88,14 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 					created = created && mDAO.addMeeting(m);
 					meetTime.add(GregorianCalendar.MINUTE, blockSize);
 				}
-				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
-				meetTime.set(GregorianCalendar.HOUR_OF_DAY, stH);
+				if(!meetTime.equals(end)) {
+					meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
+					meetTime.set(GregorianCalendar.HOUR_OF_DAY, stH);
+				}
 			}
-			meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
+			if(!meetTime.equals(end)) {
+				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
+			}
 		}
 		return created;
 	}
