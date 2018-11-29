@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.json.simple.JSONObject;
@@ -45,9 +46,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		}
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		if (logger != null) {
-			logger.log("what is conn:" + sDAO.conn);
-		}
+
 		// parse date time strings
 		// time: HH:MM:SS.LL
 		// date: YYYY-MM-DD
@@ -157,7 +156,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 			CreateScheduleResponse resp;
 			try {
-				if (createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endTime, req.blockSize)) {
+				if (createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endDate, req.blockSize)) {
 					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name);
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.name, 422);

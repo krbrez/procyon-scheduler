@@ -1,5 +1,6 @@
 package procyonScheduler.db;
 
+import java.math.RoundingMode;
 import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class SchedulesDAO {
 			String year = Integer.toString(schedule.getStart().get(Calendar.YEAR));
 			int m = schedule.getStart().get(Calendar.MONTH);
 			DecimalFormat form = new DecimalFormat("00");
+			form.setRoundingMode(RoundingMode.DOWN);
 			String month = form.format(Double.valueOf(m));
 			int d = schedule.getStart().get(Calendar.DAY_OF_MONTH);
 			String day = form.format(Double.valueOf(d));

@@ -98,7 +98,7 @@ public class MeetingsDAO {
 
 	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE if = ?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE id = ?;");
 			ps.setString(1, meeting.getId());
 			ResultSet resultSet = ps.executeQuery();
 
@@ -110,7 +110,7 @@ public class MeetingsDAO {
 			}
 
 			ps = conn.prepareStatement(
-					"INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode,id) values(?,?,?,?,?);");
+					"INSERT INTO Meetings (label,dateTime,available,schedule,participantSecretCode,id) values(?,?,?,?,?,?);");
 			ps.setString(1, meeting.getLabel());
 			// Convert the dateTime Gregorian Calendar object to the string
 			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
@@ -138,7 +138,7 @@ public class MeetingsDAO {
 			return true;
 
 		} catch (Exception e) {
-			throw new Exception("Failed to insert constant: " + e.getMessage());
+			throw new Exception("Failed to insert meeting: " + e.getMessage());
 		}
 	}
 
