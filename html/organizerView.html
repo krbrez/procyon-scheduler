@@ -8,6 +8,57 @@
 <link href="cs3733Template.css" rel="stylesheet" type="text/css">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
+<script type="text/javascript">
+//JavaScript Goes Here
+var add_url = "NEED OUR OWN API URL";
+
+function processResponse(arg1, arg2, result) {
+  // Can grab any DIV or SPAN HTML element and can then manipulate its
+  // contents dynamically via javascript
+  console.log("result:" + result);
+  var js = JSON.parse(result);
+
+  var computation = js["value"];
+
+  // Update computation result
+  document.addForm.result.value = computation
+}
+
+function handleClick(e) {
+  var form = document.createSchedule;
+  var name = form.scheduleName.value;
+  var timeslotSize = form.arg2.value;
+  var startHour = ;
+  var endHour = ;
+  var startDate = ;
+  var endDate = ;
+
+  var data = {};
+  data["arg1"] = arg1;
+  data["arg2"] = arg2;
+
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", add_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResponse(arg1, arg2, xhr.responseText);
+    } else {
+      processResponse(arg1, arg2, "N/A");
+    }
+  };
+}
+
+</script>
 </head>
 <body>
   <div class="container">
@@ -18,8 +69,8 @@
   <section class = "initialOrganizerInput" id="initialOrgainzerInput">
   <fieldset>
     <legend>Create a Schedule</legend>
-  <form>
-    <input type="text" name="deleteDays" value="Schedule Name">
+  <form name="createSchedule" method="post">
+    <input type="text" name="scheduleName" value="Schedule Name" />
     <select>
       <option value="timeslotDuration">Timeslot Duration</option>
       <option value="10">10</option>
@@ -83,8 +134,8 @@
       <option value="start0000">23:00</option>
     </select>
     Start Date <input type="date" name="StartDate">
-    End Date <input type="date" name="extendEndDate">
-    <button type="button" onclick="alert('CALENDAR CREADTED WINDOW')">Create a Schedule of your own!</button><br>
+    End Date <input type="date" name="EndDate">
+    <button type="button" onclick="JavaScript:handleClick(this)">Create a Schedule of your own!</button><br>
   </form>
   </fieldset>
     <br>
