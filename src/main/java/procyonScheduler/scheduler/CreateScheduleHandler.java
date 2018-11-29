@@ -45,7 +45,9 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		}
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-
+		if (logger != null) {
+			logger.log("what is conn:" + sDAO.conn);
+		}
 		// parse date time strings
 		// time: HH:MM:SS.LL
 		// date: YYYY-MM-DD

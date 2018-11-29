@@ -11,7 +11,7 @@ import procyonScheduler.model.Schedule;
 
 public class SchedulesDAO {
 
-	java.sql.Connection conn;
+	public java.sql.Connection conn;
 
 	public SchedulesDAO() {
 		try {

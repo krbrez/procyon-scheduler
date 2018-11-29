@@ -10,7 +10,8 @@
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
 <script type="text/javascript">
 //JavaScript Goes Here
-var add_url = "NEED OUR OWN API URL";
+var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
+var add_url = base_url + "scheduler";    // POST
 
 function processResponse(arg1, arg2, result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
@@ -27,15 +28,15 @@ function processResponse(arg1, arg2, result) {
 function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
-  var timeslotSize = form.arg2.value;
-  var startHour = ;
-  var endHour = ;
-  var startDate = ;
-  var endDate = ;
+  var timeslotSize = "20";  // form.arg2.value;
+  var startHour = "10";
+  var endHour = "17";
+  var startDate = "Nov-18-2018";
+  var endDate = "Nov-28-2018";
 
   var data = {};
-  data["arg1"] = arg1;
-  data["arg2"] = arg2;
+  data["arg1"] = "sd";
+  data["arg2"] = "sdsd";
 
   var js = JSON.stringify(data);
   console.log("JS:" + js);
