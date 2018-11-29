@@ -28,7 +28,7 @@ public class Schedule {
 				this.secretCode += Integer.toString(n);
 			} else if (n < 36) {
 				this.secretCode += (char) (n + 55);
-			} else { // n 37 - 61
+			} else { // n 36 - 61
 				this.secretCode += (char) (n + 61);
 			}
 		}

@@ -51,7 +51,7 @@ public class Meeting {
 			} else if (n < 36) {
 				this.id += (char) (n + 55);
 			} else {
-				this.id += (char) (n + 60);
+				this.id += (char) (n + 61);
 			}
 		}
 	}
