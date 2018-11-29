@@ -44,6 +44,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		if (logger != null) {
 			logger.log("in createSchedule");
 		}
+		// create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 
