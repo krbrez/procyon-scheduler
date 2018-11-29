@@ -82,19 +82,19 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 		// create meetings to fill schedule
 		GregorianCalendar meetTime = start;
-		while (!meetTime.equals(end)) {
+		while (meetTime.compareTo(end) < 0) {
 			while (meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) {
 				while (meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) {
 					Meeting m = new Meeting("", meetTime, true, s);
 					created = created && mDAO.addMeeting(m);
 					meetTime.add(GregorianCalendar.MINUTE, blockSize);
 				}
-				if(!meetTime.equals(end)) {
+				if(meetTime.compareTo(end) < 0) {
 					meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
 					meetTime.set(GregorianCalendar.HOUR_OF_DAY, stH);
 				}
 			}
-			if(!meetTime.equals(end)) {
+			if(meetTime.compareTo(end) < 0) {
 				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 			}
 		}
