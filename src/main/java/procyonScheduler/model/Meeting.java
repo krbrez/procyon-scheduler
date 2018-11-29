@@ -39,7 +39,7 @@ public class Meeting {
 			} else if (n < 36) {
 				this.participantSecretCode += (char) (n + 55);
 			} else {
-				this.participantSecretCode += (char) (n + 60);
+				this.participantSecretCode += (char) (n + 61);
 			}
 		}
 		this.id = "";

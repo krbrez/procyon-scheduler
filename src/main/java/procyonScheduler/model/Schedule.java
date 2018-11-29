@@ -29,7 +29,7 @@ public class Schedule {
 			} else if (n < 36) {
 				this.secretCode += (char) (n + 55);
 			} else { // n 37 - 61
-				this.secretCode += (char) (n + 60);
+				this.secretCode += (char) (n + 61);
 			}
 		}
 		this.created = new GregorianCalendar();
