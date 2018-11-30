@@ -34,12 +34,12 @@ function handleClick(e) {
   var endDate = form.EndDate.value //"2018-11-30";
 
   var data = {};
-  data["arg1"] = name;
-  data["arg2"] = startHour;
-  data["arg3"] = startDate;
-  data["arg4"] = endHour;
-  data["arg5"] = endDate;
-  data["arg6"] = timeslotSize;
+  data["name"] = name;
+  data["startT"] = startHour;
+  data["startD"] = startDate;
+  data["endT"] = endHour;
+  data["endD"] = endDate;
+  data["blockSize"] = timeslotSize;
 
   var js = JSON.stringify(data);
   console.log("JS:" + js);
