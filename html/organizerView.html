@@ -76,7 +76,7 @@ function handleClick(e) {
   <section class = "initialOrganizerInput" id="initialOrgainzerInput">
   <fieldset>
     <legend>Create a Schedule</legend>
-  <form name="createSchedule" method="post">
+  <form id="createSchedule" method="post">
     <input type="text" name="scheduleName" value="Schedule Name" />
     <select name="timeSlotDuration">
       <option value="0">Timeslot Duration</option>
@@ -86,7 +86,7 @@ function handleClick(e) {
       <option value="30">30</option>
       <option value="60">60</option>
     </select>
-    <select name="startHour">
+    <select id="startHour">
       <option value="99:99:99.99">Start Hour</option>
       <option value="00:00:00.00">00:00</option>
       <option value="01:00:00.00">01:00</option>
@@ -113,7 +113,7 @@ function handleClick(e) {
       <option value="22:00:00.00">22:00</option>
       <option value="23:00:00.00">23:00</option>
     </select>
-    <select name="endHour">
+    <select id="endHour">
       <option value="99:99:99.99">End Hour</option>
       <option value="00:00:00.00">00:00</option>
       <option value="01:00:00.00">01:00</option>
