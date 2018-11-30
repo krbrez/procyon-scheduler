@@ -5,24 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Organizer</title>
-<link href="cs3733Template.css" rel="stylesheet" type="text/css">
+<!--link href="cs3733Template.css" rel="stylesheet" type="text/css"-->
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
 <script type="text/javascript">
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
-
-function processResponse(arg1, arg2, result) {
-  // Can grab any DIV or SPAN HTML element and can then manipulate its contents dynamically via javascript
-  console.log("result:" + result);
-  var js = JSON.parse(result);
-
-  var computation = js["value"];
-
-  // Update computation result
-  document.addForm.result.value = computation;
-}
 
 function handleClick(e) {
   var form = document.createSchedule;
@@ -58,9 +47,9 @@ function handleClick(e) {
     console.log(xhr.request);
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText);
-      processResponse(arg1, arg2, xhr.responseText);
+      window.alert(xhr.responseText);
     } else {
-      processResponse(arg1, arg2, "N/A");
+      window.alert("Oops, something went wrong!");
     }
   };
 }
