@@ -21,20 +21,20 @@ function processResponse(arg1, arg2, result) {
   var computation = js["value"];
 
   // Update computation result
-  document.addForm.result.value = computation
+  document.addForm.result.value = computation;
 }
 
 function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
   var f = document.getElementById("timeSlotDuration");
-  var timeslotSize = = f.options[f.selectedIndex].value; //""20";  // form.arg2.value;
+  var timeslotSize = f.options[f.selectedIndex].value; //""20";  // form.arg2.value;
   var e = document.getElementById("startHour");
-  var startHour = = e.options[e.selectedIndex].value; //"10:00:00.00";
+  var startHour = e.options[e.selectedIndex].value; //"10:00:00.00";
   var g = document.getElementById("endHour");
-  var endHour = = g.options[g.selectedIndex].value; //"17:00:00.00";
+  var endHour = g.options[g.selectedIndex].value; //"17:00:00.00";
   var startDate = form.StartDate.value; //"2018-11-29";
-  var endDate = form.EndDate.value //"2018-11-30";
+  var endDate = form.EndDate.value; //"2018-11-30";
 
   var data = {};
   data["name"] = name;
@@ -78,7 +78,7 @@ function handleClick(e) {
     <legend>Create a Schedule</legend>
   <form id="createSchedule" method="post">
     <input type="text" name="scheduleName" value="Schedule Name" />
-    <select name="timeSlotDuration">
+    <select id="timeSlotDuration">
       <option value="0">Timeslot Duration</option>
       <option value="10">10</option>
       <option value="15">15</option>
