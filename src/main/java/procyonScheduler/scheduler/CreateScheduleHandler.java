@@ -76,6 +76,12 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		// create new schedule
 		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
 		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
+		if(start.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY ||
+			start.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SUNDAY ||
+			end.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SATURDAY ||
+			end.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SUNDAY) {
+			return false;
+		}
 		Schedule s = new Schedule(name, start, end, blockSize);
 		boolean created = true;
 		created = created && sDAO.addSchedule(s);
