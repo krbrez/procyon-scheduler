@@ -11,7 +11,7 @@
 <script type="text/javascript">
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
-var add_url = base_url + "createschedule";    // POST
+var create_url = base_url + "createschedule";    // POST
 
 function processResponse(arg1, arg2, result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its contents dynamically via javascript
@@ -27,9 +27,12 @@ function processResponse(arg1, arg2, result) {
 function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
-  var timeslotSize = form.getparameter("timeSlotDuration"); //""20";  // form.arg2.value;
-  var startHour = form.getparameter("startHour") //"10:00:00.00";
-  var endHour = form.getparameter("endHour") //"17:00:00.00";
+  var f = document.getElementById("timeSlotDuration");
+  var timeslotSize = = f.options[f.selectedIndex].value; //""20";  // form.arg2.value;
+  var e = document.getElementById("startHour");
+  var startHour = = e.options[e.selectedIndex].value; //"10:00:00.00";
+  var g = document.getElementById("endHour");
+  var endHour = = g.options[g.selectedIndex].value; //"17:00:00.00";
   var startDate = form.StartDate.value; //"2018-11-29";
   var endDate = form.EndDate.value //"2018-11-30";
 
@@ -44,7 +47,7 @@ function handleClick(e) {
   var js = JSON.stringify(data);
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", add_url, true);
+  xhr.open("POST", create_url, true);
 
   // send the collected data as JSON
   xhr.send(js);
