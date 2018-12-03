@@ -8,7 +8,7 @@ public class DeleteScheduleRequest {
 	}
 	
 	public String toString() {
-		return "Delete Schedule named " + secretCode;
+		return "Delete Schedule with this code " + secretCode;
 	}
 
 }
