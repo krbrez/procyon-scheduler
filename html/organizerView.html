@@ -13,7 +13,7 @@
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 
-function handleClick(e) {
+function createSchedule(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
   var f = document.getElementById("timeSlotDuration");
@@ -37,10 +37,10 @@ function handleClick(e) {
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
   xhr.open("POST", create_url, true);
-
+  
   // send the collected data as JSON
   xhr.send(js);
-
+  
   // This will process results and update HTML as appropriate.
   xhr.onloadend = function () {
     console.log(xhr);
@@ -53,6 +53,35 @@ function handleClick(e) {
     }
   };
 }
+
+function secretCode(e) {
+  var form = document.SecretCode;
+  var code = form.SecretCode.value;
+
+  var data = {};
+  data["code"] = code;
+
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", create_url, true);
+  
+  // send the collected data as JSON
+  xhr.send(js);
+  
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      window.alert(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+
 
 </script>
 </head>
@@ -131,16 +160,15 @@ function handleClick(e) {
     </select>
     Start Date <input type="date" name="StartDate">
     End Date <input type="date" name="EndDate">
-    <button type="button" onclick="JavaScript:handleClick(this)">Create a Schedule of your own!</button><br>
+    <button type="button" onclick="JavaScript:createSchedule(this)">Create a Schedule of your own!</button><br>
   </form>
   </fieldset>
     <br>
   <fieldset>
     <legend>View a Schedule or Meeting</legend>
-    <form>
+    <form name="SecretCode" method="post">
     Secret Code: <input type="text" name="SecretCode" value="">
-    <input type="submit" value="Submit">
-    <br>
+    <button type="button" onclick="JavaScript:secretCode(this)">Submit</button><br>
     </form>
   </fieldset>
 </section>
@@ -153,10 +181,8 @@ function handleClick(e) {
   <br>
   <fieldset>
     <legend>Edit This Schedule</legend>
-    <form>Add days on the end up to <input type="date" name="extendEndDate"><input type="submit"></form>
-    <form>Add days on the start up to <input type="date" name="extendStartDate"><input type="submit"></form>
-    <form>Remove days from the end up to <input type="date" name="retractEndDate"><input type="submit"></form>
-    <form>Remove days from the start up to <input type="date" name="retractStartDate"><input type="submit"></form>
+    <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
+    <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
     <form>Open all meetings on
       <select>
       <option value="openDayOfWeek">Day of the Week</option>
