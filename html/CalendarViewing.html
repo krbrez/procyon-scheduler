@@ -72,22 +72,7 @@ Calendar.prototype.previousMonth = function() {
 
   this.showCurrent();
 };
-
-// 
-Calendar.prototype.previousYear = function() {
-
-  this.CurrentYear = this.CurrentYear - 1;
-
-  this.showCurrent();
-}
-
-// 
-Calendar.prototype.nextYear = function() {
-
-  this.CurrentYear = this.CurrentYear + 1;
-
-  this.showCurrent();
-}              
+           
 
 // Show current month
 Calendar.prototype.showCurrent = function() {
@@ -178,11 +163,17 @@ Calendar.prototype.Calendar = function(y,m) {
       // Dates from next month
       } else if ( d > lastDateOfCurrentMonth){
 
-        html += '<td id="nextmonthdates">' + (p++) + '</td>';
+        html += '<td id="nextmonthdates">' + (p++) + 
+        		'<span id="cellvaluespan">'+'</span><br/>' + 
+              	'<ul id="cellvaluelist"><li>NextMonth</li></ul>' + 
+              	'</td>';
 
       // Current month dates
       } else {
-        html += '<td id="currentmonthdates">' + (d) + '</td>';
+        html += '<td id="currentmonthdates">' + (d) + 
+        		'<span id="cellvaluespan">'+'</span><br/>' + 
+              	'<ul id="cellvaluelist"><li>currentMonth</li></ul>' + 
+              	'</td>';
 
         p = 1;
       }
@@ -202,9 +193,6 @@ Calendar.prototype.Calendar = function(y,m) {
   html += '</table>';
 
   // Write HTML to the div
-  //document.getElementById("year").innerHTML = yearhtml;
-
-  //document.getElementById("month").innerHTML = monthhtml;
 
   document.getElementById("monthandyear").innerHTML = monthandyearhtml;
 
@@ -272,13 +260,9 @@ function getId(id) {
   <!-- <div id="year"></div> -->
 
   <div id="calendarmonthcontrols">
-    <a id="btnPrevYr" href="#" title="Previous Year"><span><<</span></a>
+    <a id="btnPrevYr" href="#" title="Previous Year"><span></span></a>
 
     <a id="btnPrev" href="#" title="Previous Month"><span><</span></a>
-
-    <!-- <input type="button" src="images/btnprevmonth.png" alt="Submit" id="btnPrev"/>-->
-
-    <!-- <div id="month"></div>-->
 
     <div id="monthandyear"></div>
 
@@ -286,7 +270,7 @@ function getId(id) {
 
     <a id="btnNext" href="#" title="Next Month"><span>></span></a>
 
-    <a id="btnNextYr" href="#" title="Next Year"><span>>></span></a>      
+      
   </div>
 </div>
 
