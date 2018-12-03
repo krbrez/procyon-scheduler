@@ -65,7 +65,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		boolean processed = false;
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-			JSONParser parser = new JSONParser();
+			JSONParser parser = new JSONParser(); 
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			String method = (String) event.get("httpMethod");
