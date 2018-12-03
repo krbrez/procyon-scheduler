@@ -29,14 +29,14 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		}
 		MeetingsDAO mDAO = new MeetingsDAO();
 		Meeting m = mDAO.getMeeting(id);
-		if(m.getLabel() == "" && m.getAvailable()) {
+		if(m.getLabel().equals("") && m.getAvailable()) {
 			if(label != "") {
 				m.setLabel(label);
 			}
 			else {
 				m.setLabel("Scheduled");
 			}
-			m.setAvailable();
+			m.setAvailable(false);
 			mDAO.updateMeeting(m);
 			return m.getParticipantSecretCode();
 		}

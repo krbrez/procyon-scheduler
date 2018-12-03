@@ -57,8 +57,8 @@ public class Meeting {
 	}
 
 	// relevant setters
-	public void setAvailable() {
-		this.available = true;
+	public void setAvailable(boolean avail) {
+		this.available = avail;
 	}
 
 	// relevant getters
