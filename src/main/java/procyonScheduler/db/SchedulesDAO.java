@@ -46,7 +46,7 @@ public class SchedulesDAO {
 
 	public boolean deleteSchedule(Schedule schedule) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE secretCode = ?;");
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE organizerSecretCode = ?;");
 			ps.setString(1, schedule.getSecretCode());
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -162,22 +162,24 @@ public class SchedulesDAO {
 		String name = resultSet.getString("name");
 		String startDateTime = resultSet.getString("start");
 		// Translate startDateTime into gregorian calendar
-		GregorianCalendar start = new GregorianCalendar(Integer.parseInt(startDateTime.substring(0, 3)),
-				Integer.parseInt(startDateTime.substring(5, 6)), Integer.parseInt(startDateTime.substring(8, 9)),
-				Integer.parseInt(startDateTime.substring(11, 12)), Integer.parseInt(startDateTime.substring(14, 15)));
+		GregorianCalendar start = new GregorianCalendar(Integer.parseInt(startDateTime.substring(0, 4)),
+				Integer.parseInt(startDateTime.substring(5, 7)), Integer.parseInt(startDateTime.substring(8, 10)),
+				Integer.parseInt(startDateTime.substring(11, 13)),
+				Integer.parseInt(startDateTime.substring(14, 16)));
 		String endDateTime = resultSet.getString("end");
 		// Translate endDateTime into gregorian calendar
-		GregorianCalendar end = new GregorianCalendar(Integer.parseInt(endDateTime.substring(0, 3)),
-				Integer.parseInt(endDateTime.substring(5, 6)), Integer.parseInt(endDateTime.substring(8, 9)),
-				Integer.parseInt(endDateTime.substring(11, 12)), Integer.parseInt(endDateTime.substring(14, 15)));
+		GregorianCalendar end = new GregorianCalendar(Integer.parseInt(endDateTime.substring(0, 4)),
+				Integer.parseInt(endDateTime.substring(5, 7)), Integer.parseInt(endDateTime.substring(8, 10)),
+				Integer.parseInt(endDateTime.substring(11, 13)),
+				Integer.parseInt(endDateTime.substring(14, 16)));
 		int blockSize = resultSet.getInt("blockSize");
 		String organizerSecretCode = resultSet.getString("organizerSecretCode");
 		String createdDateTime = resultSet.getString("creationTime");
 		// Translate createdDateTime into gregorian calendar
-		GregorianCalendar creationTime = new GregorianCalendar(Integer.parseInt(createdDateTime.substring(0, 3)),
-				Integer.parseInt(createdDateTime.substring(5, 6)), Integer.parseInt(createdDateTime.substring(8, 9)),
-				Integer.parseInt(createdDateTime.substring(11, 12)),
-				Integer.parseInt(createdDateTime.substring(14, 15)));
+		GregorianCalendar creationTime = new GregorianCalendar(Integer.parseInt(createdDateTime.substring(0, 4)),
+				Integer.parseInt(createdDateTime.substring(5, 7)), Integer.parseInt(createdDateTime.substring(8, 10)),
+				Integer.parseInt(createdDateTime.substring(11, 13)),
+				Integer.parseInt(createdDateTime.substring(14, 16)));
 
 		return new Schedule(name, start, end, blockSize, organizerSecretCode, creationTime);
 	}

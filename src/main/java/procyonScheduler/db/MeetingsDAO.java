@@ -57,41 +57,40 @@ public class MeetingsDAO {
 		}
 	}
 
-	
-	 public boolean updateMeeting(Meeting meeting) throws Exception {
-		 try {
-			 String query = "UPDATE Constants SET value=? WHERE id=?;";
-			 PreparedStatement ps = conn.prepareStatement(query);
-			 ps.setString(1, meeting.getId());
-			 // Convert the dateTime Gregorian Calendar object to the string
-			 String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
-			 int m = meeting.getDateTime().get(Calendar.MONTH);
-			 DecimalFormat form = new DecimalFormat("00");
-			 String month = form.format(Double.valueOf(m));
-			 int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
-			 String day = form.format(Double.valueOf(d));
-			 int h = meeting.getDateTime().get(Calendar.HOUR);
-			 String hour = form.format(Double.valueOf(h));
-			 int n = meeting.getDateTime().get(Calendar.MINUTE);
-			 String minute = form.format(Double.valueOf(n));
-			 ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
-			 int intA;
-			 if (meeting.getAvailable()) {
-				 intA = 1;
-			 } else {
-				 intA = 0;
-			 }
-			 ps.setInt(3, intA);
-			 ps.setString(4, meeting.getSchedule().getSecretCode());
-			 ps.setString(5, meeting.getParticipantSecretCode());
-			 int numAffected = ps.executeUpdate();
-			 ps.close();
-	
-			 return (numAffected == 1);
-		 } catch (Exception e) {
-			 throw new Exception("Failed to update meeting: " + e.getMessage());
-		 }
-	 }
+	public boolean updateMeeting(Meeting meeting) throws Exception {
+		try {
+			String query = "UPDATE Constants SET value=? WHERE id=?;";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, meeting.getId());
+			// Convert the dateTime Gregorian Calendar object to the string
+			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
+			int m = meeting.getDateTime().get(Calendar.MONTH);
+			DecimalFormat form = new DecimalFormat("00");
+			String month = form.format(Double.valueOf(m));
+			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
+			String day = form.format(Double.valueOf(d));
+			int h = meeting.getDateTime().get(Calendar.HOUR);
+			String hour = form.format(Double.valueOf(h));
+			int n = meeting.getDateTime().get(Calendar.MINUTE);
+			String minute = form.format(Double.valueOf(n));
+			ps.setString(2, year + '/' + month + '/' + day + '-' + hour + ':' + minute);
+			int intA;
+			if (meeting.getAvailable()) {
+				intA = 1;
+			} else {
+				intA = 0;
+			}
+			ps.setInt(3, intA);
+			ps.setString(4, meeting.getSchedule().getSecretCode());
+			ps.setString(5, meeting.getParticipantSecretCode());
+			int numAffected = ps.executeUpdate();
+			ps.close();
+
+			return (numAffected == 1);
+		} catch (Exception e) {
+			throw new Exception("Failed to update meeting: " + e.getMessage());
+		}
+	}
 
 	public boolean addMeeting(Meeting meeting) throws Exception {
 		try {
@@ -169,9 +168,9 @@ public class MeetingsDAO {
 		String id = resultSet.getString("id");
 
 		// Translate dateTime into gregorian calendar
-		GregorianCalendar dT = new GregorianCalendar(Integer.parseInt(dateTime.substring(0, 3)),
-				Integer.parseInt(dateTime.substring(5, 6)), Integer.parseInt(dateTime.substring(8, 9)),
-				Integer.parseInt(dateTime.substring(11, 12)), Integer.parseInt(dateTime.substring(14, 15)));
+		GregorianCalendar dT = new GregorianCalendar(Integer.parseInt(dateTime.substring(0, 4)),
+				Integer.parseInt(dateTime.substring(5, 7)), Integer.parseInt(dateTime.substring(8, 10)),
+				Integer.parseInt(dateTime.substring(11, 13)), Integer.parseInt(dateTime.substring(14, 16)));
 
 		// Translate available into boolean
 		boolean avail;
