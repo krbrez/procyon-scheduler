@@ -31,20 +31,16 @@ public class CreateScheduleHandlerTest {
 
 	@Test
 	public void testAddTwoNumbers() throws IOException {
-		 CreateScheduleHandler handler = new CreateScheduleHandler();
-		
-		 CreateScheduleRequest ar = new CreateScheduleRequest("name", "fake",
-		 "fake", "fake", "fake", 22);
-		 String createRequest = new Gson().toJson(ar);
-		
-		 InputStream input = new
-		 ByteArrayInputStream(createRequest.getBytes());
-		 OutputStream output = new ByteArrayOutputStream();
-		
-		 handler.handleRequest(input, output, createContext("add"));
-		
-		 CreateScheduleResponse post = new Gson().fromJson(output.toString(),
-		 CreateScheduleResponse.class);
+		String createdDateTime = "2018/10/22-05:05";
+		GregorianCalendar creationTime = new GregorianCalendar(Integer.parseInt(createdDateTime.substring(0, 4)),
+				Integer.parseInt(createdDateTime.substring(5, 7)), Integer.parseInt(createdDateTime.substring(8, 10)),
+				Integer.parseInt(createdDateTime.substring(11, 13)),
+				Integer.parseInt(createdDateTime.substring(14, 16)));
+		System.out.println(" date: " + Integer.toString(creationTime.get(GregorianCalendar.YEAR)) + "-"
+				+ Integer.toString(creationTime.get(GregorianCalendar.MONTH)) + "-"
+				+ Integer.toString(creationTime.get(GregorianCalendar.DAY_OF_MONTH)) + " time: "
+				+ Integer.toString(creationTime.get(GregorianCalendar.HOUR_OF_DAY)) + ":"
+				+ Integer.toString(creationTime.get(GregorianCalendar.MINUTE)));
 		
 	}
 

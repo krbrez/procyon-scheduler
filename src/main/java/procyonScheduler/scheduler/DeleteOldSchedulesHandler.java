@@ -44,7 +44,7 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
 		ArrayList<Schedule> toDelete = new ArrayList<Schedule>();
 		for (Schedule schedule : schedules) {
-			if (schedule.getCreated().compareTo(rightNow) < 0) {
+			if (rightNow.compareTo(schedule.getCreated()) >= 0) {
 				toDelete.add(schedule);
 			}
 		}
