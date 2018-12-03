@@ -142,12 +142,12 @@ public class MeetingsDAO {
 		}
 	}
 
-	public List<Meeting> getAllMeetingsFromSchedule(Schedule schedule) throws Exception {
+	public List<Meeting> getAllMeetingsFromSchedule(String secretCode) throws Exception {
 
 		List<Meeting> allMeetings = new ArrayList<>();
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule = ?;");
-			ps.setString(1, schedule.getSecretCode());
+			ps.setString(1, secretCode);
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
