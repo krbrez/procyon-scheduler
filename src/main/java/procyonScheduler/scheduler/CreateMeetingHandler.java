@@ -22,29 +22,27 @@ import procyonScheduler.model.Meeting;
 public class CreateMeetingHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
-	
+
 	String createMeeting(String id, String label) throws Exception {
 		if (logger != null) {
 			logger.log("in createMeeting");
 		}
 		MeetingsDAO mDAO = new MeetingsDAO();
 		Meeting m = mDAO.getMeeting(id);
-		if(m.getLabel().equals("") && m.getAvailable()) {
-			if(label != "") {
+		if (m.getLabel().equals("") && m.getAvailable()) {
+			if (label != "") {
 				m.setLabel(label);
-			}
-			else {
+			} else {
 				m.setLabel("Scheduled");
 			}
 			m.setAvailable(false);
 			mDAO.updateMeeting(m);
 			return m.getParticipantSecretCode();
-		}
-		else {
+		} else {
 			return "";
 		}
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -70,10 +68,8 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
-				logger.log("Options request");
 				response = new CreateMeetingResponse("name", 200); // OPTIONS
 																	// needs a
 																	// 200
@@ -107,7 +103,8 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			try {
 				String result = createMeeting(req.id, req.label);
 				if (result != "") {
-					resp = new CreateMeetingResponse("Successfully created meeting: " + req.label +". Your secret code is: " + result);
+					resp = new CreateMeetingResponse(
+							"Successfully created meeting: " + req.label + ". Your secret code is: " + result);
 				} else {
 					resp = new CreateMeetingResponse("Unable to create meeting: " + req.label, 422);
 				}
