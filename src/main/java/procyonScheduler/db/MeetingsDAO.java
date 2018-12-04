@@ -162,11 +162,20 @@ public class MeetingsDAO {
 		}
 	}
 	
+	// retrieve all meetings from schedule with id occurring in the week starting with startDay
 	public List<Meeting> getWeekFromSchedule(String id, GregorianCalendar startDay) throws Exception {
-
+		
+		SchedulesDAO sDAO = new SchedulesDAO();
+		Schedule s = sDAO.getSchedule(id);
+		
 		List<Meeting> weekMeetings = new ArrayList<>();
+		
+		// set when week starts and ends
 		GregorianCalendar endDay = (GregorianCalendar)startDay.clone();
+		startDay.set(GregorianCalendar.HOUR_OF_DAY, s.getStart().get(GregorianCalendar.HOUR_OF_DAY));
 		endDay.add(GregorianCalendar.DAY_OF_MONTH, 4);
+		endDay.set(GregorianCalendar.HOUR_OF_DAY, s.getEnd().get(GregorianCalendar.HOUR_OF_DAY));
+		
 		
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule=?;");
@@ -183,7 +192,7 @@ public class MeetingsDAO {
 			for(int i = 0; i < weekMeetings.size(); i++) {
 				GregorianCalendar occurs = weekMeetings.get(i).getDateTime();
 				if((occurs.compareTo(startDay) < 0) || (occurs.compareTo(endDay) > 0)) {
-					
+					weekMeetings.remove(i);
 				}
 			}
 			return weekMeetings;
