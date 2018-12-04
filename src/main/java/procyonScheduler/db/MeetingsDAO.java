@@ -84,7 +84,7 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.setString(4, meeting.getSchedule().getSecretCode());
+			ps.setString(4, meeting.getSchedule().getId());
 			ps.setString(5, meeting.getParticipantSecretCode());
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -130,7 +130,7 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.setString(4, meeting.getSchedule().getSecretCode());
+			ps.setString(4, meeting.getSchedule().getId());
 			ps.setString(5, meeting.getParticipantSecretCode());
 			ps.setString(6, meeting.getId());
 			ps.execute();
@@ -141,12 +141,12 @@ public class MeetingsDAO {
 		}
 	}
 
-	public List<Meeting> getAllMeetingsFromSchedule(String secretCode) throws Exception {
+	public List<Meeting> getAllMeetingsFromSchedule(String id) throws Exception {
 
 		List<Meeting> allMeetings = new ArrayList<>();
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule = ?;");
-			ps.setString(1, secretCode);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE Schedule = ?;");
+			ps.setString(1, id);
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
@@ -156,6 +156,37 @@ public class MeetingsDAO {
 			resultSet.close();
 			ps.close();
 			return allMeetings;
+
+		} catch (Exception e) {
+			throw new Exception("Failed in getting meetings: " + e.getMessage());
+		}
+	}
+	
+	public List<Meeting> getWeekFromSchedule(String id, GregorianCalendar startDay) throws Exception {
+
+		List<Meeting> weekMeetings = new ArrayList<>();
+		GregorianCalendar endDay = (GregorianCalendar)startDay.clone();
+		endDay.add(GregorianCalendar.DAY_OF_MONTH, 4);
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule=?;");
+			ps.setString(1, id);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				Meeting m = generateMeeting(resultSet);
+				weekMeetings.add(m);
+			}
+			resultSet.close();
+			ps.close();
+			
+			for(int i = 0; i < weekMeetings.size(); i++) {
+				GregorianCalendar occurs = weekMeetings.get(i).getDateTime();
+				if((occurs.compareTo(startDay) < 0) || (occurs.compareTo(endDay) > 0)) {
+					
+				}
+			}
+			return weekMeetings;
 
 		} catch (Exception e) {
 			throw new Exception("Failed in getting meetings: " + e.getMessage());
