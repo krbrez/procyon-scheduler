@@ -59,9 +59,12 @@ public class MeetingsDAO {
 
 	public boolean updateMeeting(Meeting meeting) throws Exception {
 		try {
-			String query = "UPDATE Constants SET value=? WHERE id=?;";
+			String query = "UPDATE Meetings SET Label=?, DateTime=?, Available=?, Schedule=?, participantSecretCode=? WHERE id=?;";
+			// 1: label 2: dateTime 3: available 4: schedule 5: PSC 6: id
 			PreparedStatement ps = conn.prepareStatement(query);
-			ps.setString(1, meeting.getId());
+			ps.setString(6, meeting.getId());
+			
+			ps.setString(1, meeting.getLabel());
 			// Convert the dateTime Gregorian Calendar object to the string
 			String year = Integer.toString(meeting.getDateTime().get(Calendar.YEAR));
 			int m = meeting.getDateTime().get(Calendar.MONTH);
