@@ -227,18 +227,9 @@ window.onload = function() {
   getId('btnPrev').onclick = function(){
     c.previousMonth();
   };
-
-  getId('btnPrevYr').onclick = function(){
-    c.previousYear();
-  };
-
   getId('btnNext').onclick = function(){
     c.nextMonth();
-  };
-
-  getId('btnNextYr').onclick = function(){
-    c.nextYear();
-  };                        
+  };                      
 }
 
 // Get element by id
@@ -254,21 +245,15 @@ function getId(id) {
       <h4 class="logo">Calendar View 1</h4>
       </a>
     </header>
-<div class="divcalendar">
-
-<div id="calendaroverallcontrols">
-  <!-- <div id="year"></div> -->
+<div class="divcalendar" id="calendaroverallcontrols">
 
   <div id="calendarmonthcontrols">
-    <a id="btnPrevYr" href="#" title="Previous Year"><span></span></a>
 
-    <a id="btnPrev" href="#" title="Previous Month"><span><</span></a>
+    <a id="btnPrev" href="#" title="Previous Month"><span><<<</span></a>
 
     <div id="monthandyear"></div>
 
-    <!--<input type="button" src="images/btnnextmonth.png" alt="Submit" id="btnNext"/>-->
-
-    <a id="btnNext" href="#" title="Next Month"><span>></span></a>
+    <a id="btnNext" href="#" title="Next Month"><span>>>></span></a>
 
       
   </div>

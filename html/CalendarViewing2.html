@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+
+<!-- THIS DOC WILL BE A SECOND ATTEMP AT CREATING THE CALENDAR, MORE SPECIFICALLY TAILORED TO OUR WEEKLY SCHEDULE -->
+
+<script type="text/javascript">
+	// these variables are the ones that are made when the calendar is created. These will have to be pulled from a database.
+	var startDate = new Date('2018-12-03T00:00:00'); // a date
+	var startDate = new Date('2018-12-07T23:00:00'); // a date
+	var timeSlotSizeString = "10"; //10, 15, 20, 30, 60
+	var timeSlotSize = parseInt(timeSlotSizeString);
+	var startTime = startDate.getHour(); // a time
+	var endTime = endDate.getHour(); // a time
+	
+	
+	// the variables that are gotten from those initial data values
+	var startDayOfWeek = startDate.getDay();
+	var endDayOfWeek = endDate.getDay();
+	var timeSlotAmount = 60 / timeSlotSize * (endTime - startTime);
+	
+	
+	//TODO get the JSON and parse the date to fill out those fields
+	//TODO get the meeting codes for each of the meetings in the schedule
+	
+	
+	
+	// Creates the Schedule 
+	var cellvalue;
+
+  for (var d, i=0, z0=0; z0<6; z0++) {
+    html += '<tr>';
+
+    for (var z0a = 0; z0a < 7; z0a++) {
+
+      d = i + dm - firstDayOfCurrentMonth;
+
+
+      // Dates from prev month
+      if (d < 1){
+
+        cellvalue = lastDateOfLastMonth - firstDayOfCurrentMonth + p++;
+
+        html += '<td id="prevmonthdates">' + 
+              '<span id="cellvaluespan">' + (cellvalue) + '</span><br/>' + 
+              '<ul id="cellvaluelist"><li>PreviousMonth</li></ul>' + 
+            '</td>';
+
+      // Dates from next month
+      } else if ( d > lastDateOfCurrentMonth){
+
+        html += '<td id="nextmonthdates">' + (p++) + 
+        		'<span id="cellvaluespan">'+'</span><br/>' + 
+              	'<ul id="cellvaluelist"><li>NextMonth</li></ul>' + 
+              	'</td>';
+
+      // Current month dates
+      } else {
+        html += '<td id="currentmonthdates">' + (d) + 
+        		'<span id="cellvaluespan">'+'</span><br/>' + 
+              	'<ul id="cellvaluelist"><li>currentMonth</li></ul>' + 
+              	'</td>';
+
+        p = 1;
+      }
+      
+      if (i % 7 == 6 && d >= lastDateOfCurrentMonth) {
+
+        z0 = 10; // no more rows
+      }
+
+      i++;       
+    }
+
+    html += '</tr>';
+  }
+
+  // Closes table
+  html += '</table>';
+	
+	
+}:
+
+
+
+
+// this function will load when the window is opened
+function makeTheCalendar() {
+  
+  // Start calendar
+  var c = new Calendar({
+    ParentID:"divcalendartable",
+
+    TableColumns:[
+    'TIMESLOT',
+    'MON',
+    'TUE',
+    'WED',
+    'THU',
+    'FRI',
+    ],
+
+    Months:['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
+
+    Format:'dd/mm/yyyy'
+  });
+
+  c.showCurrent();
+  
+  // Bind next and previous button clicks
+  getId('btnPrev').onclick = function(){
+    c.previousWeek();
+  };
+  getId('btnNext').onclick = function(){
+    c.nextWeek();
+  };                      
+}
+
+// Get element by id
+function getId(id) {
+  return document.getElementById(id);
+}
+	
+	
+	
+</script>
+
+</head>
+<body>
+
+<div class="container">
+    <header> <a href="">
+      <h4 class="logo">Calendar View</h4>
+      </a>
+    </header>
+<div class="divcalendar" id="calendaroverallcontrols">
+
+  <div id="calendarmonthcontrols">
+
+    <a id="btnPrev" href="#" title="Previous Month"><span><<<</span></a>
+
+    <div id="monthandyear"></div>
+
+    <a id="btnNext" href="#" title="Next Month"><span>>>></span></a>
+
+      
+  </div>
+</div>
+
+
+<!--div id="divcalendartable"-->
+
+<p id="demo"></p>
+
+
+</body>
+</html>
