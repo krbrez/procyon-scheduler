@@ -44,6 +44,27 @@ public class SchedulesDAO {
 		}
 	}
 
+	public Schedule getScheduleBySecretCode(String secretCode) throws Exception {
+		try {
+			Schedule schedule = null;
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE organizerSecretCode=?;");
+			ps.setString(1, secretCode);
+			ResultSet resultSet = ps.executeQuery();
+
+			while (resultSet.next()) {
+				schedule = generateSchedule(resultSet);
+			}
+			resultSet.close();
+			ps.close();
+
+			return schedule;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting schedule: " + e.getMessage());
+		}
+	}
+
 	public boolean deleteSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE id = ?;");

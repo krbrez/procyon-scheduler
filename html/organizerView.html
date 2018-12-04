@@ -54,7 +54,7 @@ function createSchedule(e) {
   };
 }
 
-function secretCode(e) {
+function ScheduleIDOrganizer(e) {
   var form = document.SecretCode;
   var code = form.SecretCode.value;
 
@@ -80,6 +80,35 @@ function secretCode(e) {
       window.alert("Oops, something went wrong!");
     }
   };
+  
+  
+  function showSchedule(e) {
+  var form = document.displayDay;
+  var date = form.displayDate.value;
+
+  var data = {};
+  data["date"] = date;
+
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", create_url, true);
+  
+  // send the collected data as JSON
+  xhr.send(js);
+  
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      window.alert(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+  
 }
 
 
@@ -168,7 +197,7 @@ function secretCode(e) {
     <legend>View a Schedule</legend>
     <form name="SecretCode" method="post">
     Schedule ID: <input type="text" name="SecretCode" value="">
-    <button type="button" onclick="JavaScript:secretCode(this)">Submit</button><br>
+    <button type="button" onclick="JavaScript:ScheduleIDOrganizer(this)">Submit</button><br>
     </form>
   </fieldset>
 </section>
@@ -176,7 +205,9 @@ function secretCode(e) {
   <br>
   <fieldset>
     <legend>Search This Schedule</legend>
-    <form>Display this Schedule on the week of <input type="date" name="displayDate"><input type="submit"></form>
+    <form name="displayDay">
+    	Display this Schedule on the week of <input type="date" name="displayDate"><button type="button" onclick="JavaScript:showSchedule(this)">Submit</button><br>
+    </form>
   </fieldset>
   <br>
   <fieldset>
