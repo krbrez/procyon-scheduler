@@ -17,52 +17,47 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class DeleteScheduleHandler implements RequestStreamHandler {
-	
+
 	public LambdaLogger logger = null;
-	
+
 	/**
 	 * Load from RDS, if it exists
 	 * 
 	 * @throws Exception
 	 */
-	
-	boolean deleteSchedule(String secretCode)
-			throws Exception {
+
+	boolean deleteSchedule(String secretCode) throws Exception {
 		if (logger != null) {
 			logger.log("in deleteSchedule");
 		}
-		
-		//create DAO objects
+
+		// create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		
-		//find the schedule with the right secret code
-		Schedule deleteMe = sDAO.getSchedule(secretCode);
-		
-		//delete the schedule
-		sDAO.deleteSchedule(deleteMe);
-		
+
+		// find the schedule with the right secret code
+		Schedule deleteMe = sDAO.getScheduleBySecretCode(secretCode);
+		logger.log("Here" + deleteMe.getId());
+
 		boolean deleted = true;
-		deleted = deleted && sDAO.deleteSchedule(deleteMe); 	//does the deleted-ness rely on deleting all the meetings too?
-																//if so, i don't know how to quantify that
-		
-		//delete all the meetings inside the schedule
-		for (Iterator<Meeting> it = mDAO.getAllMeetingsFromSchedule(secretCode).iterator(); it.hasNext(); ) {
+		deleted = deleted && sDAO.deleteSchedule(deleteMe);
+
+		// delete all the meetings inside the schedule
+		for (Iterator<Meeting> it = mDAO.getAllMeetingsFromSchedule(deleteMe.getId()).iterator(); it.hasNext();) {
 			Meeting m = it.next();
 			deleted = deleted && mDAO.deleteMeeting(m);
 		}
-		
+
 		logger.log("Here -- deleted");
 		return deleted;
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -106,7 +101,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 													// testing easier
 				}
 			}
-		} catch (ParseException pe) { 		
+		} catch (ParseException pe) {
 			logger.log(pe.toString());
 			response = new DeleteScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable
 																							// to
@@ -129,8 +124,8 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 					resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode, 422);
 				}
 			} catch (Exception e) {
-				resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode + "(" + e.getMessage() + ")",
-						403);
+				resp = new DeleteScheduleResponse(
+						"Unable to delete schedule: " + req.secretCode + "(" + e.getMessage() + ")", 403);
 			}
 
 			// compute proper response

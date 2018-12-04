@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
+import procyonScheduler.scheduler.DeleteScheduleHandler;
 
 public class MeetingsDAO {
 
@@ -145,7 +146,7 @@ public class MeetingsDAO {
 
 		List<Meeting> allMeetings = new ArrayList<>();
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE Schedule = ?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule = ?;");
 			ps.setString(1, id);
 			ResultSet resultSet = ps.executeQuery();
 
