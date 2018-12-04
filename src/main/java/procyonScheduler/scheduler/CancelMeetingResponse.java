@@ -1,22 +1,22 @@
 package procyonScheduler.scheduler;
 
-public class DeleteScheduleResponse {
+public class CancelMeetingResponse {
 	String response;
 	int httpCode;
 	
-	public DeleteScheduleResponse(String name, int code) {
+	public CancelMeetingResponse(String name, int code) {
 		this.response = name;
 		this.httpCode = code;
 	}
 	
 	//200 means success 
-	public DeleteScheduleResponse(String name) {
+	public CancelMeetingResponse(String name) {
 		this.response = name;
 		this.httpCode = 200;
 	}
 	
 	public String toString() {
-		return "You deleted Schedule " + response + ". Schedule deletion successful!";
+		return "You cancelled meeting" + response + ". Meeting cancelled successfully.";
 	}
 
 }
