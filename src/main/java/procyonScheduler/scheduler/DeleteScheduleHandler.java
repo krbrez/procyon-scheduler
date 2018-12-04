@@ -56,7 +56,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		//delete all the meetings inside the schedule
 		for (Iterator<Meeting> it = mDAO.getAllMeetingsFromSchedule(secretCode).iterator(); it.hasNext(); ) {
 			Meeting m = it.next();
-			mDAO.deleteMeeting(m);
+			deleted = deleted && mDAO.deleteMeeting(m);
 		}
 		
 		logger.log("Here -- deleted");
