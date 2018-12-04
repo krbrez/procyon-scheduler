@@ -12,6 +12,7 @@ public class Schedule {
 	String secretCode; // unique string required for organizer access also used
 						// as schedule ID
 	GregorianCalendar created; // date and time schedule was created
+	String id;
 
 	// constructor for initiation of schedule
 	public Schedule(String name, GregorianCalendar start, GregorianCalendar end, int blockSize) {
@@ -32,18 +33,31 @@ public class Schedule {
 				this.secretCode += (char) (n + 61);
 			}
 		}
+		// generate a random secret code
+		this.id = "";
+		for (int i = 0; i < 16; i++) {
+			int n = r.nextInt(62);
+			if (n < 10) {
+				this.id += Integer.toString(n);
+			} else if (n < 36) {
+				this.id += (char) (n + 55);
+			} else { // n 36 - 61
+				this.id += (char) (n + 61);
+			}
+		}
 		this.created = new GregorianCalendar();
 	}
 
 	// constructor for pulling schedule out of database
 	public Schedule(String name, GregorianCalendar start, GregorianCalendar end, int blockSize, String secretCode,
-			GregorianCalendar created) {
+			GregorianCalendar created, String id) {
 		this.name = name;
 		this.start = start;
 		this.end = end;
 		this.blockSize = blockSize;
 		this.secretCode = secretCode;
 		this.created = created;
+		this.id = id;
 	}
 
 	// meetings iterator
@@ -94,6 +108,10 @@ public class Schedule {
 
 	public GregorianCalendar getCreated() {
 		return created;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	// public ArrayList<Meeting> findAvailable(GregorianCalendar start,

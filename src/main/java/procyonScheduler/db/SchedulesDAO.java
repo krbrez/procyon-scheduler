@@ -22,12 +22,12 @@ public class SchedulesDAO {
 		}
 	}
 
-	public Schedule getSchedule(String organizerSecretCode) throws Exception {
+	public Schedule getSchedule(String id) throws Exception {
 
 		try {
 			Schedule schedule = null;
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE organizerSecretCode=?;");
-			ps.setString(1, organizerSecretCode);
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE id=?;");
+			ps.setString(1, id);
 			ResultSet resultSet = ps.executeQuery();
 
 			while (resultSet.next()) {
@@ -46,8 +46,8 @@ public class SchedulesDAO {
 
 	public boolean deleteSchedule(Schedule schedule) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE organizerSecretCode = ?;");
-			ps.setString(1, schedule.getSecretCode());
+			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE id = ?;");
+			ps.setString(1, schedule.getId());
 			int numAffected = ps.executeUpdate();
 			ps.close();
 
@@ -78,8 +78,8 @@ public class SchedulesDAO {
 
 	public boolean addSchedule(Schedule schedule) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE organizerSecretCode = ?;");
-			ps.setString(1, schedule.getSecretCode());
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE id = ?;");
+			ps.setString(1, schedule.getId());
 			ResultSet resultSet = ps.executeQuery();
 
 			// already present?
@@ -90,7 +90,7 @@ public class SchedulesDAO {
 			}
 
 			ps = conn.prepareStatement(
-					"INSERT INTO Schedules (name,start,end,blockSize,organizerSecretCode,creationTime) values(?,?,?,?,?,?);");
+					"INSERT INTO Schedules (name,start,end,blockSize,organizerSecretCode,creationTime,id) values(?,?,?,?,?,?,?);");
 			ps.setString(1, schedule.getName());
 			// Convert the start Gregorian Calendar object to the string
 			String year = Integer.toString(schedule.getStart().get(Calendar.YEAR));
@@ -129,6 +129,7 @@ public class SchedulesDAO {
 			int nC = schedule.getCreated().get(Calendar.MINUTE);
 			String minuteC = form.format(Double.valueOf(nC));
 			ps.setString(6, yearC + '/' + monthC + '/' + dayC + '-' + hourC + ':' + minuteC);
+			ps.setString(7, schedule.getId());
 			ps.execute();
 			return true;
 
@@ -164,14 +165,12 @@ public class SchedulesDAO {
 		// Translate startDateTime into gregorian calendar
 		GregorianCalendar start = new GregorianCalendar(Integer.parseInt(startDateTime.substring(0, 4)),
 				Integer.parseInt(startDateTime.substring(5, 7)), Integer.parseInt(startDateTime.substring(8, 10)),
-				Integer.parseInt(startDateTime.substring(11, 13)),
-				Integer.parseInt(startDateTime.substring(14, 16)));
+				Integer.parseInt(startDateTime.substring(11, 13)), Integer.parseInt(startDateTime.substring(14, 16)));
 		String endDateTime = resultSet.getString("end");
 		// Translate endDateTime into gregorian calendar
 		GregorianCalendar end = new GregorianCalendar(Integer.parseInt(endDateTime.substring(0, 4)),
 				Integer.parseInt(endDateTime.substring(5, 7)), Integer.parseInt(endDateTime.substring(8, 10)),
-				Integer.parseInt(endDateTime.substring(11, 13)),
-				Integer.parseInt(endDateTime.substring(14, 16)));
+				Integer.parseInt(endDateTime.substring(11, 13)), Integer.parseInt(endDateTime.substring(14, 16)));
 		int blockSize = resultSet.getInt("blockSize");
 		String organizerSecretCode = resultSet.getString("organizerSecretCode");
 		String createdDateTime = resultSet.getString("creationTime");
@@ -180,8 +179,9 @@ public class SchedulesDAO {
 				Integer.parseInt(createdDateTime.substring(5, 7)), Integer.parseInt(createdDateTime.substring(8, 10)),
 				Integer.parseInt(createdDateTime.substring(11, 13)),
 				Integer.parseInt(createdDateTime.substring(14, 16)));
+		String id = resultSet.getString("id");
 
-		return new Schedule(name, start, end, blockSize, organizerSecretCode, creationTime);
+		return new Schedule(name, start, end, blockSize, organizerSecretCode, creationTime, id);
 	}
 
 }
