@@ -15,6 +15,8 @@ import org.json.simple.parser.ParseException;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
+import com.google.gson.Gson;
+
 
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
@@ -64,7 +66,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to delete schedule");
 
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json"); // not sure if
@@ -75,7 +77,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		CreateScheduleResponse response = null;
+		DeleteScheduleResponse response = null;
 
 		// extract body from incoming HTTP POST request. If any error, then
 		// return 422 error
@@ -90,7 +92,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new CreateScheduleResponse("name", 200); // OPTIONS
+				response = new DeleteScheduleResponse("name", 200); // OPTIONS
 																	// needs a
 																	// 200
 																	// response
@@ -104,9 +106,9 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 													// testing easier
 				}
 			}
-		} catch (ParseException pe) {
+		} catch (ParseException pe) { 		
 			logger.log(pe.toString());
-			response = new CreateScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable
+			response = new DeleteScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable
 																							// to
 																							// process
 																							// input
@@ -116,18 +118,18 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		}
 
 		if (!processed) {
-			CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
+			DeleteScheduleRequest req = new Gson().fromJson(body, DeleteScheduleRequest.class);
 			logger.log(req.toString());
 
-			CreateScheduleResponse resp;
+			DeleteScheduleResponse resp;
 			try {
-				if (createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endDate, req.blockSize)) {
-					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name);
+				if (deleteSchedule(req.secretCode)) {
+					resp = new DeleteScheduleResponse("Successfully deleted schedule: " + req.secretCode, 200);
 				} else {
-					resp = new CreateScheduleResponse("Unable to create schedule: " + req.name, 422);
+					resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse("Unable to create schedule: " + req.name + "(" + e.getMessage() + ")",
+				resp = new DeleteScheduleResponse("Unable to delete schedule: " + req.secretCode + "(" + e.getMessage() + ")",
 						403);
 			}
 
