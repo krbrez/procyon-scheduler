@@ -169,7 +169,7 @@ public class MeetingsDAO {
 		SchedulesDAO sDAO = new SchedulesDAO();
 		Schedule s = sDAO.getSchedule(id);
 		
-		List<Meeting> weekMeetings = new ArrayList<>();
+		List<Meeting> allMeetings = new ArrayList<>();
 		
 		// set when week starts and ends
 		GregorianCalendar endDay = (GregorianCalendar)startDay.clone();
@@ -185,15 +185,16 @@ public class MeetingsDAO {
 
 			while (resultSet.next()) {
 				Meeting m = generateMeeting(resultSet);
-				weekMeetings.add(m);
+				allMeetings.add(m);
 			}
 			resultSet.close();
 			ps.close();
 			
-			for(int i = 0; i < weekMeetings.size(); i++) {
-				GregorianCalendar occurs = weekMeetings.get(i).getDateTime();
-				if((occurs.compareTo(startDay) < 0) || (occurs.compareTo(endDay) > 0)) {
-					weekMeetings.remove(i);
+			ArrayList<Meeting> weekMeetings = new ArrayList<Meeting>();
+			for(int i = 0; i < allMeetings.size(); i++) {
+				GregorianCalendar occurs = allMeetings.get(i).getDateTime();
+				if((occurs.compareTo(startDay) >= 0) || (occurs.compareTo(endDay) <= 0)) {
+					weekMeetings.add(allMeetings.get(i));
 				}
 			}
 			return weekMeetings;
