@@ -193,7 +193,7 @@ public class MeetingsDAO {
 			ArrayList<Meeting> weekMeetings = new ArrayList<Meeting>();
 			for(int i = 0; i < allMeetings.size(); i++) {
 				GregorianCalendar occurs = allMeetings.get(i).getDateTime();
-				if((occurs.compareTo(startDay) >= 0) || (occurs.compareTo(endDay) <= 0)) {
+				if((occurs.compareTo(startDay) >= 0) && (occurs.compareTo(endDay) <= 0)) {
 					weekMeetings.add(allMeetings.get(i));
 				}
 			}
