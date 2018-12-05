@@ -94,8 +94,33 @@ function prevWeek(currentWeek){
 
 }
 
-document.getElementById("calendar").innerHTML = html;
+function processResponseCalendar(result) {
+  // Can grab any DIV or SPAN HTML element and can then manipulate its
+  // contents dynamically via javascript
+  console.log("result:" + result);
+  var js = JSON.parse(result);
+  var respString = js["response"];
+  var id = js["id"];             // change to get the information that you need
+  var code = js["secretCode"];   // change to get the information that you need
+   // Update computation result
+  document.getElementById("secretCodeOrganizer").value = code;
+  document.getElementById("scheduleIdOrganizer").value = id;
+  window.alert(respString);
+}
+
+xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResponseCalendar(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
 
 </script>
 
 <div id="Calendar"></div>
+Your Secret Code for this Schedule is: <input id="secretCodeOrganizer" readonly/>
+and the ID to schedule Meetings is: <input id="scheduleIdOrganizer" readonly/>

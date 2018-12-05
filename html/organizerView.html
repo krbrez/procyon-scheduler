@@ -164,15 +164,15 @@ function handleClick(e) {
   <br>
   <fieldset>
     <legend>Search This Schedule</legend>
-    <form>Display this Schedule on the week of <input type="date" name="displayDate"><input type="submit"></form>
+    <form name="displayDay">
+    	Display this Schedule on the week of <input type="date" name="displayDate"><button type="button" onclick="JavaScript:showSchedule(this)">Submit</button><br>
+    </form>
   </fieldset>
   <br>
   <fieldset>
     <legend>Edit This Schedule</legend>
-    <form>Add days on the end up to <input type="date" name="extendEndDate"><input type="submit"></form>
-    <form>Add days on the start up to <input type="date" name="extendStartDate"><input type="submit"></form>
-    <form>Remove days from the end up to <input type="date" name="retractEndDate"><input type="submit"></form>
-    <form>Remove days from the start up to <input type="date" name="retractStartDate"><input type="submit"></form>
+    <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
+    <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
     <form>Open all meetings on
       <select>
       <option value="openDayOfWeek">Day of the Week</option>
