@@ -116,7 +116,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			} else {
 				body = (String) event.get("body");
 				if (body == null) {
-					body = event.toJSONString(); // this is only here to make
+					body = event.toJSONString();  // this is only here to make
 													// testing easier
 				}
 			}
@@ -130,14 +130,14 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			processed = true;
 			body = null;
 		}
-	
+
 		if (!processed) {
 			CancelMeetingRequest req = new Gson().fromJson(body, CancelMeetingRequest.class);
 			logger.log(req.toString());
 	
 			CancelMeetingResponse resp;
 			try {
-				if (cancelMeeting(req.code)) {
+				if (cancelMeeting(req.id, req.code)) {
 					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.code);
 				} else {
 					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code, 422);
@@ -146,11 +146,11 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 				resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code + "(" + e.getMessage() + ")",
 						403);
 			}
-	
+
 			// compute proper response
 			responseJson.put("body", new Gson().toJson(resp));
 		}
-	
+
 		logger.log("end result:" + responseJson.toJSONString());
 		logger.log(responseJson.toJSONString());
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
