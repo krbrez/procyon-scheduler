@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.model.Meeting;
+import procyonScheduler.scheduler.ShowWeekScheduleRequest;
+import procyonScheduler.scheduler.ShowWeekScheduleResponse;
 
 public class ShowWeekScheduleHandler implements RequestStreamHandler {
 	
@@ -63,7 +65,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		CreateScheduleResponse response = null;
+		ShowWeekScheduleResponse response = null;
 
 		// extract body from incoming HTTP GET request. If any error, then
 		// return 422 error
@@ -111,12 +113,12 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 			try {
 				List<Meeting> weekMeetings = showWeek(req.id, req.startDay);
 				if (weekMeetings.size() > 0) {
-					resp = new CreateScheduleResponse("Successfully fetched week: " + weekMeetings.toString());
+					resp = new ShowWeekScheduleResponse("Successfully fetched week: " + weekMeetings.toString());
 				} else {
-					resp = new CreateScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id, 422);
+					resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id + "(" + e.getMessage() + ")",
+				resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id + "(" + e.getMessage() + ")",
 						403);
 			}
 
