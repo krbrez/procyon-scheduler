@@ -13,7 +13,23 @@
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 
-function createSchedule(e) {
+function processResponse(result) {
+  // Can grab any DIV or SPAN HTML element and can then manipulate its
+  // contents dynamically via javascript
+  console.log("result:" + result);
+  var js = JSON.parse(result);
+
+  var respString = js["response"];
+  var id = js["id"];
+  var code = js["secretCode"];
+
+  // Update computation result
+  document.getElementById("secretCodeOrganizer").value = code;
+  document.getElementById("scheduleIdOrganizer").value = id;
+  window.alert(respString);
+}
+
+function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
   var f = document.getElementById("timeSlotDuration");
@@ -37,80 +53,22 @@ function createSchedule(e) {
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
   xhr.open("POST", create_url, true);
-  
+
   // send the collected data as JSON
   xhr.send(js);
-  
+
   // This will process results and update HTML as appropriate.
   xhr.onloadend = function () {
     console.log(xhr);
     console.log(xhr.request);
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText);
-      window.alert(xhr.responseText);
+      processResponse(xhr.responseText);
     } else {
       window.alert("Oops, something went wrong!");
     }
   };
 }
-
-function ScheduleIDOrganizer(e) {
-  var form = document.SecretCode;
-  var code = form.SecretCode.value;
-
-  var data = {};
-  data["code"] = code;
-
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", create_url, true);
-  
-  // send the collected data as JSON
-  xhr.send(js);
-  
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      window.alert(xhr.responseText);
-    } else {
-      window.alert("Oops, something went wrong!");
-    }
-  };
-  
-  
-  function showSchedule(e) {
-  var form = document.displayDay;
-  var date = form.displayDate.value;
-
-  var data = {};
-  data["date"] = date;
-
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", create_url, true);
-  
-  // send the collected data as JSON
-  xhr.send(js);
-  
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      window.alert(xhr.responseText);
-    } else {
-      window.alert("Oops, something went wrong!");
-    }
-  };
-  
-}
-
 
 </script>
 </head>
@@ -189,15 +147,16 @@ function ScheduleIDOrganizer(e) {
     </select>
     Start Date <input type="date" name="StartDate">
     End Date <input type="date" name="EndDate">
-    <button type="button" onclick="JavaScript:createSchedule(this)">Create a Schedule of your own!</button><br>
+    <button type="button" onclick="JavaScript:handleClick(this)">Create a Schedule of your own!</button><br>
   </form>
   </fieldset>
     <br>
   <fieldset>
-    <legend>View a Schedule</legend>
-    <form name="SecretCode" method="post">
-    Schedule ID: <input type="text" name="SecretCode" value="">
-    <button type="button" onclick="JavaScript:ScheduleIDOrganizer(this)">Submit</button><br>
+    <legend>View a Schedule or Meeting</legend>
+    <form>
+    Secret Code: <input type="text" name="SecretCode" value="">
+    <input type="submit" value="Submit">
+    <br>
     </form>
   </fieldset>
 </section>
@@ -205,15 +164,15 @@ function ScheduleIDOrganizer(e) {
   <br>
   <fieldset>
     <legend>Search This Schedule</legend>
-    <form name="displayDay">
-    	Display this Schedule on the week of <input type="date" name="displayDate"><button type="button" onclick="JavaScript:showSchedule(this)">Submit</button><br>
-    </form>
+    <form>Display this Schedule on the week of <input type="date" name="displayDate"><input type="submit"></form>
   </fieldset>
   <br>
   <fieldset>
     <legend>Edit This Schedule</legend>
-    <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
-    <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
+    <form>Add days on the end up to <input type="date" name="extendEndDate"><input type="submit"></form>
+    <form>Add days on the start up to <input type="date" name="extendStartDate"><input type="submit"></form>
+    <form>Remove days from the end up to <input type="date" name="retractEndDate"><input type="submit"></form>
+    <form>Remove days from the start up to <input type="date" name="retractStartDate"><input type="submit"></form>
     <form>Open all meetings on
       <select>
       <option value="openDayOfWeek">Day of the Week</option>
@@ -251,12 +210,12 @@ function ScheduleIDOrganizer(e) {
   </fieldset>
   </section>
   <br>
-  <section class = "OrganizerCalendar" id="OrgnaizerCalendar">
+  <section class = "OrganizerCalendar" id="OrganizerCalendar">
     <fieldset>
       <legend>Weekly Calendar</legend>
-      Your Secret Code for this Schedule is: <input name="meetingScheduleURLOrganizer" readonly/>
-      and the URL to schedule Meetings is: <input name="secretCodeOrganizer" readonly/>
-      <div id="OrganzierCalendarView"</div>
+      Your Secret Code for this Schedule is: <input id="secretCodeOrganizer" readonly/>
+      and the ID to schedule Meetings is: <input id="scheduleIdOrganizer" readonly/>
+      <div id="OrganizerCalendarView"</div>
       <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
     </fieldset>
