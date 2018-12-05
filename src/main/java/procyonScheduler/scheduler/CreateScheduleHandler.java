@@ -92,7 +92,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		while (meetTime.compareTo(end) < 0) {
 			while (meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) {
 				while (meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) {
-					Meeting m = new Meeting("", meetTime, true, s);
+					Meeting m = new Meeting("", meetTime, true, s.getId());
 					created = created && mDAO.addMeeting(m);
 					meetTime.add(GregorianCalendar.MINUTE, blockSize);
 				}

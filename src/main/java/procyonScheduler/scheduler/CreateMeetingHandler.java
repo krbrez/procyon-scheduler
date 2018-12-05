@@ -35,7 +35,6 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			} else {
 				m.setLabel("Scheduled");
 			}
-			m.setAvailable(false);
 			mDAO.updateMeeting(m);
 			return m.getParticipantSecretCode();
 		} else {
