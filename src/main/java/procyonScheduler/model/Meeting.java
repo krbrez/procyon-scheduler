@@ -9,12 +9,12 @@ public class Meeting {
 					// they book a meeting
 	GregorianCalendar dateTime; // the date and time of the meeting
 	boolean available; // is the meeting currently booked or not
-	Schedule schedule; // all meetings are within a schedule
+	String schedule; // all meetings are within a schedule, this is the ID to refer to it
 	String participantSecretCode; // the secret code that is needed to change a
 									// meeting, also functions as meeting id
 
 	// constructor for getting an existing meeting
-	public Meeting(String id, String label, GregorianCalendar dateTime, boolean available, Schedule schedule,
+	public Meeting(String id, String label, GregorianCalendar dateTime, boolean available, String schedule,
 			String participantSecretCode) {
 		this.id = id;
 		this.label = label;
@@ -25,7 +25,7 @@ public class Meeting {
 	}
 
 	// constructor for making a new meeting
-	public Meeting(String label, GregorianCalendar dateTime, boolean available, Schedule schedule) {
+	public Meeting(String label, GregorianCalendar dateTime, boolean available, String schedule) {
 		this.label = label;
 		this.dateTime = dateTime;
 		this.available = available;
@@ -52,6 +52,24 @@ public class Meeting {
 				this.id += (char) (n + 55);
 			} else {
 				this.id += (char) (n + 61);
+			}
+		}
+	}
+	
+	// clear label, reroll secret code
+	public void cancel() {
+		this.label = "";
+		
+		this.participantSecretCode = "";
+		Random r = new Random();
+		for (int i = 0; i < 16; i++) {
+			int n = r.nextInt(62);
+			if (n < 10) {
+				this.participantSecretCode += Integer.toString(n);
+			} else if (n < 36) {
+				this.participantSecretCode += (char) (n + 55);
+			} else {
+				this.participantSecretCode += (char) (n + 61);
 			}
 		}
 	}
@@ -90,7 +108,7 @@ public class Meeting {
 		this.dateTime = dateTime;
 	}
 
-	public Schedule getSchedule() {
+	public String getSchedule() {
 		return schedule;
 	}
 
@@ -106,7 +124,7 @@ public class Meeting {
 				+ "-" + Integer.toString(this.dateTime.get(GregorianCalendar.DAY_OF_MONTH))
 				+ " time: " + Integer.toString(this.dateTime.get(GregorianCalendar.HOUR_OF_DAY)) 
 				+ ":" + Integer.toString(this.dateTime.get(GregorianCalendar.MINUTE))
-				+ " schedule: " + this.schedule.getName() + " code: " + this.participantSecretCode;
+				+ " schedule: " + this.schedule + " code: " + this.participantSecretCode;
 		return printThis;
 	}
 
