@@ -1,21 +1,32 @@
 package procyonScheduler.scheduler;
 
+import java.util.ArrayList;
+
+import procyonScheduler.model.Meeting;
+
+
 public class ShowWeekScheduleResponse {
-	String response;
+	String id;
+	String startDay;
+	ArrayList<Meeting> meetings;
 	int httpCode;
 	
-	public ShowWeekScheduleResponse (String name, int code) {
-		this.response = name;
+	public ShowWeekScheduleResponse (String id, String startDay, int code) {
+		this.id = id;
+		this.startDay = startDay;
+		this.meetings = new ArrayList<Meeting>();
 		this.httpCode = code;
 	}
 	
 	// 200 means success
-	public ShowWeekScheduleResponse (String name) {
-		this.response = name;
+	public ShowWeekScheduleResponse (String id, String startDay, ArrayList<Meeting> meetings) {
+		this.id = id;
+		this.startDay = startDay;
+		this.meetings = meetings;
 		this.httpCode = 200;
 	}
 	
 	public String toString() {
-		return "You made Schedule " + response + ". Schedule creation successful!";
+		return "You requested the week starting " + this.startDay + " of schedule " + this.id + ". Meetings found: " + this.meetings.toString();
 	}
 }

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+
+<!-- THIS DOC IS A THIRD ATTEMPT AT CREATING THE CALENDAR, MORE SPECIFICALLY TAILORED TO OUR WEEKLY SCHEDULE -->
+
+<script>
+
+var startDate = new Date('2018-12-04T00:00:00'); // a date
+var endDate = new Date('2018-12-12T23:00:00'); // a date
+var timeSlotSizeString = "10"; //10, 15, 20, 30, 60
+var timeSlotSize = parseInt(timeSlotSizeString);	
+var startTime = startDate.getHours(); // a time
+var endTime = endDate.getHours(); // a time
+	
+	
+	
+// the variables that are gotten from those initial data values
+var startDayOfWeek = startDate.getDay();
+var endDayOfWeek = endDate.getDay();
+var timeSlotAmount = 60 / window.timeSlotSize * (window.endTime - window.startTime);
+
+//Sets up the unfinished weeks that will be created in the calendar by setting the first Monday and final Friday
+var mondayOfStartWeek = startDate
+var fridayOfEndWeek = endDate
+mondayOfStartWeek.setDate(mondayOfStartWeek.getDate());
+fridayOfEndWeek.setDate(fridayOfEndWeek.getDate());
+
+for (var i=startDayOfWeek; i>1; i--){
+	mondayOfStartWeek.setDate(mondayOfStartWeek.getDate() - 1);
+}
+
+for (var i=endDayOfWeek; i<5; i++){
+	fridayOfEndWeek.setDate(fridayOfEndWeek.getDate() + 1);
+}
+console.log(mondayOfStartWeek);
+console.log(fridayOfEndWeek);
+
+
+//Building the Schedule
+var buildScheduleYear = mondayOfStartWeek.getYear();
+var buildScheduleMonth = mondayOfStartWeek.getMonth();
+var buildScheduleDay = mondayOfStartWeek.getDate();
+var buildScheduleHour = startDate.getHours();
+
+for (var i=buildScheduleHour, d=0; i<endDate.getHours(); i+= timeSlotSize/60){
+	console.log("This is the " + d + "th meeting");
+	d++
+}
+
+
+
+
+TableColumns = ['TIMESLOT','MON','TUE','WED','THU','FRI'];
+	
+Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+
+
+console.log(timeSlotAmount);
+
+function nextWeek(currentWeek){
+	
+}
+
+function prevWeek(currentWeek){
+	
+}
+
+</script>
+
+<div class="container">
+ <header> <a href="">
+   <h4 class="logo">Calendar View</h4>
+   </a>
+ </header>
+</div>
+
+
+
+
+	
+	

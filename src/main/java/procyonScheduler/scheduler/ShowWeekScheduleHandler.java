@@ -28,12 +28,12 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 	
 	public LambdaLogger logger = null;
 	
-	List<Meeting> showWeek(String id, String startDay) throws Exception {
+	ArrayList<Meeting> showWeek(String id, String startDay) throws Exception {
 		if (logger != null) {
 			logger.log("in showWeek");
 		}
 		
-		List<Meeting> weekMeetings = new ArrayList<>();
+		ArrayList<Meeting> weekMeetings = new ArrayList<>();
 		MeetingsDAO mDAO = new MeetingsDAO();
 		
 		int stY = 0, stM = 0, stDy = 0;
@@ -80,7 +80,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new ShowWeekScheduleResponse("name", 200); // OPTIONS
+				response = new ShowWeekScheduleResponse("", "", 200); // OPTIONS
 																	// needs a
 																	// 200
 																	// response
@@ -96,7 +96,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new ShowWeekScheduleResponse("Bad Request:" + pe.getMessage(), 422); // unable
+			response = new ShowWeekScheduleResponse("Bad Request:" + pe.getMessage(), "", 422); // unable
 																							// to
 																							// process
 																							// input
@@ -111,14 +111,14 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 
 			ShowWeekScheduleResponse resp;
 			try {
-				List<Meeting> weekMeetings = showWeek(req.id, req.startDay);
+				ArrayList<Meeting> weekMeetings = showWeek(req.id, req.startDay);
 				if (weekMeetings.size() > 0) {
-					resp = new ShowWeekScheduleResponse("Successfully fetched week: " + weekMeetings.toString());
+					resp = new ShowWeekScheduleResponse(req.id, req.startDay, weekMeetings);
 				} else {
-					resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id, 422);
+					resp = new ShowWeekScheduleResponse(req.id, req.startDay, 422);
 				}
 			} catch (Exception e) {
-				resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id + "(" + e.getMessage() + ")",
+				resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id + "(" + e.getMessage() + ")", "",
 						403);
 			}
 
