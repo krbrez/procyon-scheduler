@@ -36,7 +36,7 @@ public class CreateScheduleHandlerTest {
 	}
 
 	@Test
-	public void testcreateSchedule() throws IOException{
+	public void testcreateScheduleWorks() throws IOException{
 		CreateScheduleHandler handler = new CreateScheduleHandler();
 
 		CreateScheduleRequest csr = new CreateScheduleRequest("Kyra", "01:00:00.00", "2018-11-30", "02:00:00.00",
@@ -51,8 +51,32 @@ public class CreateScheduleHandlerTest {
 		
 		PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
 		CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
-		Assert.assertEquals(csr.name, resp.response);
+		
+		Assert.assertTrue(resp.response.contains(csr.name));
+		Assert.assertEquals(resp.httpCode, 200);
 
 	}
+	
+	@Test
+	public void testcreateScheduleBroken1() throws IOException{
+		CreateScheduleHandler handler = new CreateScheduleHandler();
+
+		CreateScheduleRequest csr = new CreateScheduleRequest("Kyra", "1", "2018-11-0", "02:00:00.00",
+				"2018-11-30", "20");
+		String createRequest = new Gson().toJson(csr);
+		String jsonRequest = new Gson().toJson(new PostRequest(createRequest));
+		
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
+		
+		handler.handleRequest(input, output, createContext("create"));
+		
+		PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+		CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+		
+		Assert.assertEquals(resp.httpCode, 422);
+
+	}
+
 
 }
