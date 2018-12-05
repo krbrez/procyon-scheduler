@@ -85,7 +85,7 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.setString(4, meeting.getSchedule().getId());
+			ps.setString(4, meeting.getSchedule());
 			ps.setString(5, meeting.getParticipantSecretCode());
 			int numAffected = ps.executeUpdate();
 			ps.close();
@@ -131,7 +131,7 @@ public class MeetingsDAO {
 				intA = 0;
 			}
 			ps.setInt(3, intA);
-			ps.setString(4, meeting.getSchedule().getId());
+			ps.setString(4, meeting.getSchedule());
 			ps.setString(5, meeting.getParticipantSecretCode());
 			ps.setString(6, meeting.getId());
 			ps.execute();
@@ -229,7 +229,7 @@ public class MeetingsDAO {
 		SchedulesDAO sd = new SchedulesDAO();
 		Schedule newSched = sd.getSchedule(schedule);
 
-		return new Meeting(id, label, dT, avail, newSched, participantSecretCode);
+		return new Meeting(id, label, dT, avail, newSched.getId(), participantSecretCode);
 	}
 
 }
