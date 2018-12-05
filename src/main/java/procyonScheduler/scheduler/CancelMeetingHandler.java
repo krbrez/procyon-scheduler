@@ -22,6 +22,8 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class CancelMeetingHandler implements RequestStreamHandler {
+	boolean cancelled; //am i allowed to have this here? i need it in both the functions inside this class, the regular one and 
+						//the one in @Override
 	
 	public LambdaLogger logger = null; 
 	
@@ -36,15 +38,11 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			logger.log("in cancelMeeting");
 		}
 		
-		boolean cancelled = false;
+		cancelled = false;
 		
 		//create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		
-		//find the meeting
-		//Meeting cancelMe = mDAO.getMeeting(code);
-		//logger.log("Here" + cancelMe.getId());
 		
 		//find meeting using ID
 		Meeting cancelMe = mDAO.getMeeting(id);
@@ -80,12 +78,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to cancel meeting");
 	
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json"); // not sure if
 															// needed anymore?
-		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+		headerJson.put("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
 		headerJson.put("Access-Control-Allow-Origin", "*");
 	
 		JSONObject responseJson = new JSONObject();
@@ -137,13 +135,14 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	
 			CancelMeetingResponse resp;
 			try {
-				if (cancelMeeting(req.id, req.code)) {
-					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.code);
+				cancelMeeting(req.id, req.code);
+				if (cancelled == true) {
+					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.id);
 				} else {
-					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code, 422);
+					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.id, 422);
 				}
 			} catch (Exception e) {
-				resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code + "(" + e.getMessage() + ")",
+				resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.id + "(" + e.getMessage() + ")",
 						403);
 			}
 

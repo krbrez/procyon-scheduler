@@ -12,6 +12,7 @@
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
+var showweek_url = base_url + "showweek";    // PUT
 
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
@@ -64,6 +65,38 @@ function handleClick(e) {
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText);
       processResponse(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+
+function showWeek(e) {
+  var form = document.showWeekForm;
+  var id = document.getElementById(showWeekID).value;
+  var date = document.getElementById(showWeekDate).value;
+  
+  var data = {};
+  data["id"] = id;
+  data["date"] = date;
+  
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", showweek_url, true);
+
+  // send the collected data as JSON
+  xhr.send(js);
+  
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      var js = JSON.parse(xhr.responseText);
+	  var respString = js["response"];
+	  window.alert(respString);
     } else {
       window.alert("Oops, something went wrong!");
     }
@@ -151,21 +184,13 @@ function handleClick(e) {
   </form>
   </fieldset>
     <br>
-  <fieldset>
-    <legend>View a Schedule or Meeting</legend>
-    <form>
-    Secret Code: <input type="text" name="SecretCode" value="">
-    <input type="submit" value="Submit">
-    <br>
-    </form>
-  </fieldset>
 </section>
 <section class = "OrganizerOptions" id="OrganizerOptions">
   <br>
   <fieldset>
-    <legend>Search This Schedule</legend>
-    <form name="displayDay">
-    	Display this Schedule on the week of <input type="date" name="displayDate"><button type="button" onclick="JavaScript:showSchedule(this)">Submit</button><br>
+    <legend>Display One Week of a Schedule</legend>
+    <form name="showWeekForm">
+    	Display Schedule with ID: <input type="text" name="showWeekID" id="showWeekID" value=""> on the week of: <input type="date" name="showWeekDate" id="showWeekDate"><button type="button" onclick="JavaScript:showWeek(this)">Submit</button><br>
     </form>
   </fieldset>
   <br>
