@@ -23,7 +23,7 @@ public class MeetingsDAO {
 		}
 	}
 
-	public Meeting getMeeting(String id) throws Exception {
+	public Meeting getMeeting(String id) throws Exception {  //this one gets meeting by its ID
 		try {
 			Meeting meeting = null;
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE id=?;");

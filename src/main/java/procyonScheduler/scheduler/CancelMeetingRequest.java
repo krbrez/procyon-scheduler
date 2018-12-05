@@ -8,7 +8,7 @@ public class CancelMeetingRequest {
 	}
 	
 	public String toString() {
-		return "Cancel meeting with this code " + code;
+		return "Cancel meeting with this code/id " + code; //code vs id depends on who the request is coming from 
 	}
 
 }
