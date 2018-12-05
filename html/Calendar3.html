@@ -4,17 +4,23 @@
 
 <!-- THIS DOC IS A THIRD ATTEMPT AT CREATING THE CALENDAR, MORE SPECIFICALLY TAILORED TO OUR WEEKLY SCHEDULE -->
 
+<div class="container">
+ <header> <a href="">
+   <h4 class="logo">Calendar View</h4>
+   </a>
+ </header>
+</div>
 <script>
 
 var startDate = new Date('2018-12-04T00:00:00'); // a date
 var endDate = new Date('2018-12-12T23:00:00'); // a date
-var timeSlotSizeString = "10"; //10, 15, 20, 30, 60
-var timeSlotSize = parseInt(timeSlotSizeString);	
+var timeSlotSizeString = "60"; //10, 15, 20, 30, 60
+var timeSlotSize = parseInt(timeSlotSizeString);
 var startTime = startDate.getHours(); // a time
 var endTime = endDate.getHours(); // a time
-	
-	
-	
+
+
+
 // the variables that are gotten from those initial data values
 var startDayOfWeek = startDate.getDay();
 var endDayOfWeek = endDate.getDay();
@@ -37,46 +43,59 @@ console.log(mondayOfStartWeek);
 console.log(fridayOfEndWeek);
 
 
-//Building the Schedule
-var buildScheduleYear = mondayOfStartWeek.getYear();
-var buildScheduleMonth = mondayOfStartWeek.getMonth();
-var buildScheduleDay = mondayOfStartWeek.getDate();
-var buildScheduleHour = startDate.getHours();
+//Set the live variables to build the calendar view
+var currentMonth = mondayOfStartWeek.getMonth();
+var currentyear = mondayOfStartWeek.getYear();
+var buildScheduleYear = window.mondayOfStartWeek.getYear();
+var buildScheduleMonth = window.mondayOfStartWeek.getMonth();
+var buildScheduleDay = window.mondayOfStartWeek.getDate();
+var buildScheduleDayOfWeek = window.mondayOfStartWeek.getDay();
+var buildScheduleHour = window.startDate.getHours();
 
-for (var i=buildScheduleHour, d=0; i<endDate.getHours(); i+= timeSlotSize/60){
-	console.log("This is the " + d + "th meeting");
-	d++
+
+
+//Build the calendar
+function buildCalendar(){
+	var html='table'
+	buildScheduleDay = window.buildScheduleDayOfWeek
+	for (var j=1; j <= 5; j ++){
+		for (var i=window.buildScheduleHour, d=1; i<window.endDate.getHours(); i+= timeSlotSize/60){
+			document.write("this is the " + d + "th meeting on the "+ j + "th day" + "<br>");
+			d++;
+		}
+	}
+}
+buildCalendar()
+
+
+
+function nextWeek(modayOfCurrentWeek){
+	return mondayOfCurrentWeek.setDate(modayOfCurrentWeek.getDate + 7);
+}
+function prevWeek(modayOfCurrentWeek){
+	return mondayOfCurrentWeek.setDate(modayOfCurrentWeek.getDate - 7);
 }
 
 
 
 
 TableColumns = ['TIMESLOT','MON','TUE','WED','THU','FRI'];
-	
+
 Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
 
 console.log(timeSlotAmount);
 
 function nextWeek(currentWeek){
-	
+
 }
 
 function prevWeek(currentWeek){
-	
+
 }
+
+document.getElementById("calendar").innerHTML = html;
 
 </script>
 
-<div class="container">
- <header> <a href="">
-   <h4 class="logo">Calendar View</h4>
-   </a>
- </header>
-</div>
-
-
-
-
-	
-	
+<div id="Calendar"></div>
