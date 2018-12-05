@@ -164,7 +164,7 @@ public class MeetingsDAO {
 	}
 	
 	// retrieve all meetings from schedule with id occurring in the week starting with startDay
-	public List<Meeting> getWeekFromSchedule(String id, GregorianCalendar startDay) throws Exception {
+	public ArrayList<Meeting> getWeekFromSchedule(String id, GregorianCalendar startDay) throws Exception {
 		
 		SchedulesDAO sDAO = new SchedulesDAO();
 		Schedule s = sDAO.getSchedule(id);
