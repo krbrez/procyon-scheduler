@@ -72,7 +72,7 @@ function handleClick(e) {
 }
 
 function showWeek(e) {
-  var form = document.showWeek;
+  var form = document.showWeekForm;
   var id = document.getElementById(showWeekID).value;
   var date = document.getElementById(showWeekDate).value;
   
@@ -189,7 +189,7 @@ function showWeek(e) {
   <br>
   <fieldset>
     <legend>Display One Week of a Schedule</legend>
-    <form name="showWeek">
+    <form name="showWeekForm">
     	Display Schedule with ID: <input type="text" name="showWeekID" id="showWeekID" value=""> on the week of: <input type="date" name="showWeekDate" id="showWeekDate"><button type="button" onclick="JavaScript:showWeek(this)">Submit</button><br>
     </form>
   </fieldset>
