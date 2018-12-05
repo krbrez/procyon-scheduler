@@ -12,6 +12,7 @@
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
+var showweek_url = base_url + "showweek";    // PUT
 
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
@@ -82,7 +83,7 @@ function showWeek(e) {
   var js = JSON.stringify(data);
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", create_url, true);
+  xhr.open("PUT", showweek_url, true);
 
   // send the collected data as JSON
   xhr.send(js);
