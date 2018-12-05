@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
+import procyonScheduler.model.Schedule;
 
 public class CancelMeetingHandler implements RequestStreamHandler {
 	
@@ -30,10 +31,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	 * @throws Exception
 	 */
 	
-	boolean cancelMeeting(String code, String id) throws Exception {
+	boolean cancelMeeting(String id, String code) throws Exception {
 		if (logger != null) {
 			logger.log("in cancelMeeting");
 		}
+		
+		boolean cancelled = false;
 		
 		//create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -44,27 +47,33 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		//logger.log("Here" + cancelMe.getId());
 		
 		//find meeting using ID
+		Meeting cancelMe = mDAO.getMeeting(id);
+		logger.log("This is the meeting with this ID" + cancelMe.getId()); 
 		
 		//is the entered code the same as this meeting's participant secret code?
-		
+		if (code == cancelMe.getParticipantSecretCode()) {
 			//if yes, change this meeting (change to "factory settings")
-		
-			//if no, GET the schedule this meeting is part of 
-		
+			cancelMe.cancel();
+			mDAO.updateMeeting(cancelMe);
+			cancelled = true;
+		}
+		//if not, GET the schedule this meeting is part of (get ID first, then use that to get the rest of the schedule)
+		else {
+			String meetingsSchedulesId = cancelMe.getSchedule();
+			Schedule meetingsSchedule = sDAO.getSchedule(meetingsSchedulesId);
+			
 			//is the code the same as the code of the meeting?
-				
+			if (code == meetingsSchedule.getSecretCode()) {
 				//if yes, change this meeting (change to "factory settings")
-		
+				cancelMe.cancel();
+				mDAO.updateMeeting(cancelMe);
+				cancelled = true;
+			}
+			else {
 				//if no, there's an oopsie somewhere
-		
-		
-		
-		
-	
-		//these are the funky thingies that set the boolean Cancelled, says if it actually did the thing	
-		//Meeting m = new Meeting()
-		boolean cancelled = true;
-		//cancelled = cancelled && 
+				cancelled = false;
+			}
+		}
 		return cancelled;
 	}
 	
@@ -129,12 +138,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			CancelMeetingResponse resp;
 			try {
 				if (cancelMeeting(req.code)) {
-					resp = new CancelMeetingResponse("Successfully created schedule: " + req.code);
+					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.code);
 				} else {
-					resp = new CancelMeetingResponse("Unable to create schedule: " + req.code, 422);
+					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code, 422);
 				}
 			} catch (Exception e) {
-				resp = new CancelMeetingResponse("Unable to create schedule: " + req.code + "(" + e.getMessage() + ")",
+				resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.code + "(" + e.getMessage() + ")",
 						403);
 			}
 	
