@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package procyonScheduler.scheduler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,26 +36,23 @@ public class CreateScheduleHandlerTest {
 	}
 
 	@Test
-	public void testAddTwoNumbers() throws IOException {
-		// create DAO objects
-		SchedulesDAO sDAO = new SchedulesDAO();
-		MeetingsDAO mDAO = new MeetingsDAO();
-		try {
-			// find the schedule with the right secret code
-			Schedule deleteMe = sDAO.getScheduleBySecretCode("ZzjQ81EUi4TrkJFs");
+	public void testcreateSchedule() throws IOException{
+		CreateScheduleHandler handler = new CreateScheduleHandler();
 
-			boolean deleted = true;
-			deleted = deleted && sDAO.deleteSchedule(deleteMe);
+		CreateScheduleRequest csr = new CreateScheduleRequest("Kyra", "01:00:00.00", "2018-11-30", "02:00:00.00",
+				"2018-11-30", "20");
+		String createRequest = new Gson().toJson(csr);
+		String jsonRequest = new Gson().toJson(new PostRequest(createRequest));
+		
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
+		
+		handler.handleRequest(input, output, createContext("create"));
+		
+		PostResponse post = new Gson().fromJson(output.toString(), PostResponse.class);
+		CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+		Assert.assertEquals(csr.name, resp.response);
 
-			// delete all the meetings inside the schedule
-			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(deleteMe.getId());
-			for (Meeting meeting: meetings) {
-				System.out.println(meeting.getId());
-				deleted = deleted && mDAO.deleteMeeting(meeting);
-			}
-		} catch (Exception e) {
-			System.out.println("ahh");
-		}
 	}
 
 }

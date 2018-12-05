@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.demo;
+package procyonScheduler.scheduler;
 
 import java.io.IOException;
 import java.io.InputStream;

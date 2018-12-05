@@ -39,7 +39,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 	 * 
 	 * @throws Exception
 	 */
-	boolean createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize)
+	Schedule createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize)
 			throws Exception {
 		if (logger != null) {
 			logger.log("in createSchedule");
@@ -63,7 +63,8 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		if (startD.length() == 10) {
 			String[] stDt = startD.split("-");
 			stY = Integer.parseInt(stDt[0]);
-			stM = Integer.parseInt(stDt[1]) - 1;	// GregorianCalendar months start at 0
+			stM = Integer.parseInt(stDt[1]) - 1; // GregorianCalendar months
+													// start at 0
 			stDy = Integer.parseInt(stDt[2]);
 		}
 		if (endD.length() == 10) {
@@ -76,11 +77,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		// create new schedule
 		GregorianCalendar start = new GregorianCalendar(stY, stM, stDy, stH, 0);
 		GregorianCalendar end = new GregorianCalendar(endY, endM, endDy, endH, 0);
-		if(start.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY ||
-			start.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SUNDAY ||
-			end.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SATURDAY ||
-			end.get(GregorianCalendar.DAY_OF_WEEK)== GregorianCalendar.SUNDAY) {
-			return false;
+		if (start.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY
+				|| start.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SUNDAY
+				|| end.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY
+				|| end.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SUNDAY) {
+			return null;
 		}
 		Schedule s = new Schedule(name, start, end, blockSize);
 		boolean created = true;
@@ -100,7 +101,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			}
 			meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 		}
-		return created;
+		if (created) {
+			return s;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -132,10 +137,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new CreateScheduleResponse("name", 200); // OPTIONS
-																	// needs a
-																	// 200
-																	// response
+				response = new CreateScheduleResponse("name", "", ""); // OPTIONS
+
+				// needs a
+				// 200
+				// response
 				responseJson.put("body", new Gson().toJson(response));
 				processed = true;
 				body = null;
@@ -163,8 +169,11 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 
 			CreateScheduleResponse resp;
 			try {
-				if (createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endDate, req.blockSize)) {
-					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name);
+				Schedule newSched = createSchedule(req.name, req.startTime, req.startDate, req.endTime, req.endDate,
+						req.blockSize);
+				if (newSched != null) {
+					resp = new CreateScheduleResponse("Successfully created schedule: " + req.name, newSched.getId(),
+							newSched.getSecretCode());
 				} else {
 					resp = new CreateScheduleResponse("Unable to create schedule: " + req.name, 422);
 				}
