@@ -44,10 +44,6 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 		
-		//find the meeting
-		//Meeting cancelMe = mDAO.getMeeting(code);
-		//logger.log("Here" + cancelMe.getId());
-		
 		//find meeting using ID
 		Meeting cancelMe = mDAO.getMeeting(id);
 		logger.log("This is the meeting with this ID" + cancelMe.getId()); 
@@ -82,12 +78,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to cancel meeting");
 	
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json"); // not sure if
 															// needed anymore?
-		headerJson.put("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+		headerJson.put("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
 		headerJson.put("Access-Control-Allow-Origin", "*");
 	
 		JSONObject responseJson = new JSONObject();
