@@ -9,22 +9,22 @@ table, th, td {
 
 <!-- THIS DOC IS A THIRD ATTEMPT AT CREATING THE CALENDAR, MORE SPECIFICALLY TAILORED TO OUR WEEKLY SCHEDULE -->
 
+<!-- My Automatic refresh button, this will be removed when just used for the calendar -->
 <div class="container">
  <header> <a href="">
    <h4 class="logo">Calendar View</h4>
    </a>
  </header>
 </div>
-<script>
 
+
+<script>
 var startDate = new Date('2018-12-04T00:00:00'); // a date
 var endDate = new Date('2018-12-19T23:00:00'); // a date
 var timeSlotSizeString = "15"; //10, 15, 20, 30, 60
 var timeSlotSize = parseInt(timeSlotSizeString);
 var startTime = startDate.getHours(); // a time
 var endTime = endDate.getHours(); // a time
-
-
 
 // the variables that are gotten from those initial data values
 var startDayOfWeek = startDate.getDay();
@@ -34,17 +34,11 @@ var timeSlotAmount = 60 / window.timeSlotSize * (window.endTime - window.startTi
 // sets up variables that are used in display
 Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
-
-
 //Sets up the unfinished weeks that will be created in the calendar by setting the first Monday and final Friday
 // = in javascript is stupid and doesnt make a copy of the variable
 var mondayOfStartWeek = new Date();
 mondayOfStartWeek.setTime(startDate.getTime());
-var fridayOfEndWeek = new Date();
-fridayOfEndWeek.setTime(endDate.getTime());
-
 mondayOfStartWeek.setDate(mondayOfStartWeek.getDate());
-fridayOfEndWeek.setDate(fridayOfEndWeek.getDate());
 
 console.log("startDate0: " + startDate)
 // functions to get the monday of the start week and the friday of the end week
@@ -52,38 +46,24 @@ for (var i=startDayOfWeek; i>1; i--){
 	mondayOfStartWeek.setDate(mondayOfStartWeek.getDate() - 1);
 }
 
-for (var i=endDayOfWeek; i<5; i++){
-	fridayOfEndWeek.setDate(fridayOfEndWeek.getDate() + 1);
-}
-console.log(mondayOfStartWeek);
-console.log(fridayOfEndWeek);
+console.log("Monday of start Week: " + mondayOfStartWeek);
 
-//Set the live variables to build the calendar view
-var currentMonth = mondayOfStartWeek.getMonth();
-var currentyear = mondayOfStartWeek.getYear();
-var buildScheduleYear = window.mondayOfStartWeek.getFullYear();
-var buildScheduleMonth = window.mondayOfStartWeek.getMonth();
-var buildScheduleDay = window.mondayOfStartWeek.getDate();
-var buildScheduleDayOfWeek = window.mondayOfStartWeek.getDay();
-var buildScheduleHour = window.startDate.getHours();
-
-//Build the calendar
+//Build the calendar, this requires lots of information from outside of the function
 function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
   if (isFirstWeek == 1){
     startOfSchedule = window.startDate;
-    console.log(startOfSchedule + " " + window.startDate)
     buildScheduleDate = window.mondayOfStartWeek;
     buildScheduleMonth = window.mondayOfStartWeek.getMonth();
     buildScheduleYear = window.mondayOfStartWeek.getFullYear();
   }
   else {
-    console.log("MondayofBuildWeek: "+ mondayOfBuildWeek);
     startOfSchedule = scheduleStartDate
     buildScheduleDate = mondayOfBuildWeek;
     buildScheduleMonth = mondayOfBuildWeek.getMonth();
     buildScheduleYear = mondayOfBuildWeek.getFullYear();
   }
   console.log("buildScheduleDate " + buildScheduleDate)
+
   // this is just a loop to get the words for the month
   for (var i=0; i<12; i++){
     if (buildScheduleMonth == i){
@@ -91,18 +71,31 @@ function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
     }
   }
   // this prints out the heading of the table
+  // TODO MAKE THE BUTTON FOR LINKING PREV WEEK, that will go here in a document.write
   document.write(monthDisplay + " " + buildScheduleYear);
-	document.write('<table><tr><th>TIMESLOT</th><th>Mon ' + (buildScheduleDate.getDate()+0) + '</th><th>Tue ' + (buildScheduleDate.getDate()+1) + '</th><th>Wed ' + (buildScheduleDate.getDate()+2) + '</th><th>Thu ' + (buildScheduleDate.getDate()+3) + '</th><th>Fri ' + (buildScheduleDate.getDate()+4) + '</th></tr>');
+  // TODO MAKE THE BUTTON FOR LINKING NEXT WEEK, that will go here in a document.write
+	document.write('<table><tr><th>TIMESLOT</th><th>Mon '
+  + (buildScheduleDate.getDate()+0) + '</th><th>Tue '
+  + (buildScheduleDate.getDate()+1) + '</th><th>Wed '
+  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
+  + (buildScheduleDate.getDate()+3) + '</th><th>Fri '
+  + (buildScheduleDate.getDate()+4) + '</th></tr>');
+
+  // print out of the main section of the table
   for (var i=buildScheduleDate.getHours(), d=1; i<window.endDate.getHours(); i+= timeSlotSize/60){
     document.write('<tr>');
     document.write('<td>'+ (i) +'</td>');
     for (var j=1; j <= 5; j ++){
       if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() < window.endDate.getTime()){
         document.write("<td>this is the " + d + "th meeting on the "+ j + "th day" + "</td>");
+        //
+        // all in this area will be inside of the box on the calendar
+        //
       }
-      else{
+      else {
         document.write("<td>This day is out of Schedule!</td>");
       }
+      // this if else handles the end date of the schedule
       if (j == 5){
         buildScheduleDate.setDate(buildScheduleDate.getDate() - 4);
       }
@@ -114,20 +107,25 @@ function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
     d++;
 	}
   document.write('</table>');
+}// end of function buildCalendar
+buildCalendar(null,null,1)
+
+
+
+function nextWeekMondayDate(mondayOfCurrentWeek){
+  var returnThisDate = new Date();
+  returnThisDate.setTime(mondayOfCurrentWeek.getTime());
+	returnThisDate.setDate(mondayOfCurrentWeek.getDate() + 7);
+  return returnThisDate
 }
-//buildCalendar(null,null,1)
-
-
-
-function nextWeek(modayOfCurrentWeek){
-	return mondayOfCurrentWeek.setDate(modayOfCurrentWeek.getDate + 7);
-}
-function prevWeek(modayOfCurrentWeek){
-	return mondayOfCurrentWeek.setDate(modayOfCurrentWeek.getDate - 7);
+function prevWeekMondayDate(mondayOfCurrentWeek){
+  var returnThisDate = new Date();
+  returnThisDate.setTime(mondayOfCurrentWeek.getTime());
+	returnThisDate.setDate(mondayOfCurrentWeek.getDate() - 7);
+  return returnThisDate
 }
 function setWeek(date, monday){
   console.log("date and Monday in SetWeek " + date + " " + monday);
-
   buildCalendar(monday, date, 0);
 }
 function findMonday(mondayDate){
@@ -140,21 +138,46 @@ function findMonday(mondayDate){
   console.log("date and Monday after FindMonday " + mondayDate + " " + findTestMonday);
   return findTestMonday
 }
-var testDate = new Date('2018-12-11T05:00:00');
-var testMonday = findMonday(testDate);
-setWeek(testDate, testMonday);
 //USE SetWeek with the Dates for any week other than the first one
+//var testDate = new Date('2018-12-12T05:00:00');
+//var testMonday = findMonday(testDate);
+//setWeek(testDate, testMonday);
 
-function nextWeek(currentWeekMondayDate){
-  currentWeekMondayDate.setDate(currentWeekMondayDate.getDate() + 7);
-  return currentWeekMondayDate;
+
+function nextWeekRunner(thisWeekAnyDate){
+  var mondayofthisWeek = findMonday(thisWeekAnyDate);
+  console.log("Monday of this week: " + mondayofthisWeek);
+  var mondayNextWeek = nextWeekMondayDate(mondayofthisWeek);
+  console.log("Monday of next week: " + mondayNextWeek);
+  setWeek(mondayNextWeek,mondayNextWeek);
 }
 
-function prevWeek(currentWeekMondayDate){
-  currentWeekMondayDate.setDate(currentWeekMondayDate.getDate() - 7);
-  return currentWeekMondayDate;
+function prevWeekRunner(thisWeekAnyDate, thisScheduleStartDate){
+  var mondayofthisWeek = findMonday(thisWeekAnyDate);
+  console.log("Monday of this week: " + mondayofthisWeek);
+  var mondayPrevWeek = prevWeekMondayDate(mondayofthisWeek);
+  console.log("Monday of next week: " + mondayPrevWeek);
+  setWeek(mondayPrevWeek,mondayPrevWeek);
+}
+//prevWeekRunner(testDate);
+
+
+function setStartDate(setToThis){
+  startDate = setToThis; // setToThis has to be a date
+}
+function setEndDate(setToThis){
+  endDate = setToThis; // setToThis has to be a date
+}
+function setStartHour(setToThis){
+  startDate.setHours(setToThis); // setToThis has to be an int from 0-23
+}
+function setEndHour(){
+  endDate.setHours(setToThis); // setToThis has to be an int from 0-23
 }
 
+
+
+// this is the copy and pasted section of the code which I don't why it works, but I know it works
 function processResponseCalendar(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
