@@ -46,9 +46,6 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		Meeting cancelMe = mDAO.getMeeting(id);
 		logger.log("This is the meeting with this ID" + cancelMe.getId());
 
-		// BUGBUGBUG
-		logger.log("This is the participant secret code" + cancelMe.getParticipantSecretCode());
-
 		// is the entered code the same as this meeting's participant secret
 		// code?
 		if (code.equals(cancelMe.getParticipantSecretCode())) {
@@ -56,14 +53,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			cancelMe.cancel();
 			mDAO.updateMeeting(cancelMe);
 			cancelled = true;
-			logger.log("Yep, this is being done by a participant"); // BUGBUGBUG
 		}
 		// if not, GET the schedule this meeting is part of (get ID first, then
 		// use that to get the rest of the schedule)
 		else {
 			String meetingsSchedulesId = cancelMe.getSchedule();
 			Schedule meetingsSchedule = sDAO.getSchedule(meetingsSchedulesId);
-			logger.log("This is the secret code for the organizer" + meetingsSchedule.getSecretCode()); /// BUGBUGBUG
 
 			// is the code the same as the code of the meeting?
 			if (code.equals(meetingsSchedule.getSecretCode())) {
@@ -71,11 +66,9 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 				cancelMe.cancel();
 				mDAO.updateMeeting(cancelMe);
 				cancelled = true;
-				logger.log("It's an organizer trying to cancel this"); // BUGBUGBUG
 			} else {
 				// if no, there's an oopsie somewhere
 				cancelled = false;
-				logger.log("You have made a tragic mistake, your code doesn't match either code"); // BUGBUGBUG
 			}
 		}
 		return cancelled;
