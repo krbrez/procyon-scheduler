@@ -22,8 +22,6 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class CancelMeetingHandler implements RequestStreamHandler {
-	boolean cancelled; //am i allowed to have this here? i need it in both the functions inside this class, the regular one and 
-						//the one in @Override
 	
 	public LambdaLogger logger = null; 
 	
@@ -38,7 +36,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			logger.log("in cancelMeeting");
 		}
 		
-		cancelled = false;
+		boolean cancelled = false;
 		
 		//create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -135,8 +133,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	
 			CancelMeetingResponse resp;
 			try {
-				cancelMeeting(req.id, req.code);
-				if (cancelled == true) {
+				if (cancelMeeting(req.id, req.code)) {
 					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.id);
 				} else {
 					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.id, 422);
