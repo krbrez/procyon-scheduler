@@ -45,7 +45,7 @@ public class TestUtils {
         mapper.setPropertyNamingStrategy(new UpperCaseRecordsPropertyNamingStrategy());
         mapper.registerModule(new TestJacksonMapperModule());
 
-        snsEventMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        snsEventMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true); 
         snsEventMapper.setPropertyNamingStrategy(PropertyNamingStrategy.PASCAL_CASE_TO_CAMEL_CASE);
         snsEventMapper.registerModule(new TestJacksonMapperModule());
 
