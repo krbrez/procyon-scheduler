@@ -19,7 +19,7 @@ table, th, td {
 
 
 <script>
-var startDate = new Date('2018-12-04T00:00:00'); // a date
+var startDate = new Date('2018-12-05T00:00:00'); // a date
 var endDate = new Date('2018-12-19T23:00:00'); // a date
 var timeSlotSizeString = "15"; //10, 15, 20, 30, 60
 var timeSlotSize = parseInt(timeSlotSizeString);
@@ -84,7 +84,7 @@ function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
   // print out of the main section of the table
   for (var i=buildScheduleDate.getHours(), d=1; i<window.endDate.getHours(); i+= timeSlotSize/60){
     document.write('<tr>');
-    document.write('<td>'+ (i) +'</td>');
+    document.write('<td>'+ (i) + " - " + (i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
     for (var j=1; j <= 5; j ++){
       if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() < window.endDate.getTime()){
         document.write("<td>this is the " + d + "th meeting on the "+ j + "th day" + "</td>");
