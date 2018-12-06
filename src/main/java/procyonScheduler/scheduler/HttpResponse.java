@@ -1,9 +1,9 @@
 package procyonScheduler.scheduler;
 
-public class PostResponse {
+public class HttpResponse {
 	String body;
 	
-	public PostResponse(String b) {
+	public HttpResponse(String b) {
 		body = b;
 	}
 }

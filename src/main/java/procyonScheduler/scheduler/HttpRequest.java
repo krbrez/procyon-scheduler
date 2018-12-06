@@ -1,10 +1,10 @@
 package procyonScheduler.scheduler;
 
 
-public class PostRequest {
+public class HttpRequest {
 	String body;
 	
-	public PostRequest(String s) {
+	public HttpRequest(String s) {
 		body = s;
 	}
 }
