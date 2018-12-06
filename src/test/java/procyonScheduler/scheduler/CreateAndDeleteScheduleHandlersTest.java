@@ -49,8 +49,6 @@ public class CreateAndDeleteScheduleHandlersTest {
 		Assert.assertTrue(resp.response.contains(csr.name));
 		Assert.assertEquals(resp.httpCode, 200);
 
-		// This is wrong somewhere
-
 		DeleteScheduleHandler dHandler = new DeleteScheduleHandler();
 
 		DeleteScheduleRequest dsr = new DeleteScheduleRequest(resp.secretCode);
