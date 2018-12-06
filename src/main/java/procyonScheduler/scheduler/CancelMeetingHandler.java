@@ -22,8 +22,6 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class CancelMeetingHandler implements RequestStreamHandler {
-	boolean cancelled; //am i allowed to have this here? i need it in both the functions inside this class, the regular one and 
-						//the one in @Override
 	
 	public LambdaLogger logger = null; 
 	
@@ -38,7 +36,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			logger.log("in cancelMeeting");
 		}
 		
-		cancelled = false;
+		boolean cancelled;
 		
 		//create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -48,17 +46,22 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		Meeting cancelMe = mDAO.getMeeting(id);
 		logger.log("This is the meeting with this ID" + cancelMe.getId()); 
 		
+		//BUGBUGBUG
+		logger.log("This is the participant secret code" + cancelMe.getParticipantSecretCode());
+		
 		//is the entered code the same as this meeting's participant secret code?
 		if (code == cancelMe.getParticipantSecretCode()) {
 			//if yes, change this meeting (change to "factory settings")
 			cancelMe.cancel();
 			mDAO.updateMeeting(cancelMe);
 			cancelled = true;
+			logger.log("Yep, this is being done by a participant");     //BUGBUGBUG
 		}
 		//if not, GET the schedule this meeting is part of (get ID first, then use that to get the rest of the schedule)
 		else {
 			String meetingsSchedulesId = cancelMe.getSchedule();
 			Schedule meetingsSchedule = sDAO.getSchedule(meetingsSchedulesId);
+			logger.log("This is the secret code for the organizer" + meetingsSchedule.getSecretCode());  ///BUGBUGBUG
 			
 			//is the code the same as the code of the meeting?
 			if (code == meetingsSchedule.getSecretCode()) {
@@ -66,10 +69,12 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 				cancelMe.cancel();
 				mDAO.updateMeeting(cancelMe);
 				cancelled = true;
+				logger.log("It's an organizer trying to cancel this");   //BUGBUGBUG
 			}
 			else {
 				//if no, there's an oopsie somewhere
 				cancelled = false;
+				logger.log("You have made a tragic mistake, your code doesn't match either code");   //BUGBUGBUG
 			}
 		}
 		return cancelled;
@@ -135,8 +140,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 	
 			CancelMeetingResponse resp;
 			try {
-				cancelMeeting(req.id, req.code);
-				if (cancelled == true) {
+				if (cancelMeeting(req.id, req.code)) {
 					resp = new CancelMeetingResponse("Successfully cancelled meeting: " + req.id);
 				} else {
 					resp = new CancelMeetingResponse("Unable to cancel meeting: " + req.id, 422);

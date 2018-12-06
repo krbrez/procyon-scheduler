@@ -18,7 +18,7 @@ table, th, td {
 <script>
 
 var startDate = new Date('2018-12-04T00:00:00'); // a date
-var endDate = new Date('2018-12-12T23:00:00'); // a date
+var endDate = new Date('2018-12-19T23:00:00'); // a date
 var timeSlotSizeString = "15"; //10, 15, 20, 30, 60
 var timeSlotSize = parseInt(timeSlotSizeString);
 var startTime = startDate.getHours(); // a time
@@ -97,11 +97,17 @@ function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
     document.write('<tr>');
     document.write('<td>'+ (i) +'</td>');
     for (var j=1; j <= 5; j ++){
-      if ((startOfSchedule.getDay()-1) < j){
+      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() < window.endDate.getTime()){
         document.write("<td>this is the " + d + "th meeting on the "+ j + "th day" + "</td>");
       }
       else{
         document.write("<td>This day is out of Schedule!</td>");
+      }
+      if (j == 5){
+        buildScheduleDate.setDate(buildScheduleDate.getDate() - 4);
+      }
+      else {
+        buildScheduleDate.setDate(buildScheduleDate.getDate() + 1);
       }
 		}
     document.write('</tr>');
@@ -109,7 +115,7 @@ function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
 	}
   document.write('</table>');
 }
-buildCalendar(null,null,1)
+//buildCalendar(null,null,1)
 
 
 
@@ -119,28 +125,34 @@ function nextWeek(modayOfCurrentWeek){
 function prevWeek(modayOfCurrentWeek){
 	return mondayOfCurrentWeek.setDate(modayOfCurrentWeek.getDate - 7);
 }
-function setWeek(monday, date){
+function setWeek(date, monday){
+  console.log("date and Monday in SetWeek " + date + " " + monday);
+
   buildCalendar(monday, date, 0);
 }
-
-function findMonday(date){
-  return null
+function findMonday(mondayDate){
+  var findTestMonday = new Date();
+  findTestMonday.setTime(mondayDate.getTime());
+  console.log("date and Monday in FindMonday " + mondayDate + " " + findTestMonday);
+  for (var i=mondayDate.getDay(); i>1; i--){
+  	findTestMonday.setDate(findTestMonday.getDate() - 1);
+  }
+  console.log("date and Monday after FindMonday " + mondayDate + " " + findTestMonday);
+  return findTestMonday
 }
-//setWeek(new Date('2018-12-10T05:00:00'), new Date('2018-12-11T05:00:00'));
+var testDate = new Date('2018-12-11T05:00:00');
+var testMonday = findMonday(testDate);
+setWeek(testDate, testMonday);
+//USE SetWeek with the Dates for any week other than the first one
 
-//TODO FINISH TESTING THIS FUNCTION FOR FILLING IN ANY WEEK
-
-
-
-
-console.log(timeSlotAmount);
-
-function nextWeek(currentWeek){
-
+function nextWeek(currentWeekMondayDate){
+  currentWeekMondayDate.setDate(currentWeekMondayDate.getDate() + 7);
+  return currentWeekMondayDate;
 }
 
-function prevWeek(currentWeek){
-
+function prevWeek(currentWeekMondayDate){
+  currentWeekMondayDate.setDate(currentWeekMondayDate.getDate() - 7);
+  return currentWeekMondayDate;
 }
 
 function processResponseCalendar(result) {
