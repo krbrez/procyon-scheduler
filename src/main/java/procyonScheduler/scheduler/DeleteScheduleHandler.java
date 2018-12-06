@@ -46,13 +46,14 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		logger.log("Here" + deleteMe.getId());
 
 		boolean deleted = true;
-		deleted = deleted && sDAO.deleteSchedule(deleteMe);
-
+		
 		// delete all the meetings inside the schedule
 		for (Iterator<Meeting> it = mDAO.getAllMeetingsFromSchedule(deleteMe.getId()).iterator(); it.hasNext();) {
 			Meeting m = it.next();
 			deleted = deleted && mDAO.deleteMeeting(m);
 		}
+		
+		deleted = deleted && sDAO.deleteSchedule(deleteMe);
 
 		logger.log("Here -- deleted");
 		return deleted;
