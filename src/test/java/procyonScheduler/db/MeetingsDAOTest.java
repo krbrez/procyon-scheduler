@@ -18,7 +18,7 @@ public class MeetingsDAOTest {
 	public void testConstructorConnection() {
 		MeetingsDAO mDAO = new MeetingsDAO(); 
 
-		Assert.assertFalse(mDAO.equals(null));
+		Assert.assertFalse(mDAO.conn.equals(null));
 	}
 
 	@Test
