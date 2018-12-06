@@ -22,80 +22,81 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class CancelMeetingHandler implements RequestStreamHandler {
-	
-	public LambdaLogger logger = null; 
-	
+
+	public LambdaLogger logger = null;
+
 	/**
 	 * Load from RDS, if it exists
 	 * 
 	 * @throws Exception
 	 */
-	
+
 	boolean cancelMeeting(String id, String code) throws Exception {
 		if (logger != null) {
 			logger.log("in cancelMeeting");
 		}
-		
+
 		boolean cancelled;
-		
-		//create DAO objects
+
+		// create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		
-		//find meeting using ID
+
+		// find meeting using ID
 		Meeting cancelMe = mDAO.getMeeting(id);
-		logger.log("This is the meeting with this ID" + cancelMe.getId()); 
-		
-		//BUGBUGBUG
+		logger.log("This is the meeting with this ID" + cancelMe.getId());
+
+		// BUGBUGBUG
 		logger.log("This is the participant secret code" + cancelMe.getParticipantSecretCode());
-		
-		//is the entered code the same as this meeting's participant secret code?
-		if (code == cancelMe.getParticipantSecretCode()) {
-			//if yes, change this meeting (change to "factory settings")
+
+		// is the entered code the same as this meeting's participant secret
+		// code?
+		if (code.equals(cancelMe.getParticipantSecretCode())) {
+			// if yes, change this meeting (change to "factory settings")
 			cancelMe.cancel();
 			mDAO.updateMeeting(cancelMe);
 			cancelled = true;
-			logger.log("Yep, this is being done by a participant");     //BUGBUGBUG
+			logger.log("Yep, this is being done by a participant"); // BUGBUGBUG
 		}
-		//if not, GET the schedule this meeting is part of (get ID first, then use that to get the rest of the schedule)
+		// if not, GET the schedule this meeting is part of (get ID first, then
+		// use that to get the rest of the schedule)
 		else {
 			String meetingsSchedulesId = cancelMe.getSchedule();
 			Schedule meetingsSchedule = sDAO.getSchedule(meetingsSchedulesId);
-			logger.log("This is the secret code for the organizer" + meetingsSchedule.getSecretCode());  ///BUGBUGBUG
-			
-			//is the code the same as the code of the meeting?
-			if (code == meetingsSchedule.getSecretCode()) {
-				//if yes, change this meeting (change to "factory settings")
+			logger.log("This is the secret code for the organizer" + meetingsSchedule.getSecretCode()); /// BUGBUGBUG
+
+			// is the code the same as the code of the meeting?
+			if (code.equals(meetingsSchedule.getSecretCode())) {
+				// if yes, change this meeting (change to "factory settings")
 				cancelMe.cancel();
 				mDAO.updateMeeting(cancelMe);
 				cancelled = true;
-				logger.log("It's an organizer trying to cancel this");   //BUGBUGBUG
-			}
-			else {
-				//if no, there's an oopsie somewhere
+				logger.log("It's an organizer trying to cancel this"); // BUGBUGBUG
+			} else {
+				// if no, there's an oopsie somewhere
 				cancelled = false;
-				logger.log("You have made a tragic mistake, your code doesn't match either code");   //BUGBUGBUG
+				logger.log("You have made a tragic mistake, your code doesn't match either code"); // BUGBUGBUG
 			}
 		}
 		return cancelled;
 	}
-	
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
 		logger.log("Loading Java Lambda handler to cancel meeting");
-	
+
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json"); // not sure if
 															// needed anymore?
 		headerJson.put("Access-Control-Allow-Methods", "GET,POST,PUT,OPTIONS");
 		headerJson.put("Access-Control-Allow-Origin", "*");
-	
+
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
-	
+
 		CancelMeetingResponse response = null;
-	
+
 		// extract body from incoming HTTP POST request. If any error, then
 		// return 422 error
 		String body;
@@ -105,7 +106,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
-	
+
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
@@ -119,7 +120,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			} else {
 				body = (String) event.get("body");
 				if (body == null) {
-					body = event.toJSONString();  // this is only here to make
+					body = event.toJSONString(); // this is only here to make
 													// testing easier
 				}
 			}
@@ -137,7 +138,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		if (!processed) {
 			CancelMeetingRequest req = new Gson().fromJson(body, CancelMeetingRequest.class);
 			logger.log(req.toString());
-	
+
 			CancelMeetingResponse resp;
 			try {
 				if (cancelMeeting(req.id, req.code)) {
