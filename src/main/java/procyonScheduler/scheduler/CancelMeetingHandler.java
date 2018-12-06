@@ -36,7 +36,7 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 			logger.log("in cancelMeeting");
 		}
 		
-		boolean cancelled = false;
+		boolean cancelled;
 		
 		//create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
