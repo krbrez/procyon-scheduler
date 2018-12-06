@@ -73,12 +73,12 @@ function handleClick(e) {
 
 function showWeek(e) {
   var form = document.showWeekForm;
-  var id = document.getElementById(showWeekID).value;
-  var date = document.getElementById(showWeekDate).value;
+  var id = document.getElementById("showWeekID").value;
+  var date = document.getElementById("showWeekDate").value;
   
   var data = {};
   data["id"] = id;
-  data["date"] = date;
+  data["startDay"] = date;
   
   var js = JSON.stringify(data);
   console.log("JS:" + js);
@@ -91,12 +91,10 @@ function showWeek(e) {
   // This will process results and update HTML as appropriate.
   xhr.onloadend = function () {
     console.log(xhr);
-    console.log(xhr.request);
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText);
       var js = JSON.parse(xhr.responseText);
-	  var respString = js["response"];
-	  window.alert(respString);
+	  window.alert(js["meetings"]);
     } else {
       window.alert("Oops, something went wrong!");
     }
