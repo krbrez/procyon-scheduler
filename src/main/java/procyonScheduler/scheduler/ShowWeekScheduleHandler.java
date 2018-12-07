@@ -113,6 +113,7 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 			try {
 				ArrayList<Meeting> weekMeetings = showWeek(req.id, req.startDay);
 				if (weekMeetings.size() > 0) {
+					weekMeetings.sort(null);
 					resp = new ShowWeekScheduleResponse(req.id, req.startDay, weekMeetings);
 				} else {
 					resp = new ShowWeekScheduleResponse(req.id, req.startDay, 422);

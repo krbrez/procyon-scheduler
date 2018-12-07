@@ -3,7 +3,7 @@ package procyonScheduler.model;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-public class Meeting {
+public class Meeting  implements Comparable<Meeting> {
 	String id;
 	String label; // the name or email address provided by a participant when
 					// they book a meeting
@@ -15,7 +15,7 @@ public class Meeting {
 
 	// constructor for getting an existing meeting
 	public Meeting(String id, String label, GregorianCalendar dateTime, boolean available, String schedule,
-			String participantSecretCode) {
+			String participantSecretCode){
 		this.id = id;
 		this.label = label;
 		this.dateTime = dateTime;
@@ -72,6 +72,26 @@ public class Meeting {
 				this.participantSecretCode += (char) (n + 61);
 			}
 		}
+	}
+	
+	// comparison is by time, then date for dumb HTML reasons
+	public int compareTo(Meeting other) {
+		int diff = 0;
+		
+		int tHour = this.dateTime.get(GregorianCalendar.HOUR_OF_DAY);
+		int oHour = other.getDateTime().get(GregorianCalendar.HOUR_OF_DAY);
+		int tMin = this.dateTime.get(GregorianCalendar.MINUTE);
+		int oMin = other.getDateTime().get(GregorianCalendar.MINUTE);
+		
+		if(tHour > oHour) diff = 1;
+		else if(tHour < oHour) diff = -1;
+		else {
+			if(tMin > oMin) diff = 1;
+			else if(tMin < oMin) diff = -1;
+			else diff = this.dateTime.compareTo(other.getDateTime());
+		}
+		
+		return diff;
 	}
 
 	// relevant setters
