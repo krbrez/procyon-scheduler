@@ -70,14 +70,50 @@ public class CreateAndCancelMeetingTest {
 		Assert.assertTrue(resp2.response.contains(cmr.id));
 		Assert.assertEquals(resp2.httpCode, 200);
 	}
+	
+	@Test
+	public void testCancelMeetingWorksForOrganizer() throws Exception {
+		//Create
+		CreateMeetingHandler crHandler = new CreateMeetingHandler();
+
+		CreateMeetingRequest crmr = new CreateMeetingRequest("hiQ3vL2P8cxn0JnQ", "TestingLabel");
+		String createRequest = new Gson().toJson(crmr);
+		String jsonRequest = new Gson().toJson(new HttpRequest(createRequest));
+
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
+
+		crHandler.handleRequest(input, output, createContext("create"));
+
+		HttpResponse put = new Gson().fromJson(output.toString(), HttpResponse.class);
+		CreateMeetingResponse resp = new Gson().fromJson(put.body, CreateMeetingResponse.class);
+		
+		//Cancel
+		CancelMeetingHandler cHandler = new CancelMeetingHandler();
+
+		CancelMeetingRequest cmr = new CancelMeetingRequest("hiQ3vL2P8cxn0JnQ", "cKN8l0Vs7IYnS2BU");
+		String cancelRequest = new Gson().toJson(cmr);
+		String jsonRequest2 = new Gson().toJson(new HttpRequest(cancelRequest));
+
+		InputStream input2 = new ByteArrayInputStream(jsonRequest2.getBytes());
+		OutputStream output2 = new ByteArrayOutputStream();
+
+		cHandler.handleRequest(input2, output2, createContext("cancel"));
+
+		HttpResponse put2 = new Gson().fromJson(output2.toString(), HttpResponse.class);
+		CancelMeetingResponse resp2 = new Gson().fromJson(put2.body, CancelMeetingResponse.class);
+
+		System.out.println(resp2);
+		Assert.assertTrue(resp2.response.contains(cmr.id));
+		Assert.assertEquals(resp2.httpCode, 200);
+	}
 
 	@Test
-	public void testcreateSchedule422() throws IOException {
-		CreateScheduleHandler handler = new CreateScheduleHandler();
+	public void testcreateMeeting422() throws IOException {
+		CreateMeetingHandler handler = new CreateMeetingHandler();
 
-		CreateScheduleRequest csr = new CreateScheduleRequest("Kyra", "01:00:00.00", "2018-12-30", "02:00:00.00",
-				"2018-12-30", "20");
-		String createRequest = new Gson().toJson(csr);
+		CreateMeetingRequest cmr = new CreateMeetingRequest("xx", "xx");
+		String createRequest = new Gson().toJson(cmr);
 		String jsonRequest = new Gson().toJson(new HttpRequest(createRequest));
 
 		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
@@ -86,9 +122,29 @@ public class CreateAndCancelMeetingTest {
 		handler.handleRequest(input, output, createContext("create"));
 
 		HttpResponse post = new Gson().fromJson(output.toString(), HttpResponse.class);
-		CreateScheduleResponse resp = new Gson().fromJson(post.body, CreateScheduleResponse.class);
+		CreateMeetingResponse resp = new Gson().fromJson(post.body, CreateMeetingResponse.class);
 
-		Assert.assertEquals(resp.httpCode, 422);
+		Assert.assertEquals(resp.httpCode, 403);
+
+	}
+	
+	@Test
+	public void testCancelMeeting403() throws IOException {
+		CancelMeetingHandler handler = new CancelMeetingHandler();
+
+		CancelMeetingRequest cmr = new CancelMeetingRequest("xx", "xx");
+		String cancelRequest = new Gson().toJson(cmr);
+		String jsonRequest = new Gson().toJson(new HttpRequest(cancelRequest));
+
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
+
+		handler.handleRequest(input, output, createContext("cancel"));
+
+		HttpResponse post = new Gson().fromJson(output.toString(), HttpResponse.class);
+		CancelMeetingResponse resp = new Gson().fromJson(post.body, CancelMeetingResponse.class);
+
+		Assert.assertEquals(resp.httpCode, 403);
 
 	}
 
