@@ -39,12 +39,7 @@ public class ManageTimeSlotHandler implements RequestStreamHandler {
 		Schedule s = sDAO.getSchedule(m.getSchedule());
 		// check the secret code
 		if(secretCode.equals(s.getSecretCode())) {
-			boolean avail = m.getAvailable();
-			// if slot was open and someone had a meeting booked, cancel the meeting
-			if(avail && (m.getLabel() != "")) {
-				m.cancel();
-			}
-			m.setAvailable(!avail);
+			m.setAvailable(!m.getAvailable());
 			mDAO.updateMeeting(m);
 			toggled = true;
 		}
