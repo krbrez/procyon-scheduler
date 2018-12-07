@@ -121,7 +121,7 @@ public class SchedulesDAO {
 			String month = form.format(Double.valueOf(m));
 			int d = schedule.getStart().get(Calendar.DAY_OF_MONTH);
 			String day = form.format(Double.valueOf(d));
-			int h = schedule.getStart().get(Calendar.HOUR);
+			int h = schedule.getStart().get(Calendar.HOUR_OF_DAY);
 			String hour = form.format(Double.valueOf(h));
 			int n = schedule.getStart().get(Calendar.MINUTE);
 			String minute = form.format(Double.valueOf(n));
@@ -132,7 +132,7 @@ public class SchedulesDAO {
 			String monthE = form.format(Double.valueOf(mE));
 			int dE = schedule.getEnd().get(Calendar.DAY_OF_MONTH);
 			String dayE = form.format(Double.valueOf(dE));
-			int hE = schedule.getEnd().get(Calendar.HOUR);
+			int hE = schedule.getEnd().get(Calendar.HOUR_OF_DAY);
 			String hourE = form.format(Double.valueOf(hE));
 			int nE = schedule.getEnd().get(Calendar.MINUTE);
 			String minuteE = form.format(Double.valueOf(nE));
@@ -145,7 +145,7 @@ public class SchedulesDAO {
 			String monthC = form.format(Double.valueOf(mC));
 			int dC = schedule.getCreated().get(Calendar.DAY_OF_MONTH);
 			String dayC = form.format(Double.valueOf(dC));
-			int hC = schedule.getCreated().get(Calendar.HOUR);
+			int hC = schedule.getCreated().get(Calendar.HOUR_OF_DAY);
 			String hourC = form.format(Double.valueOf(hC));
 			int nC = schedule.getCreated().get(Calendar.MINUTE);
 			String minuteC = form.format(Double.valueOf(nC));
