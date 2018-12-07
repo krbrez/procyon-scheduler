@@ -103,13 +103,12 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 				String result = createMeeting(req.id, req.label);
 				if (result != "") {
 					resp = new CreateMeetingResponse(
-							"Successfully created meeting: " + req.label + ". Your secret code is: " + result);
+							"Successfully created meeting.", req.label, result);
 				} else {
-					resp = new CreateMeetingResponse("Unable to create meeting: " + req.label, 422);
+					resp = new CreateMeetingResponse("Unable to create meeting", req.label, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateMeetingResponse("Unable to create meeting: " + req.label + " (" + e.getMessage() + ")",
-						403);
+				resp = new CreateMeetingResponse("Unable to create meeting: "+ " (" + e.getMessage() + ")", req.label, 403);
 			}
 
 			// compute proper response

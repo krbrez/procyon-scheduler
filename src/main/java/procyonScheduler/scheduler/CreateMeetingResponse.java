@@ -2,20 +2,26 @@ package procyonScheduler.scheduler;
 
 public class CreateMeetingResponse {
 	String response;
+	String label;
+	String secretCode;
 	int httpCode;
 	
-	public CreateMeetingResponse (String name, int code) {
-		this.response = name;
+	public CreateMeetingResponse (String response, String label, int code) {
+		this.response = response;
 		this.httpCode = code;
+		this.label = label;
+		this.secretCode = "";
 	}
 	
 	// 200 means success
-	public CreateMeetingResponse (String name) {
-		this.response = name;
+	public CreateMeetingResponse (String response, String label, String secretCode) {
+		this.response = response;
+		this.label = label;
+		this.secretCode = secretCode;
 		this.httpCode = 200;
 	}
 	
 	public String toString() {
-		return "You made Meeting " + response + ". Meeting creation successful!";
+		return "You made Meeting " + label + ". With secret code: " + secretCode + ". Meeting creation successful!";
 	}
 }
