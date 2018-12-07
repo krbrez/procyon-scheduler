@@ -73,7 +73,7 @@ public class MeetingsDAO {
 			String month = form.format(Double.valueOf(m));
 			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
 			String day = form.format(Double.valueOf(d));
-			int h = meeting.getDateTime().get(Calendar.HOUR);
+			int h = meeting.getDateTime().get(Calendar.HOUR_OF_DAY);
 			String hour = form.format(Double.valueOf(h));
 			int n = meeting.getDateTime().get(Calendar.MINUTE);
 			String minute = form.format(Double.valueOf(n));
@@ -119,7 +119,7 @@ public class MeetingsDAO {
 			String month = form.format(Double.valueOf(m));
 			int d = meeting.getDateTime().get(Calendar.DAY_OF_MONTH);
 			String day = form.format(Double.valueOf(d));
-			int h = meeting.getDateTime().get(Calendar.HOUR);
+			int h = meeting.getDateTime().get(Calendar.HOUR_OF_DAY);
 			String hour = form.format(Double.valueOf(h));
 			int n = meeting.getDateTime().get(Calendar.MINUTE);
 			String minute = form.format(Double.valueOf(n));
