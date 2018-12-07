@@ -45,7 +45,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
-		logger.log("Loading Java Lambda handler to create schedule");
+		logger.log("Loading Java Lambda handler to create meeting");
 
 		JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type", "application/json"); // not sure if
@@ -69,7 +69,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			logger.log("event:" + event.toJSONString());
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
-				response = new CreateMeetingResponse("name", 200); // OPTIONS
+				response = new CreateMeetingResponse("id, label", "", 200); // OPTIONS
 																	// needs a
 																	// 200
 																	// response
@@ -85,7 +85,7 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), 422); // unable
+			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), "", 422); // unable
 																							// to
 																							// process
 																							// input
