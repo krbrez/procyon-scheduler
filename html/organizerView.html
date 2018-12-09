@@ -42,8 +42,6 @@ function processResponse(result) {
   // currently the date to view needs to be a monday, but I should add my findMonday so that it can be any day
 
 
-
-
 }
 
 function handleClick(e) {
@@ -114,24 +112,45 @@ function showWeek(e) {
       console.log(meetings);
       var startDay = js["startDay"];
       console.log(startDay);
-      var dateTime = meetings["dateTime"];
+      var dateTime = meetings[0]["dateTime"];
       console.log (dateTime);
-      var firstScheduleDay = meetings[0]["dayOfMonth"];
+      // var parsedDateTime = JSON.parse(dateTime);
+      var firstScheduleDay = dateTime["dayOfMonth"];
       console.log(firstScheduleDay)
-      var firstScheduleMonth = meetings[0]["month"];
-      var firstScheduleYear = meetings[0]["year"];
-      var firstScheduleHour = meetings[0]["hourOfDay"];
-      var firstScheduleMinute = meetings[0]["minute"];
-      var firstScheduleSecond = meetings[0]["second"];
+      var firstScheduleMonth = dateTime["month"];
+      var firstScheduleYear = dateTime["year"];
+      var firstScheduleHour = dateTime["hourOfDay"];
+      if (firstScheduleHour < 10){
+        firstScheduleHour = "0" + firstScheduleHour.toString()
+      }
+      else {
+        firstScheduleHour = firstScheduleHour.toString()
+      }
+      var firstScheduleMinute = dateTime["minute"];
+      if (firstScheduleMinute < 10){
+        firstScheduleMinute = "0" + firstScheduleMinute.toString()
+      }
+      else {
+        firstScheduleMinute = firstScheduleMinute.toString()
+      }
+      var firstScheduleSecond = dateTime["second"];
+      if (firstScheduleMinute < 10){
+        firstScheduleSecond = "0" + firstScheduleSecond.toString()
+      }
+      else {
+        firstScheduleSecond = firstScheduleSecond.toString()
+      }
 
-      var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth.toString() + "-" + firstScheduleDay.toString() + "T" + firstScheduleHour.toString() + ":" + firstScheduleMinute.toString() + ":" + firstScheduleSecond.toString();
+      var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth.toString() + "-" + firstScheduleDay.toString() + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
       console.log(scheduleStringFormat);
+      var mondayStringFormat = startDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
       //new Date('2018-12-05T00:00:00')
-      //var firstScheduleDate = new Date();
+      var firstScheduleDate = new Date(scheduleStringFormat);
+      var firstMondayDate = new Date(mondayStringFormat);
 
 
       // for this function to work it needs two full dates and a zero
-      // setWeek(null,null,0);
+      setWeek(firstScheduleDate,firstMondayDate,0);
 
 
 
@@ -362,19 +381,19 @@ function showWeek(e) {
 		    for (var j=1; j <= 5; j ++){
 		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
 		        htmlString +=("<td>this is the " + d + "th meeting on the "+ j + "th day<br>");
-            //console.log(meetings[arrayCounter]["label"] + "   .");
+            // console.log(meetings[arrayCounter]["label"] + "   .");
             // if (meetings[arrayCounter]["label"] != ""){
             //   htmlString +=(meetings[arrayCounter]["label"]);
             // }
             // else{
             //  htmlString +=("Empty Meeting with ID: " + meetings[arrayCounter]["id"] + "");
-            //}
-		        //
-		        // all in this area will be inside of the box on the calendar
-		        //
-            console.log(arrayCounter);
-            //console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
-            //console.log(JSON.parse(meetings)["id"]);
+            // }
+            //
+		        // //all in this area will be inside of the box on the calendar
+            //
+            // console.log(arrayCounter);
+            // console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
+            // console.log(JSON.parse(meetings)["id"]);
             arrayCounter++;
             htmlString +=("</td>");
 		      }
