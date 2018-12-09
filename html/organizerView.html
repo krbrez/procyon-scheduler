@@ -150,7 +150,7 @@ function showWeek(e) {
 
 
       // for this function to work it needs two full dates and a zero
-      setWeek(firstScheduleDate,firstMondayDate,0);
+      setWeek(meetings, firstScheduleDate, firstMondayDate);
 
 
 
@@ -340,7 +340,7 @@ function showWeek(e) {
 		console.log("Monday of start Week: " + mondayOfStartWeek);
 
 		//Build the calendar, this requires lots of information from outside of the function
-		function buildCalendar(mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
+		function buildCalendar(meetings, mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
       var htmlString = "";
 
 		  if (isFirstWeek == 1){
@@ -381,19 +381,19 @@ function showWeek(e) {
 		    for (var j=1; j <= 5; j ++){
 		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
 		        htmlString +=("<td>this is the " + d + "th meeting on the "+ j + "th day<br>");
-            // console.log(meetings[arrayCounter]["label"] + "   .");
-            // if (meetings[arrayCounter]["label"] != ""){
-            //   htmlString +=(meetings[arrayCounter]["label"]);
-            // }
-            // else{
-            //  htmlString +=("Empty Meeting with ID: " + meetings[arrayCounter]["id"] + "");
-            // }
-            //
-		        // //all in this area will be inside of the box on the calendar
-            //
-            // console.log(arrayCounter);
-            // console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
-            // console.log(JSON.parse(meetings)["id"]);
+            console.log(meetings[arrayCounter]["label"] + "   .");
+            if (meetings[arrayCounter]["label"] != ""){
+              htmlString +=(meetings[arrayCounter]["label"]);
+            }
+            else{
+             htmlString +=("Empty Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+            }
+
+		        //all in this area will be inside of the box on the calendar
+
+            console.log(arrayCounter);
+            console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
+            console.log(meetings[arrayCounter]["id"]);
             arrayCounter++;
             htmlString +=("</td>");
 		      }
@@ -431,9 +431,9 @@ function showWeek(e) {
 			returnThisDate.setDate(mondayOfCurrentWeek.getDate() - 7);
 		  return returnThisDate
 		}
-		function setWeek(date, monday){
+		function setWeek(meetings, date, monday){
 		  console.log("date and Monday in SetWeek " + date + " " + monday);
-		  buildCalendar(monday, date, 0);
+		  buildCalendar(meetings, monday, date, 0);
 		}
 		function findMonday(mondayDate){
 		  var findTestMonday = new Date();
