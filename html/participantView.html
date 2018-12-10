@@ -170,6 +170,8 @@ function showWeek(e) {
   </section>
   <section class = "ParticipantOptions" id="ParticipantOptions">
     <br>
+
+    <!-- The buttons that search the calendar
     <fieldset>
       <legend>Search This Schedule</legend>
       <form>
@@ -253,6 +255,22 @@ function showWeek(e) {
     <input type="submit" value="Submit">
   </form>
     </fieldset>
+  -->
+    <fieldset>
+      <legend>Schedule and Cancel Meetings</legend>
+      <form name="toggleAvailable">
+      	Schedule a Meeting: <input type="text" name="" id="" value="Meeting ID"> with the Label: <input type="text" name="" id="" value="Meeting Name"><button type="button" onclick="JavaScript:ScheduleMeeting(this)">Submit</button><br>
+      </form>
+      Your Secret Code for this Meeting is: <input id="secretCodeMeetingParticipant" readonly/>
+      <br>
+      <br>
+      <form name="toggleAvailable">
+      	Cancel the Meeting: <input type="text" name="CancelMeetingParticipant" id="CancelMeetingParticipant" value="Meeting ID"> Using my Secret Code: <input type="text" name="cancelMeetingParticipentCode" id="cancelMeetingParticipentCode" value="Secret Code"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
+      </form>
+    </fieldset>
+
+
+
     <br>
     <script>
     // Begin Calendar3 code
@@ -394,14 +412,6 @@ function showWeek(e) {
       <legend>List of available Meetings</legend>
       The area where the searched Meetings will appear
       <br><br><br><br><br><br><br><br><br><br>
-    </fieldset>
-    <br>
-    <fieldset>
-      <legend>Meeting View</legend>
-      Your Secret Code for this Meeting is: <input name="SecretCodeMeeting" readonly/>
-      <br><br>
-      MEETING DETAILS HERE
-      <br>
     </fieldset>
   </section>
 </body>
