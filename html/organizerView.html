@@ -389,7 +389,13 @@ function showWeek(e) {
               htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
-             htmlString +=("Empty Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+             htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+            }
+            if (meetings[arrayCounter]["available"]){
+              htmlString +=("<br>Open Meeting");
+            }
+            else{
+              htmlString +=("<br>Closed Meeting!");
             }
 		        //all in this area will be inside of the box on the calendar
             console.log(arrayCounter);
