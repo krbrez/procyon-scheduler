@@ -21,29 +21,21 @@ th {
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 var showweek_url = base_url + "showweek";    // PUT
-
-
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
   console.log("result:" + result);
   var js = JSON.parse(result);
-
   var respString = js["response"];
   var id = js["id"];
   var code = js["secretCode"];
-
   // Update computation result
   document.getElementById("secretCodeOrganizer").value = code;
   document.getElementById("scheduleIdOrganizer").value = id;
   window.alert(respString);
-
   // this is the json string that is gotten back, instead of the alert I should parse it then use it in the calendar
   // currently the date to view needs to be a monday, but I should add my findMonday so that it can be any day
-
-
 }
-
 function handleClick(e) {
   var form = document.createSchedule;
   var name = form.scheduleName.value;
@@ -53,25 +45,21 @@ function handleClick(e) {
   var startHour = e.options[e.selectedIndex].value; //"10:00:00.00";
   var g = document.getElementById("endHour");
   var endHour = g.options[g.selectedIndex].value; //"17:00:00.00";
-  var startDate = form.StartDate.value; //"2018-11-29";
-  var endDate = form.EndDate.value; //"2018-11-30";
-
+  var startDateCreate = form.StartDateForm.value; //"2018-11-29";
+  var endDateCreate = form.EndDateForm.value; //"2018-11-30";
   var data = {};
   data["name"] = name;
   data["startTime"] = startHour;
-  data["startDate"] = startDate;
+  data["startDate"] = startDateCreate;
   data["endTime"] = endHour;
-  data["endDate"] = endDate;
+  data["endDate"] = endDateCreate;
   data["blockSize"] = timeslotSize;
-
   var js = JSON.stringify(data);
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
   xhr.open("POST", create_url, true);
-
   // send the collected data as JSON
   xhr.send(js);
-
   // This will process results and update HTML as appropriate.
   xhr.onloadend = function () {
     console.log(xhr);
@@ -84,40 +72,54 @@ function handleClick(e) {
     }
   };
 }
-
 function showWeek(e) {
+  startDate = new Date(); // a date
+  endDate = new Date(); // a date
   var form = document.showWeekForm;
   var id = document.getElementById("showWeekID").value;
   var date = document.getElementById("showWeekDate").value;
-
   var data = {};
   data["id"] = id;
   data["startDay"] = date;
-
   var js = JSON.stringify(data);
   console.log("JS:" + js);
   var xhr = new XMLHttpRequest();
   xhr.open("PUT", showweek_url, true);
-
   // send the collected data as JSON
   xhr.send(js);
-
   // This will process results and update HTML as appropriate.
+
+  // lots of parts of this function (the stack of is statements) will have to moved to a more globally reachable function _____________________________
   xhr.onloadend = function () {
     console.log(xhr);
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
       var js = JSON.parse(xhr.responseText);
       var meetings = js["meetings"];
-      console.log(meetings);
+      var meetingsLength = meetings.length;
+      var lastMeeting = meetings[meetingsLength-1];
       var startDay = js["startDay"];
-      console.log(startDay);
+      var timeslotSize = js["blockSize"];
       var dateTime = meetings[0]["dateTime"];
-      console.log (dateTime);
-      // var parsedDateTime = JSON.parse(dateTime);
+      var dateTimeLast = lastMeeting["dateTime"];
+      console.log("dateTimeLast" + dateTimeLast["dayOfMonth"]);
+      console.log("dateTime" + dateTime["dayOfMonth"]);
+
+      //grabbing the information for the first day of the schedule
       var firstScheduleDay = dateTime["dayOfMonth"];
-      console.log(firstScheduleDay)
-      var firstScheduleMonth = dateTime["month"];
+      if (firstScheduleDay < 10){
+        firstScheduleDay = "0" + firstScheduleDay.toString()
+      }
+      else {
+        firstScheduleDay = firstScheduleDay.toString()
+      }
+      var firstScheduleMonth = dateTime["month"] + 1;
+      if (firstScheduleMonth < 10){
+        firstScheduleMonth = "0" + firstScheduleMonth.toString()
+      }
+      else {
+        firstScheduleMonth = firstScheduleMonth.toString()
+      }
       var firstScheduleYear = dateTime["year"];
       var firstScheduleHour = dateTime["hourOfDay"];
       if (firstScheduleHour < 10){
@@ -134,34 +136,74 @@ function showWeek(e) {
         firstScheduleMinute = firstScheduleMinute.toString()
       }
       var firstScheduleSecond = dateTime["second"];
-      if (firstScheduleMinute < 10){
+      if (firstScheduleSecond < 10){
         firstScheduleSecond = "0" + firstScheduleSecond.toString()
       }
       else {
         firstScheduleSecond = firstScheduleSecond.toString()
       }
 
-      var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth.toString() + "-" + firstScheduleDay.toString() + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
+      // grabbing information ofr the last day of the schedule
+      var lastScheduleDay = dateTimeLast["dayOfMonth"];
+      if (lastScheduleDay < 10){
+        lastScheduleDay = "0" + lastScheduleDay.toString()
+      }
+      else {
+        lastScheduleDay = lastScheduleDay.toString()
+      }
+      var lastScheduleMonth = dateTimeLast["month"] + 1;
+      if (lastScheduleMonth < 10){
+        lastScheduleMonth = "0" + lastScheduleMonth.toString()
+      }
+      else {
+        lastScheduleMonth = lastScheduleMonth.toString()
+      }
+      var lastScheduleYear = dateTimeLast["year"];
+      var lastScheduleHour = dateTimeLast["hourOfDay"];
+      if (lastScheduleHour < 10){
+        lastScheduleHour = "0" + lastScheduleHour.toString()
+      }
+      else {
+        lastScheduleHour = lastScheduleHour.toString()
+      }
+      var lastScheduleMinute = dateTimeLast["minute"];
+      if (lastScheduleMinute < 10){
+        lastScheduleMinute = "0" + lastScheduleMinute.toString()
+      }
+      else {
+        lastScheduleMinute = lastScheduleMinute.toString()
+      }
+      var lastScheduleSecond = dateTimeLast["second"];
+      if (lastScheduleSecond < 10){
+        lastScheduleSecond = "0" + lastScheduleSecond.toString()
+      }
+      else {
+        lastScheduleSecond = lastScheduleSecond.toString()
+      }
+
+      // using that information to make the dates
+      var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth + "-" + firstScheduleDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
       console.log(scheduleStringFormat);
       var mondayStringFormat = startDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
-      //new Date('2018-12-05T00:00:00')
+      console.log("lastScheduleDay " + lastScheduleDay);
+      var endDateStringFormat = lastScheduleYear.toString() + "-" + lastScheduleMonth + "-" + lastScheduleDay + "T" + lastScheduleHour + ":" + lastScheduleMinute + ":" + lastScheduleSecond;
       var firstScheduleDate = new Date(scheduleStringFormat);
       var firstMondayDate = new Date(mondayStringFormat);
+      var lastScheduleDate = new Date(endDateStringFormat);
 
-
-      // for this function to work it needs two full dates and a zero
-      setWeek(meetings, firstScheduleDate, firstMondayDate);
-
-
-
-	    console.log(meetings); // this is the console.log that displays the array of meetings
+      //setting the start and end date to make the calendar
+      setEndDate(lastScheduleDate);
+      setStartDate(firstScheduleDate);
+      console.log ("StartDate " + startDate);
+      console.log ("endDate" + endDate);
+      console.log(meetings); // this is the console.log that displays the array of meetings
+      setWeek(meetings, firstScheduleDate, firstMondayDate, timeslotSize);
 
     } else {
       window.alert("Oops, something went wrong!");
     }
   };
 }
-
 </script>
 </head>
 <body>
@@ -237,8 +279,8 @@ function showWeek(e) {
       <option value="22:00:00.00">22:00</option>
       <option value="23:00:00.00">23:00</option>
     </select>
-    Start Date <input type="date" name="StartDate">
-    End Date <input type="date" name="EndDate">
+    Start Date <input type="date" name="StartDateForm">
+    End Date <input type="date" name="EndDateForm">
     <button type="button" onclick="JavaScript:handleClick(this)">Create a Schedule of your own!</button><br>
   </form>
   </fieldset>
@@ -304,59 +346,20 @@ function showWeek(e) {
 
 <!--______________________________________________________________________________________________________________________-->
       <script>
-      // Begin Calendar3 code
-
-        //TODO: make a function for setting all of the initial input
-
-
-
-		var startDate = new Date('2018-12-11T00:00:00'); // a date
-		var endDate = new Date('2018-12-14T23:00:00'); // a date
-		var timeSlotSizeString = "10"; //10, 15, 20, 30, 60
-		var timeSlotSize = parseInt(timeSlotSizeString);
-		var startTime = startDate.getHours(); // a time
-		var endTime = endDate.getHours(); // a time
-
-		// the variables that are gotten from those initial data values
-		var startDayOfWeek = startDate.getDay();
-		var endDayOfWeek = endDate.getDay();
-		var timeSlotAmount = 60 / window.timeSlotSize * (window.endTime - window.startTime);
+    // Begin Calendar3 code
 
 		// sets up variables that are used in display
 		Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
-
 		//Sets up the unfinished weeks that will be created in the calendar by setting the first Monday and final Friday
-		// = in javascript is stupid and doesnt make a copy of the variable
-		var mondayOfStartWeek = new Date();
-		mondayOfStartWeek.setTime(startDate.getTime());
-		mondayOfStartWeek.setDate(mondayOfStartWeek.getDate());
-
-		console.log("startDate0: " + startDate)
-		// functions to get the monday of the start week and the friday of the end week
-		for (var i=startDayOfWeek; i>1; i--){
-			mondayOfStartWeek.setDate(mondayOfStartWeek.getDate() - 1);
-		}
-
-		console.log("Monday of start Week: " + mondayOfStartWeek);
 
 		//Build the calendar, this requires lots of information from outside of the function
-		function buildCalendar(meetings, mondayOfBuildWeek, scheduleStartDate, isFirstWeek){
+		function buildCalendar(meetings, scheduleStartDate, mondayOfBuildWeek, timeSlotSize){
       var htmlString = "";
-
-		  if (isFirstWeek == 1){
-		    startOfSchedule = window.startDate;
-		    buildScheduleDate = window.mondayOfStartWeek;
-		    buildScheduleMonth = window.mondayOfStartWeek.getMonth();
-		    buildScheduleYear = window.mondayOfStartWeek.getFullYear();
-		  }
-		  else {
-		    startOfSchedule = scheduleStartDate
-		    buildScheduleDate = mondayOfBuildWeek;
-		    buildScheduleMonth = mondayOfBuildWeek.getMonth();
-		    buildScheduleYear = mondayOfBuildWeek.getFullYear();
-		  }
+		   startOfSchedule = scheduleStartDate
+		   buildScheduleDate = mondayOfBuildWeek;
+		   buildScheduleMonth = mondayOfBuildWeek.getMonth();
+		   buildScheduleYear = mondayOfBuildWeek.getFullYear();
 		  console.log("buildScheduleDate " + buildScheduleDate)
-
 		  // this is just a loop to get the words for the month
 		  for (var i=0; i<12; i++){
 		    if (buildScheduleMonth == i){
@@ -373,27 +376,24 @@ function showWeek(e) {
 		  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
 		  + (buildScheduleDate.getDate()+3) + '</th><th>Fri '
 		  + (buildScheduleDate.getDate()+4) + '</th></tr>');
-
 		  // print out of the main section of the table
-		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<window.endDate.getHours(); i+= timeSlotSize/60){
+      console.log(window.endDate.getHours())
+		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1 - (timeSlotSize/60)); i+= (timeSlotSize/60)){
 		    htmlString += ('<tr>');
-		    htmlString +=('<td>'+ (i) + " - " + (i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
+		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
 		    for (var j=1; j <= 5; j ++){
 		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
-		        htmlString +=("<td>this is the " + d + "th meeting on the "+ j + "th day<br>");
-            console.log(meetings[arrayCounter]["label"] + "   .");
+		        htmlString +=("<td>");
+            console.log(meetings[arrayCounter]["label"]);
             if (meetings[arrayCounter]["label"] != ""){
-              htmlString +=(meetings[arrayCounter]["label"]);
+              htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
              htmlString +=("Empty Meeting with ID: " + meetings[arrayCounter]["id"] + "");
             }
-
 		        //all in this area will be inside of the box on the calendar
-
             console.log(arrayCounter);
             console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
-            console.log(meetings[arrayCounter]["id"]);
             arrayCounter++;
             htmlString +=("</td>");
 		      }
@@ -417,23 +417,9 @@ function showWeek(e) {
 		}// end of function buildCalendar
 		//buildCalendar(null,null,1)
 
-
-
-		function nextWeekMondayDate(mondayOfCurrentWeek){
-		  var returnThisDate = new Date();
-		  returnThisDate.setTime(mondayOfCurrentWeek.getTime());
-			returnThisDate.setDate(mondayOfCurrentWeek.getDate() + 7);
-		  return returnThisDate
-		}
-		function prevWeekMondayDate(mondayOfCurrentWeek){
-		  var returnThisDate = new Date();
-		  returnThisDate.setTime(mondayOfCurrentWeek.getTime());
-			returnThisDate.setDate(mondayOfCurrentWeek.getDate() - 7);
-		  return returnThisDate
-		}
-		function setWeek(meetings, date, monday){
+		function setWeek(meetings, date, monday, timeslotSize){
 		  console.log("date and Monday in SetWeek " + date + " " + monday);
-		  buildCalendar(meetings, monday, date, 0);
+		  buildCalendar(meetings, date, monday, timeslotSize);
 		}
 		function findMonday(mondayDate){
 		  var findTestMonday = new Date();
@@ -450,55 +436,37 @@ function showWeek(e) {
 		//var testMonday = findMonday(testDate);
 		//setWeek(testDate, testMonday);
 
+    // Code written by Matt Johnson
+    function minTommss(minutes){
+     var sign = minutes < 0 ? "-" : "";
+     var min = Math.floor(Math.abs(minutes));
+     var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+     if (sec%10 == 9){ // added this stack of if statements to prevent edge cases
+       if (sec%100 == 59){
+         sec = 0;
+         min +=1;
+       }
+       else{
+         sec+=1;
+       }
+     }
+     return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+    // end Matt Johnson Code
 
-		function nextWeekRunner(thisWeekAnyDate){
-		  var mondayofthisWeek = findMonday(thisWeekAnyDate);
-		  console.log("Monday of this week: " + mondayofthisWeek);
-		  var mondayNextWeek = nextWeekMondayDate(mondayofthisWeek);
-		  console.log("Monday of next week: " + mondayNextWeek);
-		  setWeek(mondayNextWeek,mondayNextWeek);
-		}
-
-		function prevWeekRunner(thisWeekAnyDate, thisScheduleStartDate){
-		  var mondayofthisWeek = findMonday(thisWeekAnyDate);
-		  console.log("Monday of this week: " + mondayofthisWeek);
-		  var mondayPrevWeek = prevWeekMondayDate(mondayofthisWeek);
-		  console.log("Monday of next week: " + mondayPrevWeek);
-		  setWeek(mondayPrevWeek,mondayPrevWeek);
-		}
 		//prevWeekRunner(testDate);
-
-
 		function setStartDate(setToThis){
-		  startDate = setToThis; // setToThis has to be a date
+		  window.startDate = setToThis; // setToThis has to be a date
 		}
 		function setEndDate(setToThis){
-		  endDate = setToThis; // setToThis has to be a date
+		  window.endDate = setToThis; // setToThis has to be a date
 		}
 		function setStartHour(setToThis){
 		  startDate.setHours(setToThis); // setToThis has to be an int from 0-23
 		}
 		function setEndHour(){
-		  endDate.setHours(setToThis); // setToThis has to be an int from 0-23
+		  window.endDate.setHours(setToThis); // setToThis has to be an int from 0-23
 		}
-
-
-
-		// this is the copy and pasted section of the code which I don't why it works, but I know it works
-		function processResponseCalendar(result) {
-		  // Can grab any DIV or SPAN HTML element and can then manipulate its
-		  // contents dynamically via javascript
-		  console.log("result:" + result);
-		  var js = JSON.parse(result);
-		  var respString = js["response"];
-		  var id = js["id"];             // change to get the information that you need
-		  var code = js["secretCode"];   // change to get the information that you need
-		   // Update computation result
-		  document.getElementById("secretCodeOrganizer").value = code;
-		  document.getElementById("scheduleIdOrganizer").value = id;
-		  window.alert(respString);
-		}
-
 	  </script>
 <!--______________________________________________________________________________________________________________________-->
 
