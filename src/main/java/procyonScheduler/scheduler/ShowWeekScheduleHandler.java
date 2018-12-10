@@ -20,6 +20,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import procyonScheduler.db.MeetingsDAO;
+import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.scheduler.ShowWeekScheduleRequest;
 import procyonScheduler.scheduler.ShowWeekScheduleResponse;
@@ -114,7 +115,8 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 				ArrayList<Meeting> weekMeetings = showWeek(req.id, req.startDay);
 				if (weekMeetings.size() > 0) {
 					weekMeetings.sort(null);
-					resp = new ShowWeekScheduleResponse(req.id, req.startDay, weekMeetings);
+					SchedulesDAO sDAO = new SchedulesDAO();
+					resp = new ShowWeekScheduleResponse(req.id, req.startDay, sDAO.getSchedule(req.id).getBlockSize(), weekMeetings);
 				} else {
 					resp = new ShowWeekScheduleResponse(req.id, req.startDay, 422);
 				}
