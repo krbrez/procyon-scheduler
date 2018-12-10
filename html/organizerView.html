@@ -295,8 +295,20 @@ function showWeek(e) {
     </form>
   </fieldset>
   <br>
+
   <fieldset>
     <legend>Edit This Schedule</legend>
+
+    <form name="toggleAvailable">
+    	Toggle availability for this Meeting: <input type="text" name="toggleAvailMeetingCode" id="toggleAvailMeetingCode" value="Meeting Secret Code"><input type="text" name="toggleAvailMeetingID" id="toggleAvailMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:toggleAvailMeeting(this)">Submit</button><br>
+    </form>
+
+    <form name="toggleAvailable">
+    	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Meeting Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
+    </form>
+
+    <!-- The old inputs into this field.
+
     <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
     <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
     <form>Open all meetings on
@@ -333,7 +345,10 @@ function showWeek(e) {
       <option value="slot1">Add timeslots to this dropdown</option>
     </select>
     <input type="submit"></form>
+  -->
   </fieldset>
+
+
   </section>
   <br>
   <section class = "OrganizerCalendar" id="OrganizerCalendar">
