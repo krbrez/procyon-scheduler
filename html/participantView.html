@@ -1,13 +1,20 @@
 <!doctype html>
 <html lang="en-US">
 <head>
+<style>
+table, th, td {
+    border: 1px solid black;
+    /*make empty or closed meeting a header box which will be set to a different color in this style area
+    */
+}
+th {
+  background-color:grey;
+}
+</style>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Participant</title>
-<link href="cs3733Template.css" rel="stylesheet" type="text/css">
-<script>var __adobewebfontsappname__="dreamweaver"</script>
-<script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
 <script type="text/javascript">
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
@@ -155,13 +162,9 @@ function showWeek(e) {
     </header>
   <section class = "initialParticipantInput" id="initialParticipantInput">
     <fieldset>
-      <legend>View a Schedule or Meeting</legend>
-      <form>
-        Schedule ID: <input type="text" name="ScheduleID" value="">
-        <input type="submit" value="Submit">
-        <br>
-        Meeting ID: <input type="text" name="MeetingID" value="">
-        <input type="submit" value="Submit">
+      <legend>Display One Week of a Schedule</legend>
+      <form name="showWeekForm">
+      	Display Schedule with ID: <input type="text" name="showWeekID" id="showWeekID" value=""> on the week of: <input type="date" name="showWeekDate" id="showWeekDate"><button type="button" onclick="JavaScript:showWeek(this)">Submit</button><br>
       </form>
     </fieldset>
   </section>
@@ -251,10 +254,140 @@ function showWeek(e) {
   </form>
     </fieldset>
     <br>
+    <script>
+    // Begin Calendar3 code
+
+		// sets up variables that are used in display
+		Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+		//Sets up the unfinished weeks that will be created in the calendar by setting the first Monday and final Friday
+
+		//Build the calendar, this requires lots of information from outside of the function
+		function buildCalendar(meetings, scheduleStartDate, mondayOfBuildWeek, timeSlotSize){
+      var htmlString = "";
+		   startOfSchedule = scheduleStartDate
+		   buildScheduleDate = mondayOfBuildWeek;
+		   buildScheduleMonth = mondayOfBuildWeek.getMonth();
+		   buildScheduleYear = mondayOfBuildWeek.getFullYear();
+		  console.log("buildScheduleDate " + buildScheduleDate)
+		  // this is just a loop to get the words for the month
+		  for (var i=0; i<12; i++){
+		    if (buildScheduleMonth == i){
+		      var monthDisplay = Months[i];
+		    }
+		  }
+		  // this prints out the heading of the table
+		  // TODO MAKE THE BUTTON FOR LINKING PREV WEEK, that will go here in a document.write
+		  htmlString +=(monthDisplay + " " + buildScheduleYear);
+		  // TODO MAKE THE BUTTON FOR LINKING NEXT WEEK, that will go here in a document.write
+			htmlString += ('<table><tr><th>TIMESLOT</th><th>Mon '
+		  + (buildScheduleDate.getDate()+0) + '</th><th>Tue '
+		  + (buildScheduleDate.getDate()+1) + '</th><th>Wed '
+		  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
+		  + (buildScheduleDate.getDate()+3) + '</th><th>Fri '
+		  + (buildScheduleDate.getDate()+4) + '</th></tr>');
+		  // print out of the main section of the table
+      console.log(window.endDate.getHours())
+		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1 - (timeSlotSize/60)); i+= (timeSlotSize/60)){
+		    htmlString += ('<tr>');
+		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
+		    for (var j=1; j <= 5; j ++){
+		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
+		        htmlString +=("<td>");
+            console.log(meetings[arrayCounter]["label"]);
+            if (meetings[arrayCounter]["label"] != ""){
+              htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
+            }
+            else{
+             htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+            }
+            if (meetings[arrayCounter]["available"]){
+              htmlString +=("<br>Open Meeting");
+            }
+            else{
+              htmlString +=("<br>Closed Meeting!");
+            }
+		        //all in this area will be inside of the box on the calendar
+            console.log(arrayCounter);
+            console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
+            arrayCounter++;
+            htmlString +=("</td>");
+		      }
+		      else {
+		        htmlString +=("<th>This day is out of Schedule!</th>");
+		      }
+		      // this if else handles the end date of the schedule
+		      if (j == 5){
+		        buildScheduleDate.setDate(buildScheduleDate.getDate() - 4);
+		      }
+		      else {
+		        buildScheduleDate.setDate(buildScheduleDate.getDate() + 1);
+		      }
+				}
+		    htmlString +=('</tr>');
+		    d++;
+			}
+		  htmlString +=('</table>');
+      console.log(htmlString);
+      document.getElementById("htmlCalendar").innerHTML = htmlString;
+		}// end of function buildCalendar
+		//buildCalendar(null,null,1)
+
+		function setWeek(meetings, date, monday, timeslotSize){
+		  console.log("date and Monday in SetWeek " + date + " " + monday);
+		  buildCalendar(meetings, date, monday, timeslotSize);
+		}
+		function findMonday(mondayDate){
+		  var findTestMonday = new Date();
+		  findTestMonday.setTime(mondayDate.getTime());
+		  console.log("date and Monday in FindMonday " + mondayDate + " " + findTestMonday);
+		  for (var i=mondayDate.getDay(); i>1; i--){
+		  	findTestMonday.setDate(findTestMonday.getDate() - 1);
+		  }
+		  console.log("date and Monday after FindMonday " + mondayDate + " " + findTestMonday);
+		  return findTestMonday
+		}
+		//USE SetWeek with the Dates for any week other than the first one
+		//var testDate = new Date('2018-12-12T05:00:00');
+		//var testMonday = findMonday(testDate);
+		//setWeek(testDate, testMonday);
+
+    // Code written by Matt Johnson
+    function minTommss(minutes){
+     var sign = minutes < 0 ? "-" : "";
+     var min = Math.floor(Math.abs(minutes));
+     var sec = Math.floor((Math.abs(minutes) * 60) % 60);
+     if (sec%10 == 9){ // added this stack of if statements to prevent edge cases
+       if (sec%100 == 59){
+         sec = 0;
+         min +=1;
+       }
+       else{
+         sec+=1;
+       }
+     }
+     return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+    // end Matt Johnson Code
+
+		//prevWeekRunner(testDate);
+		function setStartDate(setToThis){
+		  window.startDate = setToThis; // setToThis has to be a date
+		}
+		function setEndDate(setToThis){
+		  window.endDate = setToThis; // setToThis has to be a date
+		}
+		function setStartHour(setToThis){
+		  startDate.setHours(setToThis); // setToThis has to be an int from 0-23
+		}
+		function setEndHour(){
+		  window.endDate.setHours(setToThis); // setToThis has to be an int from 0-23
+		}
+	  </script>
+
     <fieldset>
       <legend>Schedule View</legend>
-      The Secret Code to view this Schedule is: <input name="SecretCodeParticipantSchedule" readonly/>
-      <br><br><br><br><br><br><br><br><br><br><br><br>
+      <div id="htmlCalendar"></div>
+      <br><br>
     </fieldset>
     <br>
     <fieldset>
