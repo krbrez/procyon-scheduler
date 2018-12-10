@@ -8,20 +8,23 @@ import procyonScheduler.model.Meeting;
 public class ShowWeekScheduleResponse {
 	String id;
 	String startDay;
+	int blockSize;
 	ArrayList<Meeting> meetings;
 	int httpCode;
 	
 	public ShowWeekScheduleResponse (String id, String startDay, int code) {
 		this.id = id;
 		this.startDay = startDay;
+		this.blockSize = 0;
 		this.meetings = new ArrayList<Meeting>();
 		this.httpCode = code;
 	}
 	
 	// 200 means success
-	public ShowWeekScheduleResponse (String id, String startDay, ArrayList<Meeting> meetings) {
+	public ShowWeekScheduleResponse (String id, String startDay, int blockSize, ArrayList<Meeting> meetings) {
 		this.id = id;
 		this.startDay = startDay;
+		this.blockSize = blockSize;
 		this.meetings = meetings;
 		this.httpCode = 200;
 	}
