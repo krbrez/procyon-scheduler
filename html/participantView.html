@@ -8,6 +8,144 @@
 <link href="cs3733Template.css" rel="stylesheet" type="text/css">
 <script>var __adobewebfontsappname__="dreamweaver"</script>
 <script src="http://use.edgefonts.net/source-sans-pro:n2:default.js" type="text/javascript"></script>
+<script type="text/javascript">
+//JavaScript Goes Here
+var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
+var showweek_url = base_url + "showweek";    // PUT
+
+function showWeek(e) {
+  startDate = new Date(); // a date
+  endDate = new Date(); // a date
+  var form = document.showWeekForm;
+  var id = document.getElementById("showWeekID").value;
+  var date = document.getElementById("showWeekDate").value;
+  var data = {};
+  data["id"] = id;
+  data["startDay"] = date;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", showweek_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+
+  // lots of parts of this function (the stack of is statements) will have to moved to a more globally reachable function _____________________________
+  xhr.onloadend = function () {
+    console.log(xhr);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var meetings = js["meetings"];
+      var meetingsLength = meetings.length;
+      var lastMeeting = meetings[meetingsLength-1];
+      var startDay = js["startDay"];
+      var timeslotSize = js["blockSize"];
+      var dateTime = meetings[0]["dateTime"];
+      var dateTimeLast = lastMeeting["dateTime"];
+      console.log("dateTimeLast" + dateTimeLast["dayOfMonth"]);
+      console.log("dateTime" + dateTime["dayOfMonth"]);
+
+      //grabbing the information for the first day of the schedule
+      var firstScheduleDay = dateTime["dayOfMonth"];
+      if (firstScheduleDay < 10){
+        firstScheduleDay = "0" + firstScheduleDay.toString()
+      }
+      else {
+        firstScheduleDay = firstScheduleDay.toString()
+      }
+      var firstScheduleMonth = dateTime["month"] + 1;
+      if (firstScheduleMonth < 10){
+        firstScheduleMonth = "0" + firstScheduleMonth.toString()
+      }
+      else {
+        firstScheduleMonth = firstScheduleMonth.toString()
+      }
+      var firstScheduleYear = dateTime["year"];
+      var firstScheduleHour = dateTime["hourOfDay"];
+      if (firstScheduleHour < 10){
+        firstScheduleHour = "0" + firstScheduleHour.toString()
+      }
+      else {
+        firstScheduleHour = firstScheduleHour.toString()
+      }
+      var firstScheduleMinute = dateTime["minute"];
+      if (firstScheduleMinute < 10){
+        firstScheduleMinute = "0" + firstScheduleMinute.toString()
+      }
+      else {
+        firstScheduleMinute = firstScheduleMinute.toString()
+      }
+      var firstScheduleSecond = dateTime["second"];
+      if (firstScheduleSecond < 10){
+        firstScheduleSecond = "0" + firstScheduleSecond.toString()
+      }
+      else {
+        firstScheduleSecond = firstScheduleSecond.toString()
+      }
+
+      // grabbing information ofr the last day of the schedule
+      var lastScheduleDay = dateTimeLast["dayOfMonth"];
+      if (lastScheduleDay < 10){
+        lastScheduleDay = "0" + lastScheduleDay.toString()
+      }
+      else {
+        lastScheduleDay = lastScheduleDay.toString()
+      }
+      var lastScheduleMonth = dateTimeLast["month"] + 1;
+      if (lastScheduleMonth < 10){
+        lastScheduleMonth = "0" + lastScheduleMonth.toString()
+      }
+      else {
+        lastScheduleMonth = lastScheduleMonth.toString()
+      }
+      var lastScheduleYear = dateTimeLast["year"];
+      var lastScheduleHour = dateTimeLast["hourOfDay"];
+      if (lastScheduleHour < 10){
+        lastScheduleHour = "0" + lastScheduleHour.toString()
+      }
+      else {
+        lastScheduleHour = lastScheduleHour.toString()
+      }
+      var lastScheduleMinute = dateTimeLast["minute"];
+      if (lastScheduleMinute < 10){
+        lastScheduleMinute = "0" + lastScheduleMinute.toString()
+      }
+      else {
+        lastScheduleMinute = lastScheduleMinute.toString()
+      }
+      var lastScheduleSecond = dateTimeLast["second"];
+      if (lastScheduleSecond < 10){
+        lastScheduleSecond = "0" + lastScheduleSecond.toString()
+      }
+      else {
+        lastScheduleSecond = lastScheduleSecond.toString()
+      }
+
+      // using that information to make the dates
+      var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth + "-" + firstScheduleDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
+      console.log(scheduleStringFormat);
+      var mondayStringFormat = startDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
+      console.log("lastScheduleDay " + lastScheduleDay);
+      var endDateStringFormat = lastScheduleYear.toString() + "-" + lastScheduleMonth + "-" + lastScheduleDay + "T" + lastScheduleHour + ":" + lastScheduleMinute + ":" + lastScheduleSecond;
+      var firstScheduleDate = new Date(scheduleStringFormat);
+      var firstMondayDate = new Date(mondayStringFormat);
+      var lastScheduleDate = new Date(endDateStringFormat);
+
+      //setting the start and end date to make the calendar
+      setEndDate(lastScheduleDate);
+      setStartDate(firstScheduleDate);
+      console.log ("StartDate " + startDate);
+      console.log ("endDate" + endDate);
+      console.log(meetings); // this is the console.log that displays the array of meetings
+      setWeek(meetings, firstScheduleDate, firstMondayDate, timeslotSize);
+
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+</script>
 </head>
 <body>
   <div class="container">
