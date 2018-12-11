@@ -21,6 +21,9 @@ th {
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 var showweek_url = base_url + "showweek";    // PUT
+var togglemeet_url = base_url + "managetimeslot"; // PUT
+var cancelmeeting_url = base_url + "cancelmeeting"; // PUT
+var deleteschedule_url = base_url + "deleteschedule"; // DELETE
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -88,7 +91,6 @@ function showWeek(e) {
   // send the collected data as JSON
   xhr.send(js);
   // This will process results and update HTML as appropriate.
-
   // lots of parts of this function (the stack of is statements) will have to moved to a more globally reachable function _____________________________
   xhr.onloadend = function () {
     console.log(xhr);
@@ -104,7 +106,6 @@ function showWeek(e) {
       var dateTimeLast = lastMeeting["dateTime"];
       console.log("dateTimeLast" + dateTimeLast["dayOfMonth"]);
       console.log("dateTime" + dateTime["dayOfMonth"]);
-
       //grabbing the information for the first day of the schedule
       var firstScheduleDay = dateTime["dayOfMonth"];
       if (firstScheduleDay < 10){
@@ -142,7 +143,6 @@ function showWeek(e) {
       else {
         firstScheduleSecond = firstScheduleSecond.toString()
       }
-
       // grabbing information ofr the last day of the schedule
       var lastScheduleDay = dateTimeLast["dayOfMonth"];
       if (lastScheduleDay < 10){
@@ -180,7 +180,6 @@ function showWeek(e) {
       else {
         lastScheduleSecond = lastScheduleSecond.toString()
       }
-
       // using that information to make the dates
       var scheduleStringFormat = firstScheduleYear.toString() + "-" + firstScheduleMonth + "-" + firstScheduleDay + "T" + firstScheduleHour + ":" + firstScheduleMinute + ":" + firstScheduleSecond;
       console.log(scheduleStringFormat);
@@ -190,7 +189,6 @@ function showWeek(e) {
       var firstScheduleDate = new Date(scheduleStringFormat);
       var firstMondayDate = new Date(mondayStringFormat);
       var lastScheduleDate = new Date(endDateStringFormat);
-
       //setting the start and end date to make the calendar
       setEndDate(lastScheduleDate);
       setStartDate(firstScheduleDate);
@@ -198,13 +196,11 @@ function showWeek(e) {
       console.log ("endDate" + endDate);
       console.log(meetings); // this is the console.log that displays the array of meetings
       setWeek(meetings, firstScheduleDate, firstMondayDate, timeslotSize);
-
     } else {
       window.alert("Oops, something went wrong!");
     }
   };
 }
-
 function toggleAvailMeeting(e) {
   var meeting = document.getElementById("toggleAvailMeetingID").value;
   var code = document.getElementById("toggleAvailMeetingCode").value;
@@ -282,7 +278,6 @@ function deleteSchedule(e) {
     };
   }
 }
-
 </script>
 </head>
 <body>
@@ -387,7 +382,6 @@ function deleteSchedule(e) {
     </form>
 
     <!-- The old inputs into this field.
-
     <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
     <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
     <form>Open all meetings on
@@ -441,11 +435,9 @@ function deleteSchedule(e) {
 <!--______________________________________________________________________________________________________________________-->
     <script>
     // Begin Calendar3 code
-
 		// sets up variables that are used in display
 		Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 		//Sets up the unfinished weeks that will be created in the calendar by setting the first Monday and final Friday
-
 		//Build the calendar, this requires lots of information from outside of the function
 		function buildCalendar(meetings, scheduleStartDate, mondayOfBuildWeek, timeSlotSize){
       var htmlString = "";
@@ -464,7 +456,6 @@ function deleteSchedule(e) {
 		  // TODO MAKE THE BUTTON FOR LINKING PREV WEEK, that will go here in a document.write
 		  htmlString +=(monthDisplay + " " + buildScheduleYear);
 		  // TODO MAKE THE BUTTON FOR LINKING NEXT WEEK, that will go here in a document.write
-
       // Hack to handle their tests only. PLEASE FIX THIS.
       if (buildScheduleDate.getDate()+4 > 31){
         var lastDay = 1;
@@ -472,9 +463,7 @@ function deleteSchedule(e) {
       else{
         var lastDay = buildScheduleDate.getDate()+4;
       }
-
-
-			htmlString += ('<table><tr><th>TIMESLOT</th><th>Mon '
+ 			htmlString += ('<table><tr><th>TIMESLOT</th><th>Mon '
 		  + (buildScheduleDate.getDate()+0) + '</th><th>Tue '
 		  + (buildScheduleDate.getDate()+1) + '</th><th>Wed '
 		  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
@@ -493,7 +482,7 @@ function deleteSchedule(e) {
               htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
-             htmlString +=("Unscheduled Meeting <br>with ID: " + meetings[arrayCounter]["id"] + "");
+             htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
             }
             if (meetings[arrayCounter]["available"]){
               htmlString +=("<br>Open Meeting");
@@ -526,7 +515,6 @@ function deleteSchedule(e) {
       document.getElementById("htmlCalendar").innerHTML = htmlString;
 		}// end of function buildCalendar
 		//buildCalendar(null,null,1)
-
 		function setWeek(meetings, date, monday, timeslotSize){
 		  console.log("date and Monday in SetWeek " + date + " " + monday);
 		  buildCalendar(meetings, date, monday, timeslotSize);
@@ -545,7 +533,6 @@ function deleteSchedule(e) {
 		//var testDate = new Date('2018-12-12T05:00:00');
 		//var testMonday = findMonday(testDate);
 		//setWeek(testDate, testMonday);
-
     // Code written by Matt Johnson
     function minTommss(minutes){
      var sign = minutes < 0 ? "-" : "";
@@ -563,7 +550,6 @@ function deleteSchedule(e) {
      return sign + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
     }
     // end Matt Johnson Code
-
 		//prevWeekRunner(testDate);
 		function setStartDate(setToThis){
 		  window.startDate = setToThis; // setToThis has to be a date
@@ -572,7 +558,7 @@ function deleteSchedule(e) {
 		  window.endDate = setToThis; // setToThis has to be a date
 		}
 		function setStartHour(setToThis){
-		  startDate.setHours(setToThis); // setToThis has to be an int from 0-23
+		  window.startDate.setHours(setToThis); // setToThis has to be an int from 0-23
 		}
 		function setEndHour(){
 		  window.endDate.setHours(setToThis); // setToThis has to be an int from 0-23
@@ -583,7 +569,7 @@ function deleteSchedule(e) {
 
       <div id="htmlCalendar"></div>
       <br><br><br>
-      <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
+      <button type="button" onclick="JavaScript:deleteSchedule(this)">Delete This Schedule</button>
     </fieldset>
   </section>
 </body>
