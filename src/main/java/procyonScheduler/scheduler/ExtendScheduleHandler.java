@@ -69,10 +69,11 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 						meetTime.add(GregorianCalendar.MINUTE, s.getBlockSize());
 					}
 					meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
-					meetTime.set(GregorianCalendar.HOUR_OF_DAY, extend.get(GregorianCalendar.HOUR_OF_DAY));
+					meetTime.set(GregorianCalendar.HOUR_OF_DAY, start.get(GregorianCalendar.HOUR_OF_DAY));
 				}
 				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 			}
+			s.modifySchedule(extend, end, secretCode);
 		}
 		else if(extend.compareTo(end) > 0) {
 			extend.set(GregorianCalendar.HOUR_OF_DAY, end.get(GregorianCalendar.HOUR_OF_DAY));
@@ -92,6 +93,7 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 				}
 				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 			}
+			s.modifySchedule(start, extend, secretCode);
 		}
 		else return false;
 
