@@ -16,13 +16,13 @@
       </a>
     </header>
   <section class = "initialAdminInput" id="initialAdminInput">
-    <form>
+    <form name="">
     Delete all Schedules older than <input type="text" name="deleteDays" value="" > days<br>
     <input type="submit" value="Delete the Schedules">
     <br>
     <br>
     Display all Schedules newer than <input type="text" name="displayHours" value="" > hours<br>
-    <input type="submit" value="Show the Schedules">
+    <button type="button" onclick="JavaScript:sysAdminNew(this)">Show the Schedules</button>
     <br>
     </form>
   </section>
@@ -30,7 +30,17 @@
     <br>
     <fieldset>
       <legend>List of Schedules</legend>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <br>
+      <div id="sysAdminNew"></div>
+
+      <script>
+      //the function for the Sysadmin view
+      function sysAdminNew(e){
+        var htmlSysAdmin = ""; // the varaible that gets displayed
+        htmlSysAdmin +=('The Strings of the searched Schedules!<br>'); // to add a string to the list add it like this
+        document.getElementById("sysAdminNew").innerHTML = htmlSysAdmin; // this prints it to the html
+      }
+      </script>
     </fieldset>
   </section>
 
