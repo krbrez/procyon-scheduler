@@ -46,8 +46,8 @@ public class ReportActivityHandler implements RequestStreamHandler {
 				toReturn.add(schedule);
 			}
 		}
-		
-		
+
+		toReturn.sort(null);
 		return toReturn;
 	}
 
@@ -65,9 +65,9 @@ public class ReportActivityHandler implements RequestStreamHandler {
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
 
-		DeleteOldSchedulesResponse response = null;
+		ReportActivityResponse response = null;
 
-		// extract body from incoming HTTP POST request. If any error, then
+		// extract body from incoming HTTP PUT request. If any error, then
 		// return 422 error
 		String body;
 		boolean processed = false;
@@ -80,7 +80,7 @@ public class ReportActivityHandler implements RequestStreamHandler {
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
-				response = new DeleteOldSchedulesResponse("name", 200); // OPTIONS
+				response = new ReportActivityResponse("Options call.", null, 200); // OPTIONS
 				// needs a
 				// 200
 				// response
@@ -96,7 +96,7 @@ public class ReportActivityHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
-			response = new DeleteOldSchedulesResponse("Bad Request:" + pe.getMessage(), 422); // unable
+			response = new ReportActivityResponse("Bad Request:" + pe.getMessage(), null, 422); // unable
 																								// to
 																								// process
 																								// input
@@ -106,19 +106,20 @@ public class ReportActivityHandler implements RequestStreamHandler {
 		}
 
 		if (!processed) {
-			DeleteOldSchedulesRequest req = new Gson().fromJson(body, DeleteOldSchedulesRequest.class);
+			ReportActivityRequest req = new Gson().fromJson(body, ReportActivityRequest.class);
 			logger.log(req.toString());
 
-			DeleteOldSchedulesResponse resp;
+			ReportActivityResponse resp;
 			try {
-				if (deleteOldSchedules(req.n)) {
-					resp = new DeleteOldSchedulesResponse(
-							"Successfully deleted all schedules " + req.n + " days or older.");
+				ArrayList<Schedule> schedules = reportActivity(req.n);
+				if (!schedules.isEmpty()) {
+					resp = new ReportActivityResponse(
+							"Successfully retrieved schedules.", schedules);
 				} else {
-					resp = new DeleteOldSchedulesResponse("Unable to delete schedules.", 422);
+					resp = new ReportActivityResponse("Unable to retrieve any schedules.", schedules, 422);
 				}
 			} catch (Exception e) {
-				resp = new DeleteOldSchedulesResponse("Unable to delete schedules." + "(" + e.getMessage() + ")", 403);
+				resp = new ReportActivityResponse("Unable to retrieve any schedules." + "(" + e.getMessage() + ")", null, 403);
 			}
 
 			// compute proper response

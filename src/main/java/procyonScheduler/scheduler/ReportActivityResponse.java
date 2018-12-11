@@ -5,21 +5,24 @@ import java.util.ArrayList;
 import procyonScheduler.model.Schedule;
 
 public class ReportActivityResponse {
+	String response;
 	ArrayList<Schedule> schedules;
 	int httpCode;
 	
-	public ReportActivityResponse (ArrayList<Schedule> schedules, int code) {
+	public ReportActivityResponse (String response, ArrayList<Schedule> schedules, int code) {
+		this.response = response;
 		this.schedules = schedules;
 		this.httpCode = code;
 	}
 	
 	// 200 means success
-	public ReportActivityResponse (ArrayList<Schedule> schedules) {
+	public ReportActivityResponse (String response, ArrayList<Schedule> schedules) {
+		this.response = response;
 		this.schedules = schedules;
 		this.httpCode = 200;
 	}
 	
 	public String toString() {
-		return "Here are the schedules as requested: " + schedules;
+		return response + " Here are the schedules as requested: " + schedules;
 	}
 }
