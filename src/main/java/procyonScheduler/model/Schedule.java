@@ -3,7 +3,7 @@ package procyonScheduler.model;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-public class Schedule {
+public class Schedule implements Comparable<Schedule>{
 	String name; // non-unique user defined name
 	GregorianCalendar start; // date and time to start schedule on
 	GregorianCalendar end; // date and time to end schedule on
