@@ -21,6 +21,8 @@ th {
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 var showweek_url = base_url + "showweek";    // PUT
+var togglemeet_url = base_url + "managetimeslot"; // PUT
+var cancelmeet_url = base_url + "cancelmeeting"; // PUT
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -204,6 +206,32 @@ function showWeek(e) {
     }
   };
 }
+
+function toggleAvailMeeting(e) {
+  var meeting = document.getElementById("toggleAvailMeetingID").value;
+  var code = document.getElementById("toggleAvailMeetingCode").value;
+  var data = {};
+  data["meetingID"] = meeting;
+  data["secretCode"] = code;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", togglemeet_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
 </script>
 </head>
 <body>
@@ -300,11 +328,11 @@ function showWeek(e) {
     <legend>Edit This Schedule</legend>
 
     <form name="toggleAvailable">
-    	Toggle availability for this Meeting: <input type="text" name="toggleAvailMeetingCode" id="toggleAvailMeetingCode" value="Meeting Secret Code"><input type="text" name="toggleAvailMeetingID" id="toggleAvailMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:toggleAvailMeeting(this)">Submit</button><br>
+    	Toggle availability for this Meeting: <input type="text" name="toggleAvailMeetingCode" id="toggleAvailMeetingCode" value="Schedule Secret Code"><input type="text" name="toggleAvailMeetingID" id="toggleAvailMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:toggleAvailMeeting(this)">Submit</button><br>
     </form>
 
-    <form name="toggleAvailable">
-    	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Meeting Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
+    <form name="cancelMeetingForm">
+    	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Schedule Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
     </form>
 
     <!-- The old inputs into this field.
