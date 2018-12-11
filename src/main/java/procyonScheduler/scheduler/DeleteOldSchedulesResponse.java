@@ -16,6 +16,6 @@ public class DeleteOldSchedulesResponse {
 	}
 	
 	public String toString() {
-		return "All meetings " + response + "days old or older have been successfully deleted.";
+		return "All schedules " + response + "days old or older have been successfully deleted.";
 	}
 }
