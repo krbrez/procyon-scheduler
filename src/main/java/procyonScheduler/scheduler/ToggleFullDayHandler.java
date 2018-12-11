@@ -1,12 +1,15 @@
 package procyonScheduler.scheduler;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,8 +20,11 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import model.Tile;
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
+import procyonScheduler.model.Meeting;
+import procyonScheduler.model.Schedule;
 
 public class ToggleFullDayHandler implements RequestStreamHandler {
 
@@ -37,14 +43,53 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		SchedulesDAO sDAO = new SchedulesDAO();
 		
 		//get the schedule with the given id
+		Schedule editThisSchedule = sDAO.getSchedule(scheduleID);
 		//check that the code is the right one for the schedule
-		//if yes
+		if (secretCode.equals(editThisSchedule.getSecretCode())) {
+			//if this is the right schedule (which it is, to be at this point)
+			//get all the meetings from this schedule
+			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(scheduleID);
+			//for each meeting
+			for (Iterator<Meeting> it = meetings.getNext(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
+				Meeting m = it.next();
+				if (m.getDateTime().equals(toggleMe)) 
+				{
+					//change availability 
+					toggled = true;
+				}
+			}
+			
+			
+			//is the date correct?
+				//if yes, change availability
+				//if not, move on to next meeting
+			
+			
+			
+			
+			//if(openOrClose) {	//want to OPEN meeting availability if openOrClose is true
+				//List<Meeting> meetings = mDAO.getAllMeetingsFromSchedule(scheduleID)
+//				for (Iterator<Tile> it = model.getBoard().iterator(); it.hasNext(); ) {
+//					Tile t = it.next();
+//					if (model.validDown(selectedTile, t) == false)
+//					{
+//						canMove = false;
+//						//break;
+//					}
+//				}
+			//else if (!openOrClose) { 	//want to CLOSE meeting availability if openOrClose is false
+				
+			
 			//go through the schedule and find all meetings with that date
 				//if boolean is true, we want to change availabilities to true	
 					//do the changes, and set toggled to true
 				//if boolean is false, we want to change availability to closed
 					//do the changes, and set toggled to true
-		//if no - mistake, bad! leave toggled as false, and light the system on fire
+		}
+		else {
+			//there is a mistake!
+			toggled = false;
+		}
 		return toggled;
 	}
 	
