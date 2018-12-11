@@ -82,7 +82,7 @@ public class SchedulesDAO {
 	
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
-			String query = "UPDATE Schedule SET name=?, start=?, end=?, blockSize=?, organizerSecretCode=?, creationTime=? WHERE id=?;";
+			String query = "UPDATE Schedules SET name=?, start=?, end=?, blockSize=?, organizerSecretCode=?, creationTime=? WHERE id=?;";
 			// name: 1, start: 2, end: 3, blockSize: 4, secretCode: 5, creationTime: 6, id: 7
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(7, schedule.getId());
