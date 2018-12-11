@@ -193,6 +193,33 @@ function scheduleMeeting(e){
     }
   };
 }
+function cancelMeeting(e){
+  var form = document.deleteMeeting;
+  var id = form.CancelMeetingParticipant.value;
+  var secretCode = form.cancelMeetingParticipentCode.value;
+  var data = {};
+  data["id"] = id;
+  data["code"] = secretCode;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", cancelmeeting_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+      window.alert(respString);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
 </script>
 </head>
 <body>
@@ -306,7 +333,7 @@ function scheduleMeeting(e){
       <br>
       <br>
       <form name="deleteMeeting">
-      	Cancel the Meeting: <input type="text" name="CancelMeetingParticipant" id="CancelMeetingParticipant" value="Meeting ID"> Using my Secret Code: <input type="text" name="cancelMeetingParticipentCode" id="cancelMeetingParticipentCode" value="Secret Code"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
+      	Cancel the Meeting: <input type="text" name="CancelMeetingParticipant" id="CancelMeetingParticipant" value="Meeting ID"> using my Secret Code: <input type="text" name="cancelMeetingParticipentCode" id="cancelMeetingParticipentCode" value="Secret Code"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
       </form>
     </fieldset>
 
