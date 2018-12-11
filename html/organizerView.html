@@ -22,7 +22,8 @@ var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 var showweek_url = base_url + "showweek";    // PUT
 var togglemeet_url = base_url + "managetimeslot"; // PUT
-var cancelmeet_url = base_url + "cancelmeeting"; // PUT
+var cancelmeeting_url = base_url + "cancelmeeting"; // PUT
+var deleteschedule_url = base_url + "deleteschedule"; // DELETE
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -231,6 +232,32 @@ function toggleAvailMeeting(e) {
       window.alert("Oops, something went wrong!");
     }
   };
+}
+
+function deleteSchedule(e) {
+  var code = prompt("Please enter your Secret Code to confirm", "");
+  if(code != null && code.length == 16) {
+    var data = {};
+    data["secretCode"] = code;
+    var js = JSON.stringify(data);
+    console.log("JS:" + js);
+    var xhr = new XMLHttpRequest();
+    xhr.open("DELETE", deleteschedule_url, true);
+    // send the collected data as JSON
+    xhr.send(js);
+    // This will process results and update HTML as appropriate.
+    xhr.onloadend = function () {
+      console.log(xhr);
+	  if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+        var js = JSON.parse(xhr.responseText);
+        var respString = js["response"];
+	    window.alert(respString);
+	  } else {
+        window.alert("Oops, something went wrong!");
+      }
+    };
+  }
 }
 </script>
 </head>
@@ -522,7 +549,7 @@ function toggleAvailMeeting(e) {
 
       <div id="htmlCalendar"></div>
       <br><br><br>
-      <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
+      <button type="button" onclick="JavaScript:deleteSchedule(this)">Delete This Schedule</button>
     </fieldset>
   </section>
 </body>
