@@ -52,13 +52,13 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 		}
 		
 		boolean extended = true;
-		GregorianCalendar start = s.getStart();
-		GregorianCalendar end = s.getEnd();
+		GregorianCalendar start = (GregorianCalendar)s.getStart().clone();
+		GregorianCalendar end = (GregorianCalendar)s.getEnd().clone();
 		if(extend.compareTo(start) < 0) {
 			extend.set(GregorianCalendar.HOUR_OF_DAY, start.get(GregorianCalendar.HOUR_OF_DAY));
 			// create meetings to extend schedule
-			GregorianCalendar meetTime = extend;
-			GregorianCalendar endTime = start;
+			GregorianCalendar meetTime = (GregorianCalendar)extend.clone();
+			GregorianCalendar endTime = (GregorianCalendar)start.clone();
 			endTime.set(GregorianCalendar.HOUR_OF_DAY, end.get(GregorianCalendar.HOUR_OF_DAY));
 			endTime.add(GregorianCalendar.DAY_OF_MONTH, -1);
 			while (meetTime.compareTo(endTime) < 0) {
@@ -74,11 +74,12 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 			}
 			s.modifySchedule(extend, end, secretCode);
+			sDAO.updateSchedule(s);
 		}
 		else if(extend.compareTo(end) > 0) {
 			extend.set(GregorianCalendar.HOUR_OF_DAY, end.get(GregorianCalendar.HOUR_OF_DAY));
 			// create meetings to extend schedule
-			GregorianCalendar meetTime = end;
+			GregorianCalendar meetTime = (GregorianCalendar)end.clone();
 			meetTime.set(GregorianCalendar.HOUR_OF_DAY, start.get(GregorianCalendar.HOUR_OF_DAY));
 			meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
 			while (meetTime.compareTo(extend) < 0) {
@@ -94,6 +95,7 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 				meetTime.add(GregorianCalendar.DAY_OF_MONTH, 2);
 			}
 			s.modifySchedule(start, extend, secretCode);
+			sDAO.updateSchedule(s);
 		}
 		else return false;
 
