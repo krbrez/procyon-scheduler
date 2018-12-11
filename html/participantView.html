@@ -19,6 +19,8 @@ th {
 //JavaScript Goes Here
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var showweek_url = base_url + "showweek";    // PUT
+var createmeeting_url = base_url + "createmeeting";
+var cancelmeeting_url = base_url + "cancelmeeting";
 
 function showWeek(e) {
   startDate = new Date(); // a date
@@ -152,6 +154,45 @@ function showWeek(e) {
     }
   };
 }
+function processResponse(result) {
+  // Can grab any DIV or SPAN HTML element and can then manipulate its
+  // contents dynamically via javascript
+  console.log("result:" + result);
+  var js = JSON.parse(result);
+  var respString = js["response"];
+  var label = js["label"];
+  var code = js["secretCode"];
+  // Update computation result
+  document.getElementById("secretCodeMeetingParticipant").value = code;
+  window.alert(respString + ": " + label);
+  // this is the json string that is gotten back, instead of the alert I should parse it then use it in the calendar
+  // currently the date to view needs to be a monday, but I should add my findMonday so that it can be any day
+}
+function scheduleMeeting(e){
+  var form = document.createMeeting;
+  var id = form.meetingID.value;
+  var label = form.meetingLabel.value;
+  var data = {};
+  data["id"] = id;
+  data["label"] = label;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", createmeeting_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResponse(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
 </script>
 </head>
 <body>
@@ -258,13 +299,13 @@ function showWeek(e) {
   -->
     <fieldset>
       <legend>Schedule and Cancel Meetings</legend>
-      <form name="toggleAvailable">
-      	Schedule a Meeting: <input type="text" name="" id="" value="Meeting ID"> with the Label: <input type="text" name="" id="" value="Meeting Name"><button type="button" onclick="JavaScript:ScheduleMeeting(this)">Submit</button><br>
+      <form name="createMeeting">
+      	Schedule a Meeting: <input type="text" name="meetingID" id="meetingID" value="Meeting ID"> with the Label: <input type="text" name="meetingLabel" id="meetingLabel" value="Meeting Name"><button type="button" onclick="JavaScript:scheduleMeeting(this)">Submit</button><br>
       </form>
       Your Secret Code for this Meeting is: <input id="secretCodeMeetingParticipant" readonly/>
       <br>
       <br>
-      <form name="toggleAvailable">
+      <form name="deleteMeeting">
       	Cancel the Meeting: <input type="text" name="CancelMeetingParticipant" id="CancelMeetingParticipant" value="Meeting ID"> Using my Secret Code: <input type="text" name="cancelMeetingParticipentCode" id="cancelMeetingParticipentCode" value="Secret Code"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
       </form>
     </fieldset>
