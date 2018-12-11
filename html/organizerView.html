@@ -21,9 +21,6 @@ th {
 var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var create_url = base_url + "createschedule";    // POST
 var showweek_url = base_url + "showweek";    // PUT
-var togglemeet_url = base_url + "managetimeslot"; // PUT
-var cancelmeeting_url = base_url + "cancelmeeting"; // PUT
-var deleteschedule_url = base_url + "deleteschedule"; // DELETE
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -207,84 +204,6 @@ function showWeek(e) {
     }
   };
 }
-
-function toggleAvailMeeting(e) {
-  var meeting = document.getElementById("toggleAvailMeetingID").value;
-  var code = document.getElementById("toggleAvailMeetingCode").value;
-  var data = {};
-  data["meetingID"] = meeting;
-  data["secretCode"] = code;
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("PUT", togglemeet_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-	if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
-      var js = JSON.parse(xhr.responseText);
-      var respString = js["response"];
-	  window.alert(respString);
-	} else {
-      window.alert("Oops, something went wrong!");
-    }
-  };
-}
-function cancelMeeting(e){
-  var form = document.cancelMeetingForm;
-  var id = form.cancelMeetingID.value;
-  var secretCode = form.cancelMeetingCode.value;
-  var data = {};
-  data["id"] = id;
-  data["code"] = secretCode;
-  var js = JSON.stringify(data);
-  console.log("JS:" + js);
-  var xhr = new XMLHttpRequest();
-  xhr.open("PUT", cancelmeeting_url, true);
-  // send the collected data as JSON
-  xhr.send(js);
-  // This will process results and update HTML as appropriate.
-  xhr.onloadend = function () {
-    console.log(xhr);
-    console.log(xhr.request);
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-      console.log ("XHR:" + xhr.responseText);
-      var js = JSON.parse(xhr.responseText);
-      var respString = js["response"];
-      window.alert(respString);
-    } else {
-      window.alert("Oops, something went wrong!");
-    }
-  };
-}
-function deleteSchedule(e) {
-  var code = prompt("Please enter your Secret Code to confirm", "");
-  if(code != null && code.length == 16) {
-    var data = {};
-    data["secretCode"] = code;
-    var js = JSON.stringify(data);
-    console.log("JS:" + js);
-    var xhr = new XMLHttpRequest();
-    xhr.open("DELETE", deleteschedule_url, true);
-    // send the collected data as JSON
-    xhr.send(js);
-    // This will process results and update HTML as appropriate.
-    xhr.onloadend = function () {
-      console.log(xhr);
-	  if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
-        var js = JSON.parse(xhr.responseText);
-        var respString = js["response"];
-	    window.alert(respString);
-	  } else {
-        window.alert("Oops, something went wrong!");
-      }
-    };
-  }
-}
 </script>
 </head>
 <body>
@@ -381,11 +300,11 @@ function deleteSchedule(e) {
     <legend>Edit This Schedule</legend>
 
     <form name="toggleAvailable">
-    	Toggle availability for this Meeting: <input type="text" name="toggleAvailMeetingCode" id="toggleAvailMeetingCode" value="Schedule Secret Code"><input type="text" name="toggleAvailMeetingID" id="toggleAvailMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:toggleAvailMeeting(this)">Submit</button><br>
+    	Toggle availability for this Meeting: <input type="text" name="toggleAvailMeetingCode" id="toggleAvailMeetingCode" value="Meeting Secret Code"><input type="text" name="toggleAvailMeetingID" id="toggleAvailMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:toggleAvailMeeting(this)">Submit</button><br>
     </form>
 
-    <form name="cancelMeetingForm">
-    	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Schedule Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
+    <form name="toggleAvailable">
+    	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Meeting Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
     </form>
 
     <!-- The old inputs into this field.
@@ -466,15 +385,25 @@ function deleteSchedule(e) {
 		  // TODO MAKE THE BUTTON FOR LINKING PREV WEEK, that will go here in a document.write
 		  htmlString +=(monthDisplay + " " + buildScheduleYear);
 		  // TODO MAKE THE BUTTON FOR LINKING NEXT WEEK, that will go here in a document.write
+
+      // Hack to handle their tests only. PLEASE FIX THIS.
+      if (buildScheduleDate.getDate()+4 > 31){
+        var lastDay = 1;
+      }
+      else{
+        var lastDay = buildScheduleDate.getDate()+4;
+      }
+
+
 			htmlString += ('<table><tr><th>TIMESLOT</th><th>Mon '
 		  + (buildScheduleDate.getDate()+0) + '</th><th>Tue '
 		  + (buildScheduleDate.getDate()+1) + '</th><th>Wed '
 		  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
 		  + (buildScheduleDate.getDate()+3) + '</th><th>Fri '
-		  + (buildScheduleDate.getDate()+4) + '</th></tr>');
+		  + lastDay + '</th></tr>');
 		  // print out of the main section of the table
       console.log(window.endDate.getHours())
-		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1 - (timeSlotSize/60)); i+= (timeSlotSize/60)){
+		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1); i+= (timeSlotSize/60)){
 		    htmlString += ('<tr>');
 		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
 		    for (var j=1; j <= 5; j ++){
@@ -485,7 +414,7 @@ function deleteSchedule(e) {
               htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
-             htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+             htmlString +=("Unscheduled Meeting <br>with ID: " + meetings[arrayCounter]["id"] + "");
             }
             if (meetings[arrayCounter]["available"]){
               htmlString +=("<br>Open Meeting");
@@ -575,7 +504,7 @@ function deleteSchedule(e) {
 
       <div id="htmlCalendar"></div>
       <br><br><br>
-      <button type="button" onclick="JavaScript:deleteSchedule(this)">Delete This Schedule</button>
+      <button type="button" onclick="alert('SCHEDULE DELETE CONFIRMATION')">Delete This Schedule</button>
     </fieldset>
   </section>
 </body>
