@@ -1,21 +1,25 @@
 package procyonScheduler.scheduler;
 
+import java.util.ArrayList;
+
+import procyonScheduler.model.Schedule;
+
 public class ReportActivityResponse {
-	String response;
+	ArrayList<Schedule> schedules;
 	int httpCode;
 	
-	public ReportActivityResponse (String n, int code) {
-		this.response = n;
+	public ReportActivityResponse (ArrayList<Schedule> schedules, int code) {
+		this.schedules = schedules;
 		this.httpCode = code;
 	}
 	
 	// 200 means success
-	public ReportActivityResponse (String n) {
-		this.response = n;
+	public ReportActivityResponse (ArrayList<Schedule> schedules) {
+		this.schedules = schedules;
 		this.httpCode = 200;
 	}
 	
 	public String toString() {
-		return "All meetings " + response + "days old or older have been successfully deleted.";
+		return "Here are the schedules as requested: " + schedules;
 	}
 }

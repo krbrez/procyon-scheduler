@@ -32,31 +32,23 @@ public class ReportActivityHandler implements RequestStreamHandler {
 	 * 
 	 * @throws Exception
 	 */
-	boolean deleteOldSchedules(int n) throws Exception {
+	ArrayList<Schedule> reportActivity(int n) throws Exception {
 		// create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 
-		boolean deleted = true;
-
 		GregorianCalendar rightNow = new GregorianCalendar();
-		rightNow.add(Calendar.DAY_OF_MONTH, n * -1);
+		rightNow.add(Calendar.HOUR, n * -1);
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
-		ArrayList<Schedule> toDelete = new ArrayList<Schedule>();
+		ArrayList<Schedule> toReturn = new ArrayList<Schedule>();
 		for (Schedule schedule : schedules) {
-			if (rightNow.compareTo(schedule.getCreated()) >= 0) {
-				toDelete.add(schedule);
+			if (rightNow.compareTo(schedule.getCreated()) <= 0) {
+				toReturn.add(schedule);
 			}
 		}
-		for (Schedule schedule : toDelete) {
-			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO
-					.getAllMeetingsFromSchedule(schedule.getSecretCode());
-			for (Meeting meeting : meetings) {
-				deleted = deleted & mDAO.deleteMeeting(meeting);
-			}
-			deleted = deleted & sDAO.deleteSchedule(schedule);
-		}
-		return deleted;
+		
+		
+		return toReturn;
 	}
 
 	@Override

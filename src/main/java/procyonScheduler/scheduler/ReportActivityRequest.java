@@ -9,6 +9,6 @@ public class ReportActivityRequest {
 	
 	public String toString() {
 		return ""
-				+ "Delete(" + n + ")";
+				+ "Report(" + n + ")";
 	}
 }

@@ -60,17 +60,21 @@ public class Schedule {
 		this.id = id;
 	}
 
+	// comparison by date of creation
+	public int compareTo(Schedule other) {
+		return this.created.compareTo(other.created);
+	}
+
 	// meetings iterator
 	// public Iterator<Meeting> meetings() {
 	// return meetings.iterator();
 	// }
 
 	// adjust parameters of schedule (like one big setter)
-	public boolean modifySchedule(GregorianCalendar start, GregorianCalendar end, int blockSize, String secretCode) {
+	public boolean modifySchedule(GregorianCalendar start, GregorianCalendar end, String secretCode) {
 		if (this.secretCode.equals(secretCode)) {
 			this.start = start;
 			this.end = end;
-			this.blockSize = blockSize;
 			return true;
 		} else
 			return false;
