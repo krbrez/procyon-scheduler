@@ -27,8 +27,8 @@ import procyonScheduler.model.Schedule;
 public class ToggleByTimeHandler implements RequestStreamHandler {
 public LambdaLogger logger = null;
 	
-	//toggle all the slots in a given day to be either all open
-	//or all closed, based on the input boolean 
+	//toggle all the slots at a given time (doesn't matter what day)
+	//to be either all open or all closed, based on the input boolean 
 	
 	boolean toggleTime(boolean openOrClose, String scheduleID, String secretCode, String toggleMe) throws Exception {
 		if (logger != null) {
@@ -39,8 +39,6 @@ public LambdaLogger logger = null;
 		MeetingsDAO mDAO = new MeetingsDAO();
 		SchedulesDAO sDAO = new SchedulesDAO();
 		
-		//somewhere i must parse the input time into something legible, but where?
-		
 		//get the schedule with the given id
 		Schedule editThisSchedule = sDAO.getSchedule(scheduleID);
 		//check that the code is the right one for the schedule
@@ -49,10 +47,10 @@ public LambdaLogger logger = null;
 			//get all the meetings from this schedule
 			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(scheduleID);
 			//for each meeting
-				for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
+				for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { 
 					Meeting m = it.next();
 					//is the time the one we're looking for?
-					if (m.getDateTime().equals(toggleMe)) //THIS NEEDS TO BE FIXED BUT HOW??
+					if(isThisTheTime(m.getDateTime(), toggleMe))
 					{
 						if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
 						m.setAvailable(true);
@@ -71,6 +69,28 @@ public LambdaLogger logger = null;
 			return toggled;
 	}
 	
+	private boolean isThisTheTime(GregorianCalendar meetingInfo, String input) {
+		int meetingH = 0;
+		int meetingM = 0;
+		int inputH = 0;
+		int inputM = 0;
+
+		meetingH = meetingInfo.get(GregorianCalendar.HOUR_OF_DAY);
+		meetingM = meetingInfo.get(GregorianCalendar.MINUTE);
+		
+		String[] timeSplit = input.split(":");
+		inputH = Integer.parseInt(timeSplit[0]);
+		inputM = Integer.parseInt(timeSplit[1]);
+
+		
+		if (meetingH == inputH && meetingM == inputM) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
