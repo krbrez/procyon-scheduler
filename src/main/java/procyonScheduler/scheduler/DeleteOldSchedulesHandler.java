@@ -32,13 +32,13 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 	 * 
 	 * @throws Exception
 	 */
-	boolean deleteOldSchedules(int n) throws Exception {
+	int deleteOldSchedules(int n) throws Exception {
 		// create DAO objects
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 
-		boolean deleted = true;
-
+		int numDeleted = 0;
+		
 		GregorianCalendar rightNow = new GregorianCalendar();
 		rightNow.add(Calendar.DAY_OF_MONTH, n * -1);
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
@@ -52,11 +52,12 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO
 					.getAllMeetingsFromSchedule(schedule.getSecretCode());
 			for (Meeting meeting : meetings) {
-				deleted = deleted & mDAO.deleteMeeting(meeting);
+				mDAO.deleteMeeting(meeting);
 			}
-			deleted = deleted & sDAO.deleteSchedule(schedule);
+			sDAO.deleteSchedule(schedule);
+			numDeleted++;
 		}
-		return deleted;
+		return numDeleted;
 	}
 
 	@Override
@@ -119,9 +120,10 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 
 			DeleteOldSchedulesResponse resp;
 			try {
-				if (deleteOldSchedules(req.n)) {
+				int num = deleteOldSchedules(req.n);
+				if (num > 0) {
 					resp = new DeleteOldSchedulesResponse(
-							"Successfully deleted all schedules " + req.n + " days or older.");
+							"Successfully deleted " + num  + " schedules " + req.n + " days or older.");
 				} else {
 					resp = new DeleteOldSchedulesResponse("Unable to delete schedules.", 422);
 				}
