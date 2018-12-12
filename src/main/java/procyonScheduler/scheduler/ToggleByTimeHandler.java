@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,6 +21,7 @@ import com.google.gson.Gson;
 
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
+import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class ToggleByTimeHandler implements RequestStreamHandler {
@@ -42,24 +45,30 @@ public LambdaLogger logger = null;
 		Schedule editThisSchedule = sDAO.getSchedule(scheduleID);
 		//check that the code is the right one for the schedule
 		if (secretCode.equals(editThisSchedule.getSecretCode())) {
-			if(openOrClose) {	//want to OPEN meeting availability
-				
+			//if this is the right schedule (which it is, to be at this point)
+			//get all the meetings from this schedule
+			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(scheduleID);
+			//for each meeting
+				for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
+					Meeting m = it.next();
+					//is the time the one we're looking for?
+					if (m.getDateTime().equals(toggleMe)) //THIS NEEDS TO BE FIXED BUT HOW??
+					{
+						if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
+						m.setAvailable(true);
+						}
+						else if (!openOrClose) {	//if boolean is false, want to close the slot (available = false)
+						m.setAvailable(false);
+						}
+						toggled = true;
+					}
+				}				
 			}
-			else if (!openOrClose) { 	//want to CLOSE meeting availability
-				
+			else {
+				//there is a mistake! secret code doesn't match schedule
+				toggled = false;
 			}
-			//go through the schedule and find all meetings with that date
-				//if boolean is true, we want to change availabilities to true	
-					//do the changes, and set toggled to true
-				//if boolean is false, we want to change availability to closed
-					//do the changes, and set toggled to true
-		}
-		else 
-		{
-			//there is a mistake!
-			toggled = false;
-		}
-		return toggled;
+			return toggled;
 	}
 	
 	@Override

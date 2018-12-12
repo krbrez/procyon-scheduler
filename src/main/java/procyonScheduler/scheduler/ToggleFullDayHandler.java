@@ -20,7 +20,6 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
-import model.Tile;
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
@@ -50,44 +49,23 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 			//get all the meetings from this schedule
 			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(scheduleID);
 			//for each meeting
-			for (Iterator<Meeting> it = meetings.getNext(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
+			for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
 				Meeting m = it.next();
+				//is the date correct?
 				if (m.getDateTime().equals(toggleMe)) 
 				{
-					//change availability 
+					if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
+						m.setAvailable(true);
+					}
+					else if (!openOrClose) {	//if boolean is false, want to close the slot (available = false)
+						m.setAvailable(false);
+					}
 					toggled = true;
 				}
-			}
-			
-			
-			//is the date correct?
-				//if yes, change availability
-				//if not, move on to next meeting
-			
-			
-			
-			
-			//if(openOrClose) {	//want to OPEN meeting availability if openOrClose is true
-				//List<Meeting> meetings = mDAO.getAllMeetingsFromSchedule(scheduleID)
-//				for (Iterator<Tile> it = model.getBoard().iterator(); it.hasNext(); ) {
-//					Tile t = it.next();
-//					if (model.validDown(selectedTile, t) == false)
-//					{
-//						canMove = false;
-//						//break;
-//					}
-//				}
-			//else if (!openOrClose) { 	//want to CLOSE meeting availability if openOrClose is false
-				
-			
-			//go through the schedule and find all meetings with that date
-				//if boolean is true, we want to change availabilities to true	
-					//do the changes, and set toggled to true
-				//if boolean is false, we want to change availability to closed
-					//do the changes, and set toggled to true
+			}				
 		}
 		else {
-			//there is a mistake!
+			//there is a mistake! secret code doesn't match schedule
 			toggled = false;
 		}
 		return toggled;
