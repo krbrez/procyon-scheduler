@@ -6,9 +6,9 @@ public class ToggleFullDayRequest {
 	boolean openOrClose;  //True = open slots, False = close slots
 	String scheduleID;
 	String secretCode;
-	GregorianCalendar toggleMe;
+	String toggleMe;
 
-	public ToggleFullDayRequest(boolean openOrClose, String scheduleID, String secretCode, GregorianCalendar toggleMe) {
+	public ToggleFullDayRequest(boolean openOrClose, String scheduleID, String secretCode, String toggleMe) {
 		this.openOrClose = openOrClose;
 		this.scheduleID = scheduleID;
 		this.secretCode = secretCode;

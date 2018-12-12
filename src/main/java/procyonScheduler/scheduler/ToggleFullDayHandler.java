@@ -32,7 +32,7 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 	//toggle all the slots in a given day to be either all open
 	//or all closed, based on the input boolean 
 	
-	boolean toggleDay(boolean openOrClose, String scheduleID, String secretCode, GregorianCalendar toggleMe) throws Exception {
+	boolean toggleDay(boolean openOrClose, String scheduleID, String secretCode, String toggleMe) throws Exception {
 		if (logger != null) {
 			logger.log("in toggleDay");
 		}
@@ -72,11 +72,11 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		return toggled;
 	}
 	
-	private boolean isThisTheDay(GregorianCalendar meetingInfo, GregorianCalendar input) {
+	private boolean isThisTheDay(GregorianCalendar meetingInfo, String input) {
 		int meetingY = 0;
 		int meetingM = 0;
 		int meetingDy = 0;
-		String inputD;
+		String inputD = null;
 		int inputY = 0;
 		int inputM = 0;
 		int inputDy = 0;
