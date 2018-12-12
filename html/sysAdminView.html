@@ -36,6 +36,7 @@
           var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
           var delete_url = base_url + "deleteoldschedules";
           var view_url = base_url + "reportactivity";
+          var printTo = document.getElementById("sysAdminNew");
 
           function deleteSchedules(e) {
             var form = document.FormName1;
@@ -65,9 +66,37 @@
           //the function that deletes all old schedules
           //the function for the Sysadmin view
           function sysAdminNew(e) {
-            var htmlSysAdmin = ""; // the varaible that gets displayed
-            htmlSysAdmin += ('The Strings of the searched Schedules!<br>'); // to add a string to the list add it like this
-            document.getElementById("sysAdminNew").innerHTML = htmlSysAdmin; // this prints it to the html
+            var form = document.FormName1;
+            var n = form.displayHours.value;
+            console.log(n);
+            var data = {};
+            data["n"] = n;
+            var js = JSON.stringify(data);
+            console.log("JS:" + js);
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", view_url, true);
+            // send the collected data as JSON
+            xhr.send(js);
+            // This will process results and update HTML as appropriate.
+            xhr.onloadend = function() {
+              console.log(xhr);
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                console.log("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+                var js = JSON.parse(xhr.responseText);
+                var schedules = js["schedules"];
+                schedules.forEach(printOut);
+              };
+            }
+          }
+
+          function printOut(item, index) {
+            startMonth = item["start"]["month"] + 1;
+            endMonth = item["end"]["month"] + 1;
+            createdMonth = item["created"]["month"] + 1;
+            printTo.innerHTML = printTo.innerHTML + "Name: " + item["name"] + ", ID: " + item["id"] + ", Secret Code: " + item["secretCode"] + ", Start Date: " + item["start"]["year"] + "/" + startMonth + "/" + item["start"]["dayOfMonth"] +
+              ", Start Time: " + item["start"]["hourOfDay"] + ":" + item["start"]["minute"] + ", End Date: " + item["end"]["year"] + "/" + endMonth + "/" + item["end"]["dayOfMonth"] +
+              ", End Time: " + item["end"]["hourOfDay"] + ":" + item["end"]["minute"] + ", Block Size: " + item["blockSize"] + ", Date Created:" + item["created"]["year"] + "/" + createdMonth + "/" + item["created"]["dayOfMonth"] +
+              ", Time Created: " + item["created"]["hourOfDay"] + ":" + item["created"]["minute"] + "<br>";
           }
         </script>
       </fieldset>
