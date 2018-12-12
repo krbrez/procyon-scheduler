@@ -28,8 +28,8 @@ public class SchedulesDAOTest {
 
 		// Use a meeting that I know is in the DB to be
 		// able to check its values.
-		Schedule testSchedule = sDAO.getSchedule("0a891YnhrRILP4N4");
-		Assert.assertEquals(testSchedule.getId(), "0a891YnhrRILP4N4");
+		Schedule testSchedule = sDAO.getSchedule("onlt0O2wk7YFyUnG");
+		Assert.assertEquals(testSchedule.getId(), "onlt0O2wk7YFyUnG");
 	}
 
 	@Test
@@ -50,8 +50,8 @@ public class SchedulesDAOTest {
 	public void testGetScheduleBySecretCode() throws Exception{
 		SchedulesDAO sDAO = new SchedulesDAO();
 		
-		Schedule s = sDAO.getScheduleBySecretCode("1BaNAIrSZYLjQaQQ");
-		Assert.assertEquals(s.getId(), "0a891YnhrRILP4N4");
+		Schedule s = sDAO.getScheduleBySecretCode("8lPq7LYmpQbpa1E4");
+		Assert.assertEquals(s.getId(), "onlt0O2wk7YFyUnG");
 	}
 	
 	 @Test
@@ -59,7 +59,7 @@ public class SchedulesDAOTest {
 	 SchedulesDAO sDAO = new SchedulesDAO();
 	
 	 ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
-	 Schedule s = sDAO.getSchedule("0a891YnhrRILP4N4");
+	 Schedule s = sDAO.getSchedule("onlt0O2wk7YFyUnG");
 	 Assert.assertEquals(schedules.get(1).getClass(), s.getClass());
 	 }
 }
