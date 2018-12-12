@@ -36,7 +36,7 @@ public class ShowWeekScheduleTest {
 		// Create
 		ShowWeekScheduleHandler swHandler = new ShowWeekScheduleHandler();
 
-		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("0a891YnhrRILP4N4", "2018-12-03");
+		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("onlt0O2wk7YFyUnG", "2018-12-17");
 		String showRequest = new Gson().toJson(swsr);
 		String jsonRequest = new Gson().toJson(new HttpRequest(showRequest));
 
@@ -48,7 +48,7 @@ public class ShowWeekScheduleTest {
 		HttpResponse put = new Gson().fromJson(output.toString(), HttpResponse.class);
 		ShowWeekScheduleResponse resp = new Gson().fromJson(put.body, ShowWeekScheduleResponse.class);
 
-		Assert.assertEquals(resp.meetings.get(1).getSchedule(), "0a891YnhrRILP4N4");
+		Assert.assertEquals(resp.meetings.get(1).getSchedule(), "onlt0O2wk7YFyUnG");
 		Assert.assertEquals(resp.httpCode, 200);
 
 	}
@@ -72,13 +72,13 @@ public class ShowWeekScheduleTest {
 
 		Assert.assertEquals(resp.httpCode, 403);
 	}
-	
+
 	@Test
 	public void testShowWeekSchedule422() throws Exception {
 		// Create
 		ShowWeekScheduleHandler swHandler = new ShowWeekScheduleHandler();
 
-		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("0a891YnhrRILP4N4", "2020-10-22");
+		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("onlt0O2wk7YFyUnG", "2020-10-22");
 		String showRequest = new Gson().toJson(swsr);
 		String jsonRequest = new Gson().toJson(new HttpRequest(showRequest));
 

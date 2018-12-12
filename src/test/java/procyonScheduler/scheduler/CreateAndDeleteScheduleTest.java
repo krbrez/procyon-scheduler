@@ -21,7 +21,7 @@ import procyonScheduler.scheduler.CreateScheduleResponse;
 /**
  * A simple test harness for locally invoking your Lambda function handler.
  */
-public class CreateAndDeleteScheduleHandlersTest {
+public class CreateAndDeleteScheduleTest {
 
 	Context createContext(String apiCall) {
 		TestContext ctx = new TestContext();
