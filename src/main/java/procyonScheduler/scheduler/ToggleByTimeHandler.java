@@ -34,7 +34,7 @@ public LambdaLogger logger = null;
 		if (logger != null) {
 			logger.log("in toggleDay");
 		}
-		boolean toggled = false;
+		boolean toggled = true;
 		
 		MeetingsDAO mDAO = new MeetingsDAO();
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -52,18 +52,14 @@ public LambdaLogger logger = null;
 					//is the time the one we're looking for?
 					if(isThisTheTime(m.getDateTime(), toggleMe))
 					{
-						if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
-						m.setAvailable(true);
-						}
-						else if (!openOrClose) {	//if boolean is false, want to close the slot (available = false)
-						m.setAvailable(false);
-						}
-						toggled = true;
+						m.setAvailable(openOrClose);
+						toggled = toggled && mDAO.updateMeeting(m);
 					}
 				}				
 			}
 			else {
 				//there is a mistake! secret code doesn't match schedule
+				//logger.log(" There aren't any meetings at this time! ");
 				toggled = false;
 			}
 			return toggled;
