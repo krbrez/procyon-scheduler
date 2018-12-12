@@ -93,10 +93,10 @@
             startMonth = item["start"]["month"] + 1;
             endMonth = item["end"]["month"] + 1;
             createdMonth = item["created"]["month"] + 1;
-            printTo.innerHTML = printTo.innerHTML + "Name: " + item["name"] + ", ID: " + item["id"] + ", Secret Code: " + item["secretCode"] + ", Start Date: " + item["start"]["year"] + "/" + startMonth + "/" + item["start"]["dayOfMonth"] +
+            printTo.innerHTML = printTo.innerHTML + "Date Created:" + item["created"]["year"] + "/" + createdMonth + "/" + item["created"]["dayOfMonth"] +
+            ", Time Created: " + item["created"]["hourOfDay"] + ":" + item["created"]["minute"] + ", Name: " + item["name"] + ", ID: " + item["id"] + ", Secret Code: " + item["secretCode"] + ", Start Date: " + item["start"]["year"] + "/" + startMonth + "/" + item["start"]["dayOfMonth"] +
               ", Start Time: " + item["start"]["hourOfDay"] + ":" + item["start"]["minute"] + ", End Date: " + item["end"]["year"] + "/" + endMonth + "/" + item["end"]["dayOfMonth"] +
-              ", End Time: " + item["end"]["hourOfDay"] + ":" + item["end"]["minute"] + ", Block Size: " + item["blockSize"] + ", Date Created:" + item["created"]["year"] + "/" + createdMonth + "/" + item["created"]["dayOfMonth"] +
-              ", Time Created: " + item["created"]["hourOfDay"] + ":" + item["created"]["minute"] + "<br>";
+              ", End Time: " + item["end"]["hourOfDay"] + ":" + item["end"]["minute"] + ", Block Size: " + item["blockSize"] + "<br>";
           }
         </script>
       </fieldset>
