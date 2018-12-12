@@ -45,7 +45,7 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 		
 		Schedule s = sDAO.getScheduleBySecretCode(secretCode);
 		
-		GregorianCalendar extend = new GregorianCalendar(extY, extM, extDy, 0, 0);
+		GregorianCalendar extend = new GregorianCalendar(extY, extM, extDy, s.getStart().get(GregorianCalendar.HOUR_OF_DAY), 0);
 		if (extend.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY
 				|| extend.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SUNDAY) {
 			return false;

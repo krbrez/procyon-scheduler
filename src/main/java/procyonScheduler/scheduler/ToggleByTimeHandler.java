@@ -54,17 +54,19 @@ public LambdaLogger logger = null;
 					{
 						if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
 						m.setAvailable(true);
+						toggled = true;
 						}
 						else if (!openOrClose) {	//if boolean is false, want to close the slot (available = false)
 						m.setAvailable(false);
-						}
 						toggled = true;
+						}
 					}
 				}				
 			}
 			else {
 				//there is a mistake! secret code doesn't match schedule
-				toggled = false;
+				logger.log(" There aren't any meetings at this time! ");
+				//toggled = false;
 			}
 			return toggled;
 	}

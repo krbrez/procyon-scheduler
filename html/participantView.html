@@ -21,6 +21,7 @@ var base_url = "https://r37b9qrsj3.execute-api.us-east-2.amazonaws.com/Alpha/";
 var showweek_url = base_url + "showweek";    // PUT
 var createmeeting_url = base_url + "createmeeting";
 var cancelmeeting_url = base_url + "cancelmeeting";
+var searchmeetings_url = base_url + "searchschedule";
 
 function showWeek(e) {
   startDate = new Date(); // a date
@@ -220,6 +221,47 @@ function cancelMeeting(e){
     }
   };
 }
+
+
+function searchMeetings(e) {
+  var form = document.ScheduleSearch;
+  var scheduletobeSearched = form.searchScheduleID.value
+  var a = document.getElementById("findYear");
+  var searchYear = a.options[a.selectedIndex].value;
+  var b = document.getElementById("findMonth");
+  var searchMonth = b.options[b.selectedIndex].value;
+  var c = document.getElementById("findDay");
+  var searchDay = c.options[c.selectedIndex].value;
+  var d = document.getElementById("findDayOfWeek");
+  var searchDayOfWeek = d.options[d.selectedIndex].value;
+  var timslotSearch = form.searchTimeslots.value; //time
+  var data = {};
+  data["schedule"] = scheduletobeSearched;
+  data["month"] = searchMonth;
+  data["year"] = searchYear;
+  data["weekday"] = searchDayOfWeek;
+  data["day"] = searchDay;
+  data["time"] = timslotSearch;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", searchmeetings_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResponse(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
+    //searchedMeetingsDisplay(e);
+    //__________________________________________________________________________________________________________________________________
+  };
+}
 </script>
 </head>
 <body>
@@ -239,83 +281,83 @@ function cancelMeeting(e){
   <section class = "ParticipantOptions" id="ParticipantOptions">
     <br>
     <fieldset>
-      <legend>Search This Schedule</legend>
-      <form name="">
-      Find all open timeslots in
-        <select>
-          <option value="FindYear">Year</option>
-          <option value="t18">2018</option>
-          <option value="t19">2019</option>
-          <option value="t20">2020</option>
+      <legend>Search A Schedule</legend>
+      <form name="ScheduleSearch" method="put">
+        Schedule ID: <input type="text" name="searchScheduleID" value=""><br>
+        Find all open timeslots in:
+        <select id="findYear">
+          <option value="">Year</option>
+          <option value="2018">2018</option>
+          <option value="2019">2019</option>
+          <option value="2020">2020</option>
         </select>
       <br>
-      Find all open timeslots in
-      <select>
-        <option value="FindMonth">Month</option>
-        <option value="Jan">January</option>
-        <option value="Feb">February</option>
-        <option value="Mar">March</option>
-        <option value="Apr">April</option>
+      Find all open timeslots in:
+      <select id="findMonth">
+        <option value="">Month</option>
+        <option value="January">January</option>
+        <option value="February">February</option>
+        <option value="March">March</option>
+        <option value="April">April</option>
         <option value="May">May</option>
-        <option value="Jun">June</option>
-        <option value="Jul">July</option>
-        <option value="Aug">August</option>
-        <option value="Sep">September</option>
-        <option value="Oct">October</option>
-        <option value="Nov">November</option>
-        <option value="Dec">December</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="August">August</option>
+        <option value="September">September</option>
+        <option value="October">October</option>
+        <option value="November">November</option>
+        <option value="December">December</option>
       </select>
       <br>
-      Find all open timeslots on
-      <select>
-        <option value="searchDayofMonth">Day of the Month</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
-        <option>6</option>
-        <option>7</option>
-        <option>8</option>
-        <option>9</option>
-        <option>10</option>
-        <option>11</option>
-        <option>12</option>
-        <option>13</option>
-        <option>14</option>
-        <option>15</option>
-        <option>16</option>
-        <option>17</option>
-        <option>18</option>
-        <option>19</option>
-        <option>20</option>
-        <option>21</option>
-        <option>22</option>
-        <option>23</option>
-        <option>24</option>
-        <option>25</option>
-        <option>26</option>
-        <option>27</option>
-        <option>28</option>
-        <option>29</option>
-        <option>30</option>
-        <option>31</option>
+      Find all open timeslots on:
+      <select id="findDay">
+        <option value="">Day of the Month</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30</option>
+        <option value="31">31</option>
       </select>
       <br>
-      Find all open timeslots on
-      <select>
-        <option value="closeDayOfWeek">Day of the Week</option>
-        <option value="MonClose">Mondays</option>
-        <option value="TueClose">Tuesdays</option>
-        <option value="WedClose">Wednesdays</option>
-        <option value="ThuClose">Thursdays</option>
-        <option value="FriClose">Fridays</option>
+      Find all open timeslots on:
+      <select id="findDayOfWeek">
+        <option value="">Day of the Week</option>
+        <option value="Monday">Mondays</option>
+        <option value="Tuesday">Tuesdays</option>
+        <option value="Wednesday">Wednesdays</option>
+        <option value="Thursday">Thursdays</option>
+        <option value="Friday">Fridays</option>
       </select>
       <br>
       Find all open timeslots at: <input type="time" id="searchTimeslots" name="searchTimeslots">
-
       <br>
-      <button type="button" onclick="JavaScript:searchedMeetings(this)">Search Open Meetings</button>
+      <button type="button" onclick="JavaScript:searchMeetings(this)">Search Open Meetings</button>
     </form>
     <br>
 
@@ -476,7 +518,7 @@ function cancelMeeting(e){
 		}
 
     // the function that searches through all of the meetings and displays them in a dropdown
-    function searchedMeetings(e){
+    function searchedMeetingsDisplay(e){
       var htmlSearchView = "";
       htmlSearchView +=("<fieldset><legend>List of available Meetings</legend>")
 
