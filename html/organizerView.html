@@ -24,6 +24,7 @@ var showweek_url = base_url + "showweek";    // PUT
 var togglemeet_url = base_url + "managetimeslot"; // PUT
 var cancelmeeting_url = base_url + "cancelmeeting"; // PUT
 var deleteschedule_url = base_url + "deleteschedule"; // DELETE
+var extendsched_url = base_url + "extendschedule"; // PUT
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -278,6 +279,56 @@ function deleteSchedule(e) {
     };
   }
 }
+function extendStart(e) {
+  var extDate = document.getElementById("extendStartDate").value;
+  var code = document.getElementById("extendStartCode").value;
+  var data = {};
+  data["extDate"] = extDate;
+  data["secretCode"] = code;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", extendsched_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function extendEnd(e) {
+  var extDate = document.getElementById("extendEndDate").value;
+  var code = document.getElementById("extendEndCode").value;
+  var data = {};
+  data["extDate"] = extDate;
+  data["secretCode"] = code;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", extendsched_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
 </script>
 </head>
 <body>
@@ -381,9 +432,10 @@ function deleteSchedule(e) {
     	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Schedule Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
     </form>
 
-    <!-- The old inputs into this field.
-    <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
-    <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
+
+    <form>Change the Start Date of the Schedule to<input type="date" name="extendStartDate" id="extendStartDate"><input type="text" name="extendStartCode" id="extendStartCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:extendStart(this)">Submit</button></form>
+    <form>Change the End Date of the Schedule to<input type="date" name="extendEndDate" id="extendEndDate"><input type="text" name="extendEndCode" id="extendEndCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:extendEnd(this)">Submit</button></form>
+	
     <form>Open all meetings on
       <select>
       <option value="openDayOfWeek">Day of the Week</option>
@@ -418,7 +470,7 @@ function deleteSchedule(e) {
       <option value="slot1">Add timeslots to this dropdown</option>
     </select>
     <input type="submit"></form>
-  -->
+
   </fieldset>
 
 
