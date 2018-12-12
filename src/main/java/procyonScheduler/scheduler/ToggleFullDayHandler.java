@@ -49,10 +49,10 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 			//get all the meetings from this schedule
 			ArrayList<Meeting> meetings = (ArrayList<Meeting>) mDAO.getAllMeetingsFromSchedule(scheduleID);
 			//for each meeting
-			for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { //what's something i can do to an arraylist of meetings?
+			for (Iterator<Meeting> it = meetings.iterator(); it.hasNext(); ) { 
 				Meeting m = it.next();
 				//is the date correct?
-				if (m.getDateTime().equals(toggleMe)) 
+				if (isThisTheDay(m.getDateTime(), toggleMe)) 
 				{
 					if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
 						m.setAvailable(true);
@@ -62,6 +62,7 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 					}
 					toggled = true;
 				}
+				//if not, it's not the right day, so just move on
 			}				
 		}
 		else {
@@ -71,6 +72,43 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		return toggled;
 	}
 	
+	private boolean isThisTheDay(GregorianCalendar meetingInfo, GregorianCalendar input) {
+		int meetingY = 0;
+		int meetingM = 0;
+		int meetingDy = 0;
+		String inputD;
+		int inputY = 0;
+		int inputM = 0;
+		int inputDy = 0;
+		
+//		TEMPLATE FROM GAVIN'S
+//		if (startD.length() == 10) {
+//		String[] stDt = startD.split("-");
+//		stY = Integer.parseInt(stDt[0]);
+//		stM = Integer.parseInt(stDt[1]) - 1; // GregorianCalendar months
+//												// start at 0
+//		stDy = Integer.parseInt(stDt[2]);
+//		}
+
+		meetingY = meetingInfo.get(GregorianCalendar.YEAR);
+		meetingM = meetingInfo.get(GregorianCalendar.MONTH);
+		meetingDy = meetingInfo.get(GregorianCalendar.DAY_OF_MONTH);
+		
+		if(input.length() == 10) {
+			String[] inDt = inputD.split("-");
+			inputY = Integer.parseInt(inDt[0]);
+			inputM = Integer.parseInt(inDt[1]) - 1;	//GCal months start at 0
+			inputDy = Integer.parseInt(inDt[2]);
+		}
+		
+		if (meetingY == inputY && meetingM == inputM && meetingDy == inputDy) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
