@@ -36,7 +36,7 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		if (logger != null) {
 			logger.log("in toggleDay");
 		}
-		boolean toggled = false;
+		boolean toggled = true;
 		
 		MeetingsDAO mDAO = new MeetingsDAO();
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -54,19 +54,15 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 				//is the date correct?
 				if (isThisTheDay(m.getDateTime(), toggleMe)) 
 				{
-					if (openOrClose) {		//if boolean is true, want to open the slot (available = true)
-						m.setAvailable(true);
-					}
-					else if (!openOrClose) {	//if boolean is false, want to close the slot (available = false)
-						m.setAvailable(false);
-					}
-					toggled = true;
+					m.setAvailable(openOrClose);
+					toggled = toggled && mDAO.updateMeeting(m);
 				}
 				//if not, it's not the right day, so just move on
 			}				
 		}
 		else {
 			//there is a mistake! secret code doesn't match schedule
+			//logger.log(" There aren't any meetings on this day! ");
 			toggled = false;
 		}
 		return toggled;
@@ -80,15 +76,6 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		int inputY = 0;
 		int inputM = 0;
 		int inputDy = 0;
-		
-//		TEMPLATE FROM GAVIN'S
-//		if (startD.length() == 10) {
-//		String[] stDt = startD.split("-");
-//		stY = Integer.parseInt(stDt[0]);
-//		stM = Integer.parseInt(stDt[1]) - 1; // GregorianCalendar months
-//												// start at 0
-//		stDy = Integer.parseInt(stDt[2]);
-//		}
 
 		meetingY = meetingInfo.get(GregorianCalendar.YEAR);
 		meetingM = meetingInfo.get(GregorianCalendar.MONTH);
