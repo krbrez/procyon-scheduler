@@ -15,37 +15,65 @@ import com.google.gson.Gson;
  * A simple test harness for locally invoking your Lambda function handler.
  */
 public class ManageTimeSlotTest {
-	
+
 	Context createContext(String apiCall) {
 		TestContext ctx = new TestContext();
 		ctx.setFunctionName(apiCall);
 		return ctx;
 	}
-	
-	//Play with meeting 'hiQ3vL2P8cxn0JnQ'
-	//Available (open) is 1, unavailable (closed) = 0
-	
-		@Test
-		public void testManageTimeSlot() throws Exception {  
 
-			//Close time slot
-			ManageTimeSlotHandler closeHandler = new ManageTimeSlotHandler();
+	// Play with meeting 'hiQ3vL2P8cxn0JnQ'
+	// Available (open) is 1, unavailable (closed) = 0
 
-			ManageTimeSlotRequest ctsr = new ManageTimeSlotRequest("hiQ3vL2P8cxn0JnQ", "cKN8l0Vs7IYnS2BU"); //ctsr => close time slot request
-			String closeRequest = new Gson().toJson(ctsr);
-			String jsonRequest = new Gson().toJson(new HttpRequest(closeRequest));
+	@Test
+	public void testManageTimeSlot() throws Exception {
 
-			InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
-			OutputStream output = new ByteArrayOutputStream();
+		// Close time slot
+		ManageTimeSlotHandler closeHandler = new ManageTimeSlotHandler();
 
-			closeHandler.handleRequest(input, output, createContext("close slot"));
+		ManageTimeSlotRequest ctsr = new ManageTimeSlotRequest("zWw9bmX3N4F8JAMD", "8lPq7LYmpQbpa1E4"); // ctsr
+																										// =>
+																										// close
+																										// time
+																										// slot
+																										// request
+		String closeRequest = new Gson().toJson(ctsr);
+		String jsonRequest = new Gson().toJson(new HttpRequest(closeRequest));
 
-			HttpResponse put = new Gson().fromJson(output.toString(), HttpResponse.class);
-			ManageTimeSlotResponse resp = new Gson().fromJson(put.body, ManageTimeSlotResponse.class);
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+		OutputStream output = new ByteArrayOutputStream();
 
-			Assert.assertTrue(resp.response.contains(ctsr.meetingID));
-			Assert.assertEquals(resp.httpCode, 200);
-			
-		}
+		closeHandler.handleRequest(input, output, createContext("close slot"));
+
+		HttpResponse put = new Gson().fromJson(output.toString(), HttpResponse.class);
+		ManageTimeSlotResponse resp = new Gson().fromJson(put.body, ManageTimeSlotResponse.class);
+
+		Assert.assertTrue(resp.response.contains(ctsr.meetingID));
+		Assert.assertEquals(resp.httpCode, 200);
+
+		// Open time slot
+		ManageTimeSlotHandler openHandler = new ManageTimeSlotHandler();
+
+		ManageTimeSlotRequest otsr = new ManageTimeSlotRequest("zWw9bmX3N4F8JAMD", "8lPq7LYmpQbpa1E4"); // ctsr
+																										// =>
+																										// open
+																										// time
+																										// slot
+																										// request
+		String openRequest = new Gson().toJson(otsr);
+		String jsonRequest2 = new Gson().toJson(new HttpRequest(openRequest));
+
+		InputStream input1 = new ByteArrayInputStream(jsonRequest2.getBytes());
+		OutputStream output1 = new ByteArrayOutputStream();
+
+		openHandler.handleRequest(input1, output1, createContext("open slot"));
+
+		HttpResponse put1 = new Gson().fromJson(output.toString(), HttpResponse.class);
+		ManageTimeSlotResponse resp1 = new Gson().fromJson(put1.body, ManageTimeSlotResponse.class);
+
+		Assert.assertTrue(resp1.response.contains(otsr.meetingID));
+		Assert.assertEquals(resp1.httpCode, 200);
+
+	}
 
 }

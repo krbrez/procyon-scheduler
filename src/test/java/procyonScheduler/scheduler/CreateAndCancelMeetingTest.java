@@ -29,14 +29,14 @@ public class CreateAndCancelMeetingTest {
 		return ctx;
 	}
 
-	//Play with meeting 'hiQ3vL2P8cxn0JnQ'
+	//Play with meeting 'zWw9bmX3N4F8JAMD'
 	
 	@Test
 	public void testCreateAndCancelMeetingWorksForParticipant() throws Exception {
 		//Create
 		CreateMeetingHandler crHandler = new CreateMeetingHandler();
 
-		CreateMeetingRequest crmr = new CreateMeetingRequest("hiQ3vL2P8cxn0JnQ", "TestingLabel");
+		CreateMeetingRequest crmr = new CreateMeetingRequest("zWw9bmX3N4F8JAMD", "TestingLabel");
 		String createRequest = new Gson().toJson(crmr);
 		String jsonRequest = new Gson().toJson(new HttpRequest(createRequest));
 
@@ -54,7 +54,7 @@ public class CreateAndCancelMeetingTest {
 		//Cancel
 		CancelMeetingHandler cHandler = new CancelMeetingHandler();
 
-		CancelMeetingRequest cmr = new CancelMeetingRequest("hiQ3vL2P8cxn0JnQ", resp.secretCode);
+		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", resp.secretCode);
 		String cancelRequest = new Gson().toJson(cmr);
 		String jsonRequest2 = new Gson().toJson(new HttpRequest(cancelRequest));
 
@@ -76,7 +76,7 @@ public class CreateAndCancelMeetingTest {
 		//Create
 		CreateMeetingHandler crHandler = new CreateMeetingHandler();
 
-		CreateMeetingRequest crmr = new CreateMeetingRequest("hiQ3vL2P8cxn0JnQ", "TestingLabel");
+		CreateMeetingRequest crmr = new CreateMeetingRequest("zWw9bmX3N4F8JAMD", "TestingLabel");
 		String createRequest = new Gson().toJson(crmr);
 		String jsonRequest = new Gson().toJson(new HttpRequest(createRequest));
 
@@ -91,7 +91,7 @@ public class CreateAndCancelMeetingTest {
 		//Cancel
 		CancelMeetingHandler cHandler = new CancelMeetingHandler();
 
-		CancelMeetingRequest cmr = new CancelMeetingRequest("hiQ3vL2P8cxn0JnQ", "cKN8l0Vs7IYnS2BU");
+		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", "8lPq7LYmpQbpa1E4");
 		String cancelRequest = new Gson().toJson(cmr);
 		String jsonRequest2 = new Gson().toJson(new HttpRequest(cancelRequest));
 
