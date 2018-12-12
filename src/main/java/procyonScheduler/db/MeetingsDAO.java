@@ -146,9 +146,9 @@ public class MeetingsDAO {
 		}
 	}
 
-	public List<Meeting> getAllMeetingsFromSchedule(String id) throws Exception {
+	public ArrayList<Meeting> getAllMeetingsFromSchedule(String id) throws Exception {
 
-		List<Meeting> allMeetings = new ArrayList<>();
+		ArrayList<Meeting> allMeetings = new ArrayList<>();
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule = ?;");
 			ps.setString(1, id);
@@ -202,78 +202,6 @@ public class MeetingsDAO {
 				}
 			}
 			return weekMeetings;
-
-		} catch (Exception e) {
-			throw new Exception("Failed in getting meetings: " + e.getMessage());
-		}
-	}
-	
-	public ArrayList<Meeting> searchMeetings(String schedule, String month, String year, String weekday, String day, String time)
-		throws Exception {
-		ArrayList<Meeting> meetings = new ArrayList<>();
-		
-		try {
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meetings WHERE schedule=?;");
-			ps.setString(1, schedule);
-			ResultSet resultSet = ps.executeQuery();
-
-			while (resultSet.next()) {
-				Meeting m = generateMeeting(resultSet);
-				meetings.add(m);
-			}
-			resultSet.close();
-			ps.close();
-			
-			Iterator<Meeting> meetingsItr = meetings.iterator();
-			
-			HashMap<String, Integer> months = new HashMap<>();
-			months.put("january", 0);
-			months.put("february", 1);
-			months.put("march", 2);
-			months.put("april", 3);
-			months.put("may", 4);
-			months.put("june", 5);
-			months.put("july", 6);
-			months.put("august", 7);
-			months.put("september", 8);
-			months.put("october", 9);
-			months.put("november", 10);
-			months.put("december", 11);
-			
-			HashMap<String, Integer> weekdays = new HashMap<>();
-			weekdays.put("sunday", 1);
-			weekdays.put("monday", 2);
-			weekdays.put("tuesday", 3);
-			weekdays.put("wednesday", 4);
-			weekdays.put("thursday", 5);
-			weekdays.put("friday", 6);
-			weekdays.put("saturday", 7);
-			
-			while(meetingsItr.hasNext()) {
-				Meeting m = (Meeting) meetingsItr.next();
-				if(!m.getAvailable()) {
-					meetingsItr.remove();
-				} else if (m.getLabel() != "") {
-					meetingsItr.remove();
-				} else if(month != "" && m.getDateTime().get(GregorianCalendar.MONTH) != months.get(month.toLowerCase())) {
-					meetingsItr.remove();
-				} else if (year != "" && m.getDateTime().get(GregorianCalendar.YEAR) != Integer.parseInt(year)) {
-					meetingsItr.remove();
-				} else if (weekday != "" && m.getDateTime().get(GregorianCalendar.DAY_OF_WEEK) != weekdays.get(weekday.toLowerCase())) {
-					meetingsItr.remove();
-				} else if (day != "" && m.getDateTime().get(GregorianCalendar.DAY_OF_MONTH) != Integer.parseInt(day)) {
-					meetingsItr.remove();
-				} else if (time != "") {
-					String[] timeSplit = time.split(":");
-					int hour = Integer.parseInt(timeSplit[0]);
-					int minute = Integer.parseInt(timeSplit[1]);
-					if(m.getDateTime().get(GregorianCalendar.HOUR_OF_DAY) != hour
-						|| m.getDateTime().get(GregorianCalendar.MINUTE) != minute) {
-						meetingsItr.remove();
-					}
-				}
-			}
-			return meetings;
 
 		} catch (Exception e) {
 			throw new Exception("Failed in getting meetings: " + e.getMessage());

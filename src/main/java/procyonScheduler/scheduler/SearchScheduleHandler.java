@@ -7,6 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -32,8 +36,64 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 		}
 		
 		MeetingsDAO mDAO = new MeetingsDAO();
-		ArrayList<Meeting> foundMeetings = mDAO.searchMeetings(schedule, month, year, weekday, day, time);
+		ArrayList<Meeting> foundMeetings = mDAO.getAllMeetingsFromSchedule(schedule);
 		
+		Iterator<Meeting> meetingsItr = foundMeetings.iterator();
+		
+		HashMap<String, Integer> months = new HashMap<>();
+		months.put("january", 0);
+		months.put("february", 1);
+		months.put("march", 2);
+		months.put("april", 3);
+		months.put("may", 4);
+		months.put("june", 5);
+		months.put("july", 6);
+		months.put("august", 7);
+		months.put("september", 8);
+		months.put("october", 9);
+		months.put("november", 10);
+		months.put("december", 11);
+		
+		HashMap<String, Integer> weekdays = new HashMap<>();
+		weekdays.put("sunday", 1);
+		weekdays.put("monday", 2);
+		weekdays.put("tuesday", 3);
+		weekdays.put("wednesday", 4);
+		weekdays.put("thursday", 5);
+		weekdays.put("friday", 6);
+		weekdays.put("saturday", 7);
+		
+		while(meetingsItr.hasNext()) {
+			Meeting m = (Meeting) meetingsItr.next();
+			if(!m.getAvailable()) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("avail");
+			} else if (!m.getLabel().equals("")) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("label");
+			} else if(!month.equals("") && m.getDateTime().get(GregorianCalendar.MONTH) != months.get(month.toLowerCase())) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("month");
+			} else if (!year.equals("") && m.getDateTime().get(GregorianCalendar.YEAR) != Integer.parseInt(year)) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("year");
+			} else if (!weekday.equals("") && m.getDateTime().get(GregorianCalendar.DAY_OF_WEEK) != weekdays.get(weekday.toLowerCase())) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("weekday");
+			} else if (!day.equals("") && m.getDateTime().get(GregorianCalendar.DAY_OF_MONTH) != Integer.parseInt(day)) {
+				meetingsItr.remove();
+				if(logger != null) logger.log("day");
+			} else if (!time.equals("")) {
+				String[] timeSplit = time.split(":");
+				int hour = Integer.parseInt(timeSplit[0]);
+				int minute = Integer.parseInt(timeSplit[1]);
+				if(m.getDateTime().get(GregorianCalendar.HOUR_OF_DAY) != hour
+					|| m.getDateTime().get(GregorianCalendar.MINUTE) != minute) {
+					meetingsItr.remove();
+					if(logger != null) logger.log("time");
+				}
+			}
+		}
 		return foundMeetings;
 	}
 	
@@ -99,7 +159,12 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 			try {
 				ArrayList<Meeting> foundMeetings = searchSchedule(req.schedule, req.month, req.year, req.weekday, req.day, req.time);
 				if (foundMeetings.size() > 0) {
-					foundMeetings.sort(null);
+					Comparator<Meeting> chrono =  new Comparator<Meeting>() {
+				        public int compare(Meeting m1, Meeting m2) {
+				            return m1.getDateTime().compareTo(m2.getDateTime());
+				        }
+				    };
+					foundMeetings.sort(chrono);
 					resp = new SearchScheduleResponse(foundMeetings);
 				} else {
 					resp = new SearchScheduleResponse("No meetings fitting search criteria. Try broadening your search.", 422);
