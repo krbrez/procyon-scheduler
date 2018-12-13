@@ -595,18 +595,21 @@ function closeTime(e) {
 		  htmlString +=(monthDisplay + " " + buildScheduleYear);
 		  // TODO MAKE THE BUTTON FOR LINKING NEXT WEEK, that will go here in a document.write
       // Hack to handle their tests only. PLEASE FIX THIS.
-      if (buildScheduleDate.getDate()+4 > 31){
-        var lastDay = 1;
-      }
-      else{
-        var lastDay = buildScheduleDate.getDate()+4;
-      }
+      buildScheduleDate.setDate(buildScheduleDate.getDate()+1);
+      var nextDayCal = buildScheduleDate.getDate();
+      buildScheduleDate.setDate(buildScheduleDate.getDate()+1);
+      var twoDayCal = buildScheduleDate.getDate();
+      buildScheduleDate.setDate(buildScheduleDate.getDate()+1);
+      var threeDayCal = buildScheduleDate.getDate();
+      buildScheduleDate.setDate(buildScheduleDate.getDate()+1);
+      var lastDayCal = buildScheduleDate.getDate();
+      buildScheduleDate.setDate(buildScheduleDate.getDate()-4);
  			htmlString += ('<table><tr><th>TIMESLOT</th><th>Mon '
 		  + (buildScheduleDate.getDate()+0) + '</th><th>Tue '
-		  + (buildScheduleDate.getDate()+1) + '</th><th>Wed '
-		  + (buildScheduleDate.getDate()+2) + '</th><th>Thu '
-		  + (buildScheduleDate.getDate()+3) + '</th><th>Fri '
-		  + lastDay + '</th></tr>');
+		  + nextDayCal + '</th><th>Wed '
+		  + twoDayCal + '</th><th>Thu '
+		  + threeDayCal + '</th><th>Fri '
+		  + lastDayCal + '</th></tr>');
 		  // print out of the main section of the table
       console.log(window.endDate.getHours())
 		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1); i+= (timeSlotSize/60)){
@@ -617,7 +620,7 @@ function closeTime(e) {
 		        htmlString +=("<td>");
             console.log(meetings[arrayCounter]["label"]);
             if (meetings[arrayCounter]["label"] != ""){
-              htmlString +=("<b>Meeting with: " + meetings[arrayCounter]["label"] + "<b><br>with ID: " + meetings[arrayCounter]["id"]);
+              htmlString +=("<b>Meeting with: " + meetings[arrayCounter]["label"] + "</b><br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
              htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
