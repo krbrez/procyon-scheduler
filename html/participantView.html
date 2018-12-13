@@ -476,7 +476,7 @@ function scheduleSearchedMeeting(e){
 		        htmlString +=("<td>");
             console.log(meetings[arrayCounter]["label"]);
             if (meetings[arrayCounter]["label"] != ""){
-              htmlString +=("Meeting with: " + meetings[arrayCounter]["label"] + "<br>with ID: " + meetings[arrayCounter]["id"]);
+              htmlString +=("<b>Meeting with: " + meetings[arrayCounter]["label"] + "</b><br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
              htmlString +=("Unscheduled Meeting <br>with ID: " + meetings[arrayCounter]["id"] + "");
