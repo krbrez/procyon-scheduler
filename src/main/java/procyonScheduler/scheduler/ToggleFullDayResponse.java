@@ -1,20 +1,33 @@
 package procyonScheduler.scheduler;
 
 public class ToggleFullDayResponse {
-	String response;
-	int httpCode;
-	
-	public ToggleFullDayResponse (String response, int code) {
+	String response; // A response to show to the user
+	int httpCode; // The HTTP Code for the lambda
+
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            The response
+	 * @param code
+	 *            The HTTP code
+	 */
+	public ToggleFullDayResponse(String response, int code) {
 		this.response = response;
 		this.httpCode = code;
 	}
-	
-	// 200 means success
-	public ToggleFullDayResponse (String response) {
+
+	/**
+	 * Constructor when successful
+	 * 
+	 * @param name
+	 *            The response
+	 */
+	public ToggleFullDayResponse(String response) {
 		this.response = response;
 		this.httpCode = 200;
 	}
-	
+
 	public String toString() {
 		return response + ", " + Integer.toString(httpCode);
 	}
