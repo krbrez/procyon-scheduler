@@ -21,16 +21,28 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for the CancelMeeting use case for both organizers and
+ * participants
+ *
+ */
 public class CancelMeetingHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
 	/**
-	 * Load from RDS, if it exists
+	 * Cancels the meeting with the given ID and either the given secret code or
+	 * that is attached to the schedule with the given secret code (this allows
+	 * organizers and participants to use the same lambda)
 	 * 
+	 * @param id
+	 *            The ID for the meeting
+	 * @param code
+	 *            The secret code for either the meeting or the associated
+	 *            schedule
+	 * @return True if success, false if not
 	 * @throws Exception
 	 */
-
 	boolean cancelMeeting(String id, String code) throws Exception {
 		if (logger != null) {
 			logger.log("in cancelMeeting");
@@ -74,6 +86,9 @@ public class CancelMeetingHandler implements RequestStreamHandler {
 		return cancelled;
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();

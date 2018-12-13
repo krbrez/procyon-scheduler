@@ -19,15 +19,33 @@ import com.google.gson.Gson;
 import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.model.Meeting;
 
+/**
+ * The handler class for the CreateMeeting use case for participants
+ *
+ */
 public class CreateMeetingHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
+	/**
+	 * Schedules a meeting
+	 * 
+	 * @param id
+	 *            The ID of the meeting to be scheduled by the user
+	 * @param label
+	 *            The String the user would like to label the Meeting with
+	 * @return The secret code for the meeting, since the user will need to use
+	 *         that for edits if desired
+	 * @throws Exception
+	 */
 	String createMeeting(String id, String label) throws Exception {
 		if (logger != null) {
 			logger.log("in createMeeting");
 		}
 		MeetingsDAO mDAO = new MeetingsDAO();
+		// Get the desired meeting and update label so that it is not blank,
+		// signifying it has been scheduled. Checks to
+		// make sure it is not already scheduled or closed before it does that
 		Meeting m = mDAO.getMeeting(id);
 		if (m.getLabel().equals("") && m.getAvailable()) {
 			if (label != "") {
@@ -42,6 +60,9 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		}
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -64,15 +85,15 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		boolean processed = false;
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-			JSONParser parser = new JSONParser(); 
+			JSONParser parser = new JSONParser();
 			JSONObject event = (JSONObject) parser.parse(reader);
 			logger.log("event:" + event.toJSONString());
 			String method = (String) event.get("httpMethod");
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				response = new CreateMeetingResponse("id, label", "", 200); // OPTIONS
-																	// needs a
-																	// 200
-																	// response
+				// needs a
+				// 200
+				// response
 				responseJson.put("body", new Gson().toJson(response));
 				processed = true;
 				body = null;
@@ -86,9 +107,9 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
 			response = new CreateMeetingResponse("Bad Request:" + pe.getMessage(), "", 422); // unable
-																							// to
-																							// process
-																							// input
+																								// to
+																								// process
+																								// input
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
@@ -102,13 +123,13 @@ public class CreateMeetingHandler implements RequestStreamHandler {
 			try {
 				String result = createMeeting(req.id, req.label);
 				if (result != "") {
-					resp = new CreateMeetingResponse(
-							"Successfully created meeting.", req.label, result);
+					resp = new CreateMeetingResponse("Successfully created meeting.", req.label, result);
 				} else {
 					resp = new CreateMeetingResponse("Unable to create meeting", req.label, 422);
 				}
 			} catch (Exception e) {
-				resp = new CreateMeetingResponse("Unable to create meeting: "+ " (" + e.getMessage() + ")", req.label, 403);
+				resp = new CreateMeetingResponse("Unable to create meeting: " + " (" + e.getMessage() + ")", req.label,
+						403);
 			}
 
 			// compute proper response

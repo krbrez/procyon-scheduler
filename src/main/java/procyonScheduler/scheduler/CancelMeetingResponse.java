@@ -1,15 +1,27 @@
 package procyonScheduler.scheduler;
 
+/**
+ * The Response class for CancelMeetingHandler
+ *
+ */
 public class CancelMeetingResponse {
-	String response;
-	int httpCode;
+	String response; // A response to show to the user
+	int httpCode;	// The HTTP Code for the lambda
 	
+	/**
+	 * Constructor
+	 * @param name The response
+	 * @param code The HTTP code
+	 */
 	public CancelMeetingResponse(String name, int code) {
 		this.response = name;
 		this.httpCode = code;
 	}
 	
-	//200 means success 
+	/**
+	 * Constructor when successful
+	 * @param name The response
+	 */
 	public CancelMeetingResponse(String name) {
 		this.response = name;
 		this.httpCode = 200;
