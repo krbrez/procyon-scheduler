@@ -1,4 +1,5 @@
 package procyonScheduler.scheduler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +22,27 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for the ExtendEndingDate and ExtendStartingDate use cases for
+ * organizers for one time slot
+ *
+ */
 public class ExtendScheduleHandler implements RequestStreamHandler {
-	
+
 	public LambdaLogger logger = null;
-	
+
+	/**
+	 * Extends the meeting start date if the date is before the current schedule
+	 * start date or the current schedule end date if the date is after the
+	 * current schedule end date
+	 * 
+	 * @param extDate
+	 *            The date to extend the schedule to
+	 * @param secretCode
+	 *            The secret code for editing this schedule
+	 * @return True if success, false if not
+	 * @throws Exception
+	 */
 	boolean extendSchedule(String extDate, String secretCode) throws Exception {
 		if (logger != null) {
 			logger.log("in extendSchedule");
@@ -42,28 +60,31 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 			extM = Integer.parseInt(extDt[1]) - 1;
 			extDy = Integer.parseInt(extDt[2]);
 		}
-		
+
 		Schedule s = sDAO.getScheduleBySecretCode(secretCode);
-		
-		GregorianCalendar extend = new GregorianCalendar(extY, extM, extDy, s.getStart().get(GregorianCalendar.HOUR_OF_DAY), 0);
+
+		GregorianCalendar extend = new GregorianCalendar(extY, extM, extDy,
+				s.getStart().get(GregorianCalendar.HOUR_OF_DAY), 0);
 		if (extend.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SATURDAY
 				|| extend.get(GregorianCalendar.DAY_OF_WEEK) == GregorianCalendar.SUNDAY) {
 			return false;
 		}
-		
+
 		boolean extended = true;
-		GregorianCalendar start = (GregorianCalendar)s.getStart().clone();
-		GregorianCalendar end = (GregorianCalendar)s.getEnd().clone();
-		if(extend.compareTo(start) < 0) {
+		GregorianCalendar start = (GregorianCalendar) s.getStart().clone();
+		GregorianCalendar end = (GregorianCalendar) s.getEnd().clone();
+		if (extend.compareTo(start) < 0) {
 			extend.set(GregorianCalendar.HOUR_OF_DAY, start.get(GregorianCalendar.HOUR_OF_DAY));
 			// create meetings to extend schedule
-			GregorianCalendar meetTime = (GregorianCalendar)extend.clone();
-			GregorianCalendar endTime = (GregorianCalendar)start.clone();
+			GregorianCalendar meetTime = (GregorianCalendar) extend.clone();
+			GregorianCalendar endTime = (GregorianCalendar) start.clone();
 			endTime.set(GregorianCalendar.HOUR_OF_DAY, end.get(GregorianCalendar.HOUR_OF_DAY));
 			endTime.add(GregorianCalendar.DAY_OF_MONTH, -1);
 			while (meetTime.compareTo(endTime) < 0) {
-				while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) && (meetTime.compareTo(endTime) < 0)) {
-					while ((meetTime.get(GregorianCalendar.HOUR_OF_DAY) < end.get(GregorianCalendar.HOUR_OF_DAY)) && (meetTime.compareTo(endTime) < 0)) {
+				while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY)
+						&& (meetTime.compareTo(endTime) < 0)) {
+					while ((meetTime.get(GregorianCalendar.HOUR_OF_DAY) < end.get(GregorianCalendar.HOUR_OF_DAY))
+							&& (meetTime.compareTo(endTime) < 0)) {
 						Meeting m = new Meeting("", meetTime, true, s.getId());
 						extended = extended && mDAO.addMeeting(m);
 						meetTime.add(GregorianCalendar.MINUTE, s.getBlockSize());
@@ -75,16 +96,17 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 			}
 			s.modifySchedule(extend, end, secretCode);
 			sDAO.updateSchedule(s);
-		}
-		else if(extend.compareTo(end) > 0) {
+		} else if (extend.compareTo(end) > 0) {
 			extend.set(GregorianCalendar.HOUR_OF_DAY, end.get(GregorianCalendar.HOUR_OF_DAY));
 			// create meetings to extend schedule
-			GregorianCalendar meetTime = (GregorianCalendar)end.clone();
+			GregorianCalendar meetTime = (GregorianCalendar) end.clone();
 			meetTime.set(GregorianCalendar.HOUR_OF_DAY, start.get(GregorianCalendar.HOUR_OF_DAY));
 			meetTime.add(GregorianCalendar.DAY_OF_MONTH, 1);
 			while (meetTime.compareTo(extend) < 0) {
-				while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) && (meetTime.compareTo(extend) < 0)) {
-					while ((meetTime.get(GregorianCalendar.HOUR_OF_DAY) < end.get(GregorianCalendar.HOUR_OF_DAY)) && (meetTime.compareTo(extend) < 0)) {
+				while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY)
+						&& (meetTime.compareTo(extend) < 0)) {
+					while ((meetTime.get(GregorianCalendar.HOUR_OF_DAY) < end.get(GregorianCalendar.HOUR_OF_DAY))
+							&& (meetTime.compareTo(extend) < 0)) {
 						Meeting m = new Meeting("", meetTime, true, s.getId());
 						extended = extended && mDAO.addMeeting(m);
 						meetTime.add(GregorianCalendar.MINUTE, s.getBlockSize());
@@ -96,12 +118,15 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 			}
 			s.modifySchedule(start, extend, secretCode);
 			sDAO.updateSchedule(s);
-		}
-		else return false;
+		} else
+			return false;
 
 		return extended;
 	}
-	
+
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -169,8 +194,7 @@ public class ExtendScheduleHandler implements RequestStreamHandler {
 					resp = new ExtendScheduleResponse("Unable to extend schedule.", 422);
 				}
 			} catch (Exception e) {
-				resp = new ExtendScheduleResponse("Unable to extend schedule: " + "(" + e.getMessage() + ")",
-						403);
+				resp = new ExtendScheduleResponse("Unable to extend schedule: " + "(" + e.getMessage() + ")", 403);
 			}
 
 			// compute proper response
