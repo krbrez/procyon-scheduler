@@ -22,16 +22,23 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for the DeleteSchedule use case for organizers
+ *
+ */
 public class DeleteScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
 	/**
-	 * Load from RDS, if it exists
+	 * Deletes the schedule attached to the given secret code from the database
 	 * 
+	 * @param secretCode
+	 *            The secret code to be used to ensure that this organizer has
+	 *            edit access to a schedule
+	 * @return True if successful, false if not
 	 * @throws Exception
 	 */
-
 	boolean deleteSchedule(String secretCode) throws Exception {
 		if (logger != null) {
 			logger.log("in deleteSchedule");
@@ -46,19 +53,22 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 		logger.log("Here" + deleteMe.getId());
 
 		boolean deleted = true;
-		
+
 		// delete all the meetings inside the schedule
 		for (Iterator<Meeting> it = mDAO.getAllMeetingsFromSchedule(deleteMe.getId()).iterator(); it.hasNext();) {
 			Meeting m = it.next();
 			deleted = deleted && mDAO.deleteMeeting(m);
 		}
-		
+
 		deleted = deleted && sDAO.deleteSchedule(deleteMe);
 
 		logger.log("Here -- deleted");
 		return deleted;
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
