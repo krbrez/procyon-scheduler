@@ -25,21 +25,44 @@ import procyonScheduler.db.MeetingsDAO;
 import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 
+/**
+ * Handler class for the SearchOpenTimeSlot use case for participants
+ *
+ */
 public class SearchScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
-	
-	ArrayList<Meeting> searchSchedule(String schedule, String month, String year, String weekday, String day, String time)
-			throws Exception {
+
+	/**
+	 * Returns the list of open meetings that fit certain filters
+	 * 
+	 * @param schedule
+	 *            The ID for the schedule to search
+	 * @param month
+	 *            The month desired, empty if no input
+	 * @param year
+	 *            The year desired, empty if no input
+	 * @param weekday
+	 *            The day of the week desired, empty if no input
+	 * @param day
+	 *            The day of the month desired, empty if no input
+	 * @param time
+	 *            The time of day desired, empty if no input
+	 * @return The list of open meetings that fit all applied filters
+	 * @throws Exception
+	 */
+	ArrayList<Meeting> searchSchedule(String schedule, String month, String year, String weekday, String day,
+			String time) throws Exception {
 		if (logger != null) {
 			logger.log("in searchSchedule");
 		}
-		
+
 		MeetingsDAO mDAO = new MeetingsDAO();
 		ArrayList<Meeting> foundMeetings = mDAO.getAllMeetingsFromSchedule(schedule);
-		
+
 		Iterator<Meeting> meetingsItr = foundMeetings.iterator();
-		
+
+		// Parsing for filters
 		HashMap<String, Integer> months = new HashMap<>();
 		months.put("january", 0);
 		months.put("february", 1);
@@ -53,7 +76,7 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 		months.put("october", 9);
 		months.put("november", 10);
 		months.put("december", 11);
-		
+
 		HashMap<String, Integer> weekdays = new HashMap<>();
 		weekdays.put("sunday", 1);
 		weekdays.put("monday", 2);
@@ -62,41 +85,56 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 		weekdays.put("thursday", 5);
 		weekdays.put("friday", 6);
 		weekdays.put("saturday", 7);
-		
-		while(meetingsItr.hasNext()) {
+
+		// Go through all meetings for schedule and remove any that are closed
+		// or do not fit filters
+		while (meetingsItr.hasNext()) {
 			Meeting m = (Meeting) meetingsItr.next();
-			if(!m.getAvailable()) {
+			if (!m.getAvailable()) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("avail");
+				if (logger != null)
+					logger.log("avail");
 			} else if (!m.getLabel().equals("")) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("label");
-			} else if(!month.equals("") && m.getDateTime().get(GregorianCalendar.MONTH) != months.get(month.toLowerCase())) {
+				if (logger != null)
+					logger.log("label");
+			} else if (!month.equals("")
+					&& m.getDateTime().get(GregorianCalendar.MONTH) != months.get(month.toLowerCase())) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("month");
+				if (logger != null)
+					logger.log("month");
 			} else if (!year.equals("") && m.getDateTime().get(GregorianCalendar.YEAR) != Integer.parseInt(year)) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("year");
-			} else if (!weekday.equals("") && m.getDateTime().get(GregorianCalendar.DAY_OF_WEEK) != weekdays.get(weekday.toLowerCase())) {
+				if (logger != null)
+					logger.log("year");
+			} else if (!weekday.equals("")
+					&& m.getDateTime().get(GregorianCalendar.DAY_OF_WEEK) != weekdays.get(weekday.toLowerCase())) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("weekday");
-			} else if (!day.equals("") && m.getDateTime().get(GregorianCalendar.DAY_OF_MONTH) != Integer.parseInt(day)) {
+				if (logger != null)
+					logger.log("weekday");
+			} else if (!day.equals("")
+					&& m.getDateTime().get(GregorianCalendar.DAY_OF_MONTH) != Integer.parseInt(day)) {
 				meetingsItr.remove();
-				if(logger != null) logger.log("day");
+				if (logger != null)
+					logger.log("day");
 			} else if (!time.equals("")) {
 				String[] timeSplit = time.split(":");
 				int hour = Integer.parseInt(timeSplit[0]);
 				int minute = Integer.parseInt(timeSplit[1]);
-				if(m.getDateTime().get(GregorianCalendar.HOUR_OF_DAY) != hour
-					|| m.getDateTime().get(GregorianCalendar.MINUTE) != minute) {
+				if (m.getDateTime().get(GregorianCalendar.HOUR_OF_DAY) != hour
+						|| m.getDateTime().get(GregorianCalendar.MINUTE) != minute) {
 					meetingsItr.remove();
-					if(logger != null) logger.log("time");
+					if (logger != null)
+						logger.log("time");
 				}
 			}
 		}
 		return foundMeetings;
 	}
-	
+
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -127,9 +165,9 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
 				response = new SearchScheduleResponse("schedule, month, year, weekday, day, time", 200); // OPTIONS
-																	// needs a
-																	// 200
-																	// response
+				// needs a
+				// 200
+				// response
 				responseJson.put("body", new Gson().toJson(response));
 				processed = true;
 				body = null;
@@ -157,17 +195,19 @@ public class SearchScheduleHandler implements RequestStreamHandler {
 
 			SearchScheduleResponse resp;
 			try {
-				ArrayList<Meeting> foundMeetings = searchSchedule(req.schedule, req.month, req.year, req.weekday, req.day, req.time);
+				ArrayList<Meeting> foundMeetings = searchSchedule(req.schedule, req.month, req.year, req.weekday,
+						req.day, req.time);
 				if (foundMeetings.size() > 0) {
-					Comparator<Meeting> chrono =  new Comparator<Meeting>() {
-				        public int compare(Meeting m1, Meeting m2) {
-				            return m1.getDateTime().compareTo(m2.getDateTime());
-				        }
-				    };
+					Comparator<Meeting> chrono = new Comparator<Meeting>() {
+						public int compare(Meeting m1, Meeting m2) {
+							return m1.getDateTime().compareTo(m2.getDateTime());
+						}
+					};
 					foundMeetings.sort(chrono);
 					resp = new SearchScheduleResponse(foundMeetings);
 				} else {
-					resp = new SearchScheduleResponse("No meetings fitting search criteria. Try broadening your search.", 422);
+					resp = new SearchScheduleResponse(
+							"No meetings fitting search criteria. Try broadening your search.", 422);
 				}
 			} catch (Exception e) {
 				resp = new SearchScheduleResponse("Unable to perform search: " + "(" + e.getMessage() + ")", 403);

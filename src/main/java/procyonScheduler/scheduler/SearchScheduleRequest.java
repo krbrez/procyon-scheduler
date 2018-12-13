@@ -1,13 +1,29 @@
 package procyonScheduler.scheduler;
 
 public class SearchScheduleRequest {
-	String schedule;	// id of the schedule to search
-	String month;		// name of the month to search in
-	String year;		// number of the year to search in
-	String weekday;		// name of the day of the week to search in
-	String day;			// number of the day of the month to search in
-	String time;		// time of the day to search in
-	
+	String schedule; // id of the schedule to search
+	String month; // name of the month to search in
+	String year; // number of the year to search in
+	String weekday; // name of the day of the week to search in
+	String day; // number of the day of the month to search in
+	String time; // time of the day to search in
+
+	/**
+	 * Constructor
+	 * 
+	 * @param schedule
+	 *            id of the schedule to search
+	 * @param month
+	 *            name of the month to search in
+	 * @param year
+	 *            number of the year to search in
+	 * @param weekday
+	 *            name of the day of the week to search in
+	 * @param day
+	 *            number of the day of the month to search in
+	 * @param time
+	 *            time of the day to search in
+	 */
 	public SearchScheduleRequest(String schedule, String month, String year, String weekday, String day, String time) {
 		this.schedule = schedule;
 		this.month = month;
@@ -16,7 +32,7 @@ public class SearchScheduleRequest {
 		this.day = day;
 		this.time = time;
 	}
-	
+
 	public String toString() {
 		return "Search(" + schedule + ", " + month + ", " + year + ", " + weekday + ", " + day + ", " + time + ")";
 	}
