@@ -20,7 +20,7 @@ import procyonScheduler.scheduler.DeleteScheduleHandler;
  */
 public class MeetingsDAO {
 
-	java.sql.Connection conn;
+	java.sql.Connection conn; // A connection to the database
 
 	/**
 	 * Constructor; connects to database

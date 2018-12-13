@@ -16,7 +16,7 @@ import procyonScheduler.model.Schedule;
  */
 public class SchedulesDAO {
 
-	public java.sql.Connection conn;
+	public java.sql.Connection conn; // A connection to the database
 
 	/**
 	 * Constructor that establishes a connection (if possible)
