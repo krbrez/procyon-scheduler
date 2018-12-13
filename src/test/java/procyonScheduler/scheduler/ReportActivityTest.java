@@ -51,24 +51,23 @@ public class ReportActivityTest {
 
 		// Report activity
 
-		ExtendScheduleHandler extendHandler = new ExtendScheduleHandler();
+		ReportActivityHandler reportHandler = new ReportActivityHandler();
 
-		ExtendScheduleRequest esr = new ExtendScheduleRequest("2018-11-26", resp.secretCode);
-		String extendRequest = new Gson().toJson(esr);
-		String jsonRequest2 = new Gson().toJson(new HttpRequest(extendRequest));
+		ReportActivityRequest rar = new ReportActivityRequest(1);
+		String reportRequest = new Gson().toJson(rar);
+		String jsonRequest2 = new Gson().toJson(new HttpRequest(reportRequest));
 
 		InputStream input2 = new ByteArrayInputStream(jsonRequest2.getBytes());
 		OutputStream output2 = new ByteArrayOutputStream();
 
-		extendHandler.handleRequest(input2, output2, createContext("extend schedule"));
+		reportHandler.handleRequest(input2, output2, createContext("report activity"));
 
 		HttpResponse put = new Gson().fromJson(output2.toString(), HttpResponse.class);
-		ExtendScheduleResponse resp2 = new Gson().fromJson(put.body, ExtendScheduleResponse.class);
+		ReportActivityResponse resp2 = new Gson().fromJson(put.body, ReportActivityResponse.class);
 
 		Assert.assertEquals(resp2.httpCode, 200);
-		SchedulesDAO sDAO = new SchedulesDAO();
-		Schedule testSched = sDAO.getSchedule(resp.id);
-		Assert.assertEquals(testSched.getStart().get(Calendar.DAY_OF_MONTH), 26);
+		String id = resp2.schedules.get(0).getId();
+		Assert.assertEquals(id, resp.id);
 
 		// Delete the schedule
 		DeleteScheduleHandler dHandler = new DeleteScheduleHandler();
