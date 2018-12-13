@@ -194,6 +194,8 @@ function scheduleMeeting(e){
     }
   };
 }
+
+
 function cancelMeeting(e){
   var form = document.deleteMeeting;
   var id = form.CancelMeetingParticipant.value;
@@ -255,15 +257,43 @@ function searchMeetings(e) {
     if (xhr.readyState == XMLHttpRequest.DONE) {
       console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
       var js = JSON.parse(xhr.responseText);
-      var meetings = js["meetings"];
-      console.log(meetings);
-      searchedMeetingsDisplay(meetings);
+      var meetingSearch = js["meetings"];
+      console.log(meetingSearch);
+      searchedMeetingsDisplay(meetingSearch);
     }
     else {
       window.alert("Oops, something went wrong!");
     }
     //
     //__________________________________________________________________________________________________________________________________
+  };
+}
+
+
+function scheduleSearchedMeeting(e){
+  var form = document.searchScheduleMeeting;
+  var a = document.getElementById("searchOpenMeetings");
+  var id = a.options[a.selectedIndex].value;
+  var label = form.searchedMeetingLabel.value;
+  var data = {};
+  data["id"] = id;
+  data["label"] = label;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", createmeeting_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+    console.log(xhr.request);
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText);
+      processResponse(xhr.responseText);
+    } else {
+      window.alert("Oops, something went wrong!");
+    }
   };
 }
 </script>
@@ -365,7 +395,20 @@ function searchMeetings(e) {
     </form>
     <br>
 
+
+
+    <!-- FILL IN THE FORM STUFF HERE   ----------------------------------------------------------------------------------------->
+
+    <fieldset><legend>List of available Meetings</legend>
+    <form name=searchScheduleMeeting method="put">
+
     <div id="htmlSearchSchedules"></div>
+
+    <input type="text" name="searchedMeetingLabel" id="searchedMeetingLabel" value="Meeting Name">
+    <button type="button" onclick="JavaScript:scheduleSearchedMeeting(this)">Schedule this Meeting</button><br></form>
+    </fieldset>
+
+
 
     </fieldset>
     <br>
@@ -522,39 +565,29 @@ function searchMeetings(e) {
 		}
 
     // the function that searches through all of the meetings and displays them in a dropdown
-    function searchedMeetingsDisplay(meetings){
-      var meetingLength=meetings.length;
+    function searchedMeetingsDisplay(meetingSearch){
+      var meetingLength=meetingSearch.length;
       var htmlSearchView = "";
-      htmlSearchView +=("<fieldset><legend>List of available Meetings</legend>");
-      htmlSearchView += ('List of open Meetings: <select id="searchOpenMeetings"><option value="dontPickMe">List of Meetings</option>');
-
+      htmlSearchView+= ('Schedule a Meeting: <select id="searchOpenMeetings"><option value="dontPickMe">List of Meetings</option>');
       for (var i=0; i<meetingLength; i++){
-        var meetingDateTime = meetings[i]["dateTime"];
+        var meetingDateTime = meetingSearch[i]["dateTime"];
         var meetingYear = meetingDateTime["year"];
         var meetingMonth = meetingDateTime["month"];
-        var meetingDay = meetingDateTime[""];
-        var meetingTime = meetingDateTime[""];
+        var meetingDay = meetingDateTime["dayOfMonth"];
+        var meetingHour = meetingDateTime["hourOfDay"];
+        var meetingMinute = meetingDateTime["minute"];
+        var meetingLabel = meetingSearch[i]["label"];
+        if (meetingMinute == 0){
+          meetingMinute = "00";
+        }
+        var secretCode = meetingSearch[i]["id"];
+        if (meetingLabel == ""){
+          htmlSearchView+= ('<option value="'+ secretCode +'"> Meeting on: '+ (meetingMonth+1) + '/'+ meetingDay +'/' + meetingYear +' at: '+ meetingHour + ':'+ meetingMinute +'</option>');
+        }
       }
-      // add a textbox for the label and a button to submit the meeting schedule. this will bring up the secret code in the secret code box.
+      htmlSearchView+= ('</select>');
 
 
-      // for each meeting in meetings
-      //  -see if it fits the searched criteria from the button inputs
-      //  -if it does add it to the list using the format of:
-      //  htmlSearchView +=('<option value="dontPickMe">Meeting on: MM/DD/YYYY at: hh:mm</option>')
-
-
-
-
-
-
-
-
-
-
-
-
-      htmlSearchView += ('</select><br></fieldset>');
       console.log(htmlSearchView)
       document.getElementById("htmlSearchSchedules").innerHTML = htmlSearchView;
     }
