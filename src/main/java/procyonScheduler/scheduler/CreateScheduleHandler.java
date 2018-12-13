@@ -30,13 +30,30 @@ import procyonScheduler.scheduler.CreateScheduleRequest;
 import procyonScheduler.scheduler.CreateScheduleResponse;
 import procyonScheduler.model.Meeting;
 
+/**
+ * Handler class for the CreateSchedule meeting for organizers
+ *
+ */
 public class CreateScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 
 	/**
-	 * Load from RDS, if it exists
+	 * Creates the schedule using the given parameters
 	 * 
+	 * @param name
+	 *            The name of the schedule
+	 * @param startT
+	 *            The start time of each day on the schedule
+	 * @param startD
+	 *            The start date of the schedule
+	 * @param endT
+	 *            The end time of each day on the schedule
+	 * @param endD
+	 *            The end date of the schedule
+	 * @param blockSize
+	 *            The amount of time in minutes each meeting should take
+	 * @return The Schedule that was created
 	 * @throws Exception
 	 */
 	Schedule createSchedule(String name, String startT, String startD, String endT, String endD, int blockSize)
@@ -90,7 +107,8 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		// create meetings to fill schedule
 		GregorianCalendar meetTime = start;
 		while (meetTime.compareTo(end) < 0) {
-			while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY) && (meetTime.compareTo(end) < 0)) {
+			while ((meetTime.get(GregorianCalendar.DAY_OF_WEEK) != GregorianCalendar.SATURDAY)
+					&& (meetTime.compareTo(end) < 0)) {
 				while ((meetTime.get(GregorianCalendar.HOUR_OF_DAY) < endH) && (meetTime.compareTo(end) < 0)) {
 					Meeting m = new Meeting("", meetTime, true, s.getId());
 					created = created && mDAO.addMeeting(m);
@@ -108,6 +126,9 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		}
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
