@@ -24,12 +24,19 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for the ReportActivity use case for system admins
+ *
+ */
 public class ReportActivityHandler implements RequestStreamHandler {
 	public LambdaLogger logger = null;
 
 	/**
-	 * Load from RDS, if it exists
+	 * Returns a list of schedules created in the last n hours
 	 * 
+	 * @param n
+	 *            The number of hours within which returned schedules should be
+	 * @return The list of schedules that fit the criteria
 	 * @throws Exception
 	 */
 	ArrayList<Schedule> reportActivity(int n) throws Exception {
@@ -37,6 +44,8 @@ public class ReportActivityHandler implements RequestStreamHandler {
 		SchedulesDAO sDAO = new SchedulesDAO();
 		MeetingsDAO mDAO = new MeetingsDAO();
 
+		// get all schedules, compare the time of creation to n hours ago, and
+		// only keep ones created within n hours
 		GregorianCalendar rightNow = new GregorianCalendar();
 		rightNow.add(Calendar.HOUR_OF_DAY, n * -1);
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
@@ -47,10 +56,14 @@ public class ReportActivityHandler implements RequestStreamHandler {
 			}
 		}
 
+		// Sort so the most recent are on top when displayed
 		toReturn.sort(null);
 		return toReturn;
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -113,13 +126,13 @@ public class ReportActivityHandler implements RequestStreamHandler {
 			try {
 				ArrayList<Schedule> schedules = reportActivity(req.n);
 				if (!schedules.isEmpty()) {
-					resp = new ReportActivityResponse(
-							"Successfully retrieved schedules.", schedules);
+					resp = new ReportActivityResponse("Successfully retrieved schedules.", schedules);
 				} else {
 					resp = new ReportActivityResponse("Unable to retrieve any schedules.", schedules, 422);
 				}
 			} catch (Exception e) {
-				resp = new ReportActivityResponse("Unable to retrieve any schedules." + "(" + e.getMessage() + ")", null, 403);
+				resp = new ReportActivityResponse("Unable to retrieve any schedules." + "(" + e.getMessage() + ")",
+						null, 403);
 			}
 
 			// compute proper response
