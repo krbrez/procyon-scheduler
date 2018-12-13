@@ -24,12 +24,19 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for the DeleteOldSchedules use case for sys admins
+ *
+ */
 public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 	public LambdaLogger logger = null;
 
 	/**
-	 * Load from RDS, if it exists
+	 * Deletes any schedules older than n days old
 	 * 
+	 * @param n
+	 *            The number of days to delete schedules before
+	 * @return The number of deleted schedules
 	 * @throws Exception
 	 */
 	int deleteOldSchedules(int n) throws Exception {
@@ -38,9 +45,13 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 		MeetingsDAO mDAO = new MeetingsDAO();
 
 		int numDeleted = 0;
-		
+
+		// Get the current time, then subtract n days from it
 		GregorianCalendar rightNow = new GregorianCalendar();
 		rightNow.add(Calendar.DAY_OF_MONTH, n * -1);
+
+		// Get all of the schedules and only add them to an array to be deleted
+		// if they are old enough
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
 		ArrayList<Schedule> toDelete = new ArrayList<Schedule>();
 		for (Schedule schedule : schedules) {
@@ -60,6 +71,9 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 		return numDeleted;
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -123,7 +137,7 @@ public class DeleteOldSchedulesHandler implements RequestStreamHandler {
 				int num = deleteOldSchedules(req.n);
 				if (num > 0) {
 					resp = new DeleteOldSchedulesResponse(
-							"Successfully deleted " + num  + " schedules older than " + req.n + " days old.");
+							"Successfully deleted " + num + " schedules older than " + req.n + " days old.");
 				} else {
 					resp = new DeleteOldSchedulesResponse("Unable to delete schedules.", 422);
 				}
