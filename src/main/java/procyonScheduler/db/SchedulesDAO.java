@@ -10,10 +10,17 @@ import java.util.List;
 
 import procyonScheduler.model.Schedule;
 
+/**
+ * A class to interface the Java code with the Schedules SQL table
+ *
+ */
 public class SchedulesDAO {
 
 	public java.sql.Connection conn;
 
+	/**
+	 * Constructor that establishes a connection (if possible)
+	 */
 	public SchedulesDAO() {
 		try {
 			conn = DatabaseUtil.connect();
@@ -22,6 +29,14 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Get information for a schedule from the database
+	 * 
+	 * @param id
+	 *            The ID of the schedule to retrieve
+	 * @return A Schedule object representing the desired schedule
+	 * @throws Exception
+	 */
 	public Schedule getSchedule(String id) throws Exception {
 
 		try {
@@ -44,6 +59,15 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Retrieve a schedule from the database, but by using the secret code
+	 * instead of the ID
+	 * 
+	 * @param secretCode
+	 *            The secret code of the desired schedule
+	 * @return A Schedule object representing the desired schedule
+	 * @throws Exception
+	 */
 	public Schedule getScheduleBySecretCode(String secretCode) throws Exception {
 		try {
 			Schedule schedule = null;
@@ -65,6 +89,15 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Delete the desired schedule from the database
+	 * 
+	 * @param schedule
+	 *            A Schedule object to be deleted
+	 * @return A boolean indicating whether or not the schedule was successfully
+	 *         deleted from the database
+	 * @throws Exception
+	 */
 	public boolean deleteSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("DELETE FROM Schedules WHERE id = ?;");
@@ -79,11 +112,21 @@ public class SchedulesDAO {
 		}
 	}
 
-	
+	/**
+	 * Update the schedule with the ID stored in the Schedule object to have the
+	 * information given
+	 * 
+	 * @param schedule
+	 *            A Schedule object with potentially new information
+	 * @return A boolean indicating whether or not the schedule has been updated
+	 *         in the database
+	 * @throws Exception
+	 */
 	public boolean updateSchedule(Schedule schedule) throws Exception {
 		try {
 			String query = "UPDATE Schedules SET name=?, start=?, end=?, blockSize=?, organizerSecretCode=?, creationTime=? WHERE id=?;";
-			// name: 1, start: 2, end: 3, blockSize: 4, secretCode: 5, creationTime: 6, id: 7
+			// name: 1, start: 2, end: 3, blockSize: 4, secretCode: 5,
+			// creationTime: 6, id: 7
 			PreparedStatement ps = conn.prepareStatement(query);
 			ps.setString(7, schedule.getId());
 			ps.setString(1, schedule.getName());
@@ -132,6 +175,15 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Add the desired schedule to the database
+	 * 
+	 * @param schedule
+	 *            The schedule to be added to the database
+	 * @return A boolean indicating whether or not the schedule was added to the
+	 *         database
+	 * @throws Exception
+	 */
 	public boolean addSchedule(Schedule schedule) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedules WHERE id = ?;");
@@ -194,6 +246,11 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Return all schedules stored by the Schedules table
+	 * @return A list of schedules stored in the Schedules table of the database
+	 * @throws Exception
+	 */
 	public List<Schedule> getAllSchedules() throws Exception {
 
 		List<Schedule> allSchedules = new ArrayList<>();
@@ -202,6 +259,7 @@ public class SchedulesDAO {
 			String query = "SELECT * FROM Schedules";
 			ResultSet resultSet = statement.executeQuery(query);
 
+			//Add the schedules to the array
 			while (resultSet.next()) {
 				Schedule s = generateSchedule(resultSet);
 				allSchedules.add(s);
@@ -215,6 +273,12 @@ public class SchedulesDAO {
 		}
 	}
 
+	/**
+	 * Create a Schedule object to represent the given information retrieved from the database
+	 * @param resultSet The resultSet returned by the SQL call
+	 * @return A Schedule object representing the given information retrieved from the database
+	 * @throws Exception
+	 */
 	private Schedule generateSchedule(ResultSet resultSet) throws Exception {
 		String name = resultSet.getString("name");
 		String startDateTime = resultSet.getString("start");
