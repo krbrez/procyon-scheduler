@@ -25,33 +25,54 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.scheduler.ShowWeekScheduleRequest;
 import procyonScheduler.scheduler.ShowWeekScheduleResponse;
 
+/**
+ * Handler for the ShowWeekSchedule use case for both
+ *
+ */
 public class ShowWeekScheduleHandler implements RequestStreamHandler {
-	
+
 	public LambdaLogger logger = null;
-	
+
+	/**
+	 * Returns the list of meetings in the calendar week for the desired
+	 * schedule
+	 * 
+	 * @param id
+	 *            The ID for the schedule to be viewed
+	 * @param startDay
+	 *            The Monday that the week starts on
+	 * @return The list of meetings for ht eweek
+	 * @throws Exception
+	 */
 	ArrayList<Meeting> showWeek(String id, String startDay) throws Exception {
 		if (logger != null) {
 			logger.log("in showWeek");
 		}
-		
+
 		ArrayList<Meeting> weekMeetings = new ArrayList<>();
 		MeetingsDAO mDAO = new MeetingsDAO();
-		
+
+		// Parse start date
 		int stY = 0, stM = 0, stDy = 0;
-		
+
 		if (startDay.length() == 10) {
 			String[] stDt = startDay.split("-");
 			stY = Integer.parseInt(stDt[0]);
-			stM = Integer.parseInt(stDt[1]) - 1;	// GregorianCalendar months start at 0
+			stM = Integer.parseInt(stDt[1]) - 1; // GregorianCalendar months
+													// start at 0
 			stDy = Integer.parseInt(stDt[2]);
 		}
-		
+
 		GregorianCalendar startDayGC = new GregorianCalendar(stY, stM, stDy);
-		
+
+		// Retrieve the week from the DAO
 		weekMeetings = mDAO.getWeekFromSchedule(id, startDayGC);
 		return weekMeetings;
 	}
 
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -82,9 +103,10 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 			if (method != null && method.equalsIgnoreCase("OPTIONS")) {
 				logger.log("Options request");
 				response = new ShowWeekScheduleResponse("", "", 200); // OPTIONS
-																	// needs a
-																	// 200
-																	// response
+																		// needs
+																		// a
+																		// 200
+																		// response
 				responseJson.put("body", new Gson().toJson(response));
 				processed = true;
 				body = null;
@@ -98,9 +120,9 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 		} catch (ParseException pe) {
 			logger.log(pe.toString());
 			response = new ShowWeekScheduleResponse("Bad Request:" + pe.getMessage(), "", 422); // unable
-																							// to
-																							// process
-																							// input
+			// to
+			// process
+			// input
 			responseJson.put("body", new Gson().toJson(response));
 			processed = true;
 			body = null;
@@ -116,13 +138,14 @@ public class ShowWeekScheduleHandler implements RequestStreamHandler {
 				if (weekMeetings.size() > 0) {
 					weekMeetings.sort(null);
 					SchedulesDAO sDAO = new SchedulesDAO();
-					resp = new ShowWeekScheduleResponse(req.id, req.startDay, sDAO.getSchedule(req.id).getBlockSize(), weekMeetings);
+					resp = new ShowWeekScheduleResponse(req.id, req.startDay, sDAO.getSchedule(req.id).getBlockSize(),
+							weekMeetings);
 				} else {
 					resp = new ShowWeekScheduleResponse(req.id, req.startDay, 422);
 				}
 			} catch (Exception e) {
-				resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id + "(" + e.getMessage() + ")", "",
-						403);
+				resp = new ShowWeekScheduleResponse("Unable to fetch week: " + req.startDay + " of Schedule: " + req.id
+						+ "(" + e.getMessage() + ")", "", 403);
 			}
 
 			// compute proper response
