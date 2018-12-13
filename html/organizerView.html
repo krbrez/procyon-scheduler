@@ -24,6 +24,9 @@ var showweek_url = base_url + "showweek";    // PUT
 var togglemeet_url = base_url + "managetimeslot"; // PUT
 var cancelmeeting_url = base_url + "cancelmeeting"; // PUT
 var deleteschedule_url = base_url + "deleteschedule"; // DELETE
+var extendsched_url = base_url + "extendschedule"; // PUT
+var toggleday_url = base_url + "toggleday"; // PUT
+var toggletime_url = base_url + "toggletimeslot";	// PUT
 function processResponse(result) {
   // Can grab any DIV or SPAN HTML element and can then manipulate its
   // contents dynamically via javascript
@@ -278,6 +281,168 @@ function deleteSchedule(e) {
     };
   }
 }
+function extendStart(e) {
+  var extDate = document.getElementById("extendStartDate").value;
+  var code = document.getElementById("extendStartCode").value;
+  var data = {};
+  data["extDate"] = extDate;
+  data["secretCode"] = code;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", extendsched_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function extendEnd(e) {
+  var extDate = document.getElementById("extendEndDate").value;
+  var code = document.getElementById("extendEndCode").value;
+  var data = {};
+  data["extDate"] = extDate;
+  data["secretCode"] = code;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", extendsched_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function openDay(e) {
+  var openDate = document.getElementById("openAllOnDay").value;
+  var schedule = document.getElementById("openDayID").value;
+  var code = document.getElementById("openDayCode").value;
+  var data = {};
+  data["openOrClose"] = true;
+  data["scheduleID"] = schedule;
+  data["secretCode"] = code;
+  data["toggleMe"] = openDate;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", toggleday_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function closeDay(e) {
+  var closeDate = document.getElementById("closeAllOnDay").value;
+  var schedule = document.getElementById("closeDayID").value;
+  var code = document.getElementById("closeDayCode").value;
+  var data = {};
+  data["openOrClose"] = false;
+  data["scheduleID"] = schedule;
+  data["secretCode"] = code;
+  data["toggleMe"] = closeDate;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", toggleday_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function openTime(e) {
+  var openThisTime = document.getElementById("openAllAtTime").value;
+  var schedule = document.getElementById("openTimeID").value;
+  var code = document.getElementById("openTimeCode").value;
+  var data = {};
+  data["openOrClose"] = true;
+  data["scheduleID"] = schedule;
+  data["secretCode"] = code;
+  data["toggleMe"] = openThisTime;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", toggletime_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
+function closeTime(e) {
+  var closeThisTime = document.getElementById("closeAllAtTime").value;
+  var schedule = document.getElementById("closeTimeID").value;
+  var code = document.getElementById("closeTimeCode").value;
+  var data = {};
+  data["openOrClose"] = false;
+  data["scheduleID"] = schedule;
+  data["secretCode"] = code;
+  data["toggleMe"] = closeThisTime;
+  var js = JSON.stringify(data);
+  console.log("JS:" + js);
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", toggletime_url, true);
+  // send the collected data as JSON
+  xhr.send(js);
+  // This will process results and update HTML as appropriate.
+  xhr.onloadend = function () {
+    console.log(xhr);
+	if (xhr.readyState == XMLHttpRequest.DONE) {
+      console.log ("XHR:" + xhr.responseText); // this is the console.log that spits out the json file
+      var js = JSON.parse(xhr.responseText);
+      var respString = js["response"];
+	  window.alert(respString);
+	} else {
+      window.alert("Oops, something went wrong!");
+    }
+  };
+}
 </script>
 </head>
 <body>
@@ -381,44 +546,17 @@ function deleteSchedule(e) {
     	Cancel this Meeting: <input type="text" name="cancelMeetingCode" id="cancelMeetingCode" value="Schedule Secret Code"><input type="text" name="cancelMeetingID" id="cancelMeetingID" value="Meeting ID"><button type="button" onclick="JavaScript:cancelMeeting(this)">Submit</button><br>
     </form>
 
-    <!-- The old inputs into this field.
-    <form>Change the Start Date of the Schedule to<input type="date" name="extendEndDate"><input type="submit"></form>
-    <form>Change the End Date of the Schedule to<input type="date" name="extendStartDate"><input type="submit"></form>
-    <form>Open all meetings on
-      <select>
-      <option value="openDayOfWeek">Day of the Week</option>
-      <option value="MonOpen">Mondays</option>
-      <option value="TueOpen">Tuesdays</option>
-      <option value="WedOpen">Wednesdays</option>
-      <option value="ThuOpen">Thursdays</option>
-      <option value="FriOpen">Fridays</option>
-    </select>
-    <input type="submit"></form>
-    <form>Close all meetings on
-      <select>
-      <option value="closeDayOfWeek">Day of the Week</option>
-      <option value="MonClose">Mondays</option>
-      <option value="TueClose">Tuesdays</option>
-      <option value="WedClose">Wednesdays</option>
-      <option value="ThuClose">Thursdays</option>
-      <option value="FriClose">Fridays</option>
-    </select>
-    <input type="submit"></form>
-    <form>Open all meetings on <input type="date" name="openAllOnDay"><input type="submit"></form>
-    <form>Close all meetings on <input type="date" name="closeAllOnDay"><input type="submit"></form>
-    <form>Open all meetings at
-      <select>
-      <option value="openTimeslot">Time Slot</option>
-      <option value="slot1">Add timeslots to this dropdown</option>
-    </select>
-    <input type="submit"></form>
-    <form>Close all meetings at
-      <select>
-      <option value="openTimeslot">Time Slot</option>
-      <option value="slot1">Add timeslots to this dropdown</option>
-    </select>
-    <input type="submit"></form>
-  -->
+
+    <form>Change the Start Date of the Schedule to<input type="date" name="extendStartDate" id="extendStartDate"><input type="text" name="extendStartCode" id="extendStartCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:extendStart(this)">Submit</button></form>
+    <form>Change the End Date of the Schedule to<input type="date" name="extendEndDate" id="extendEndDate"><input type="text" name="extendEndCode" id="extendEndCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:extendEnd(this)">Submit</button></form>
+
+
+
+    <form>Open all meetings on <input type="date" name="openAllOnDay" id="openAllOnDay"><input type="text" name="openDayID" id="openDayID" value="Schedule ID"><input type="text" name="openDayCode" id="openDayCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:openDay(this)">Submit</button></form>
+    <form>Close all meetings on <input type="date" name="closeAllOnDay" id="closeAllOnDay"><input type="text" name="closeDayID" id="closeDayID" value="Schedule ID"><input type="text" name="closeDayCode" id="closeDayCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:closeDay(this)">Submit</button></form>
+    <form>Open all meetings at <input type="text" name="openAllAtTime" id="openAllAtTime" value="HH:MM"><input type="text" name="openTimeID" id="openTimeID" value="Schedule ID"><input type="text" name="openTimeCode" id="openTimeCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:openTime(this)">Submit</button></form>
+    <form>Close all meetings at <input type="text" name="closeAllAtTime" id="closeAllAtTime" value="HH:MM"><input type="text" name="closeTimeID" id="closeTimeID" value="Schedule ID"><input type="text" name="closeTimeCode" id="closeTimeCode" value="Schedule Secret Code"><button type="button" onclick="JavaScript:closeTime(this)">Submit</button></form>
+
   </fieldset>
 
 
