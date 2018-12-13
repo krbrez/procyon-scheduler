@@ -38,7 +38,7 @@ public class ReportActivityHandler implements RequestStreamHandler {
 		MeetingsDAO mDAO = new MeetingsDAO();
 
 		GregorianCalendar rightNow = new GregorianCalendar();
-		rightNow.add(Calendar.HOUR, n * -1);
+		rightNow.add(Calendar.HOUR_OF_DAY, n * -1);
 		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
 		ArrayList<Schedule> toReturn = new ArrayList<Schedule>();
 		for (Schedule schedule : schedules) {
