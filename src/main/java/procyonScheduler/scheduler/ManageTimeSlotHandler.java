@@ -21,32 +21,50 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
+/**
+ * Handler class for CloseTimeSlot and CloseTimeSlot for a single time slot for
+ * organizzer
+ *
+ */
 public class ManageTimeSlotHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
-	
-	// toggle whether a time slot is available for a meeting to be scheduled or not
+
+	/**
+	 * Toggles whether a meeting is available for scheduling or not
+	 * 
+	 * @param meetingID
+	 *            The ID of the meeting to be toggled
+	 * @param secretCode
+	 *            The secret code attached to the schedule, ensuring organizer
+	 *            edit access
+	 * @return True if success, false if not
+	 * @throws Exception
+	 */
 	boolean manageTimeSlot(String meetingID, String secretCode) throws Exception {
 		if (logger != null) {
 			logger.log("in manageTimeSlot");
 		}
 		boolean toggled = false;
-		
+
 		MeetingsDAO mDAO = new MeetingsDAO();
 		SchedulesDAO sDAO = new SchedulesDAO();
-		
+
 		Meeting m = mDAO.getMeeting(meetingID);
 		Schedule s = sDAO.getSchedule(m.getSchedule());
 		// check the secret code
-		if(secretCode.equals(s.getSecretCode())) {
+		if (secretCode.equals(s.getSecretCode())) {
 			m.setAvailable(!m.getAvailable());
 			mDAO.updateMeeting(m);
 			toggled = true;
 		}
-		
+
 		return toggled;
 	}
-	
+
+	/**
+	 * The specific handleRequest method for this lambda
+	 */
 	@Override
 	public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
 		logger = context.getLogger();
@@ -114,8 +132,8 @@ public class ManageTimeSlotHandler implements RequestStreamHandler {
 					resp = new ManageTimeSlotResponse("Unable to manage time slot: " + req.meetingID, 422);
 				}
 			} catch (Exception e) {
-				resp = new ManageTimeSlotResponse("Unable to manage time slot: " + req.meetingID + "(" + e.getMessage() + ")",
-						403);
+				resp = new ManageTimeSlotResponse(
+						"Unable to manage time slot: " + req.meetingID + "(" + e.getMessage() + ")", 403);
 			}
 
 			// compute proper response
