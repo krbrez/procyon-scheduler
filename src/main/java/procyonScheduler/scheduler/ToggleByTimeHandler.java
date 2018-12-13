@@ -25,7 +25,8 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 public class ToggleByTimeHandler implements RequestStreamHandler {
-public LambdaLogger logger = null;
+
+	public LambdaLogger logger = null;
 	
 	//toggle all the slots at a given time (doesn't matter what day)
 	//to be either all open or all closed, based on the input boolean 
