@@ -1,6 +1,5 @@
 package procyonScheduler.scheduler;
 
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +71,7 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		int meetingY = 0;
 		int meetingM = 0;
 		int meetingDy = 0;
-		String inputD = null;
+		//String input;
 		int inputY = 0;
 		int inputM = 0;
 		int inputDy = 0;
@@ -82,7 +81,7 @@ public class ToggleFullDayHandler implements RequestStreamHandler {
 		meetingDy = meetingInfo.get(GregorianCalendar.DAY_OF_MONTH);
 		
 		if(input.length() == 10) {
-			String[] inDt = inputD.split("-");
+			String[] inDt = input.split("-");
 			inputY = Integer.parseInt(inDt[0]);
 			inputM = Integer.parseInt(inDt[1]) - 1;	//GCal months start at 0
 			inputDy = Integer.parseInt(inDt[2]);
