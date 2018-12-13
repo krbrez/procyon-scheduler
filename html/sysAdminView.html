@@ -86,6 +86,9 @@
                 var js = JSON.parse(xhr.responseText);
                 var schedules = js["schedules"];
                 schedules.forEach(printOut);
+				if(schedules.length == 0) {
+				  window.alert("No schedules found.");
+				}
               };
             }
           }
