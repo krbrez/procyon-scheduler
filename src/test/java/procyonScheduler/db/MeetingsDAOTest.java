@@ -12,10 +12,13 @@ import com.google.gson.Gson;
 import procyonScheduler.model.Meeting;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Test cases for the MeetingsDAO class
  */
 public class MeetingsDAOTest {
 
+	/**
+	 * Tests the constructor
+	 */
 	@Test
 	public void testConstructorConnection() {
 		MeetingsDAO mDAO = new MeetingsDAO();
@@ -23,6 +26,12 @@ public class MeetingsDAOTest {
 		Assert.assertFalse(mDAO.conn.equals(null));
 	}
 
+	/**
+	 * Tests getting a meeting from the DB and generating a Meeting object from
+	 * it
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetMeetingAndGenerateMeeting() throws Exception {
 		MeetingsDAO mDAO = new MeetingsDAO();
@@ -33,6 +42,11 @@ public class MeetingsDAOTest {
 		Assert.assertEquals(testMeeting.getId(), "zWw9bmX3N4F8JAMD");
 	}
 
+	/**
+	 * Tests adding and deleting a meeting from the DB
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testAddAndDeleteMeeting() throws Exception {
 		GregorianCalendar gC = new GregorianCalendar(2018, 11, 5, 12, 20);
@@ -45,6 +59,11 @@ public class MeetingsDAOTest {
 		Assert.assertTrue(mDAO.deleteMeeting(m));
 	}
 
+	/**
+	 * Tests updating a meeting's information
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testUpdateMeeting() throws Exception {
 		GregorianCalendar gC = new GregorianCalendar(2018, 11, 5, 12, 20);
@@ -58,6 +77,11 @@ public class MeetingsDAOTest {
 		Assert.assertEquals(mDAO.getMeeting(meetingID).getParticipantSecretCode(), "JJJJJJJJJJJJJJJJ");
 	}
 
+	/**
+	 * Tests getting all meetings from a specific schedule
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetAllMeetingsFromSchedule() throws Exception {
 		MeetingsDAO mDAO = new MeetingsDAO();
@@ -66,6 +90,11 @@ public class MeetingsDAOTest {
 		Assert.assertEquals("onlt0O2wk7YFyUnG", meetings.get(1).getSchedule());
 	}
 
+	/**
+	 * Tests getting a specific week from a schedule
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetWeekFromSchedule() throws Exception {
 		GregorianCalendar gC = new GregorianCalendar(2018, 11, 17);

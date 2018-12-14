@@ -11,10 +11,13 @@ import procyonScheduler.model.Meeting;
 import procyonScheduler.model.Schedule;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * A class to test the SchedulesDAO class
  */
 public class SchedulesDAOTest {
 
+	/**
+	 * Test the constructor
+	 */
 	@Test
 	public void testConstructorConnection() {
 		MeetingsDAO sDAO = new MeetingsDAO();
@@ -22,6 +25,12 @@ public class SchedulesDAOTest {
 		Assert.assertFalse(sDAO.conn.equals(null));
 	}
 
+	/**
+	 * Test getting a schedule from the database and generating an object from
+	 * it
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testGetScheduleAndGenerateSchedule() throws Exception {
 		SchedulesDAO sDAO = new SchedulesDAO();
@@ -32,6 +41,11 @@ public class SchedulesDAOTest {
 		Assert.assertEquals(testSchedule.getId(), "onlt0O2wk7YFyUnG");
 	}
 
+	/**
+	 * Test adding and deleting schedules from the database
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testAddAndDeleteSchedule() throws Exception {
 		GregorianCalendar start = new GregorianCalendar(2018, 11, 5, 12, 00);
@@ -46,20 +60,30 @@ public class SchedulesDAOTest {
 		Assert.assertTrue(sDAO.deleteSchedule(s));
 	}
 
+	/**
+	 * Test getting a schedule from the database by its secret code
+	 * 
+	 * @throws Exception
+	 */
 	@Test
-	public void testGetScheduleBySecretCode() throws Exception{
+	public void testGetScheduleBySecretCode() throws Exception {
 		SchedulesDAO sDAO = new SchedulesDAO();
-		
+
 		Schedule s = sDAO.getScheduleBySecretCode("8lPq7LYmpQbpa1E4");
 		Assert.assertEquals(s.getId(), "onlt0O2wk7YFyUnG");
 	}
-	
-	 @Test
-	 public void testGetAllSchedules() throws Exception{
-	 SchedulesDAO sDAO = new SchedulesDAO();
-	
-	 ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
-	 Schedule s = sDAO.getSchedule("onlt0O2wk7YFyUnG");
-	 Assert.assertEquals(schedules.get(1).getClass(), s.getClass());
-	 }
+
+	/**
+	 * Test getting every schedule in the database
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetAllSchedules() throws Exception {
+		SchedulesDAO sDAO = new SchedulesDAO();
+
+		ArrayList<Schedule> schedules = (ArrayList<Schedule>) sDAO.getAllSchedules();
+		Schedule s = sDAO.getSchedule("onlt0O2wk7YFyUnG");
+		Assert.assertEquals(schedules.get(1).getClass(), s.getClass());
+	}
 }
