@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
+ * Taken from Heineman's code
  * Helper utilities for testing Lambda functions.
  */
 public class TestUtils {

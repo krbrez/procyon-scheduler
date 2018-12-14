@@ -16,7 +16,7 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Schedule;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Test the ExtendScheduleHandler class
  */
 public class ExtendScheduleTest {
 
@@ -26,6 +26,11 @@ public class ExtendScheduleTest {
 		return ctx;
 	}
 
+	/**
+	 * Tests that if a schedule is created, its start date can be extended back
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testExtendScheduleStart() throws Exception {
 		// This creates a new schedule to extend and then deletes it after so as
@@ -86,6 +91,11 @@ public class ExtendScheduleTest {
 		DeleteScheduleResponse resp1 = new Gson().fromJson(delete.body, DeleteScheduleResponse.class);
 	}
 
+	/**
+	 * Test that if a schedule is created, its end date can be extended
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testExtendScheduleEnd() throws Exception {
 		// This creates a new schedule to extend and then deletes it after so as

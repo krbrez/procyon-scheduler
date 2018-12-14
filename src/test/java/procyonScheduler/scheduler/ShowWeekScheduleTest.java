@@ -19,7 +19,7 @@ import procyonScheduler.scheduler.CreateScheduleRequest;
 import procyonScheduler.scheduler.CreateScheduleResponse;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests the ShowWeekScheduleHandler class
  */
 public class ShowWeekScheduleTest {
 
@@ -29,8 +29,11 @@ public class ShowWeekScheduleTest {
 		return ctx;
 	}
 
-	// Play with schedule '0a891YnhrRILP4N4'
-
+	/**
+	 * Tests that a week is returned from the proper schedule properly
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testShowWeekSchedule() throws Exception {
 		// Create
@@ -53,9 +56,13 @@ public class ShowWeekScheduleTest {
 
 	}
 
+	/**
+	 * Tests that the handler is given improper input, it returns a 4xx
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testShowWeekSchedule403() throws Exception {
-		// Create
 		ShowWeekScheduleHandler swHandler = new ShowWeekScheduleHandler();
 
 		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("xx", "xx");

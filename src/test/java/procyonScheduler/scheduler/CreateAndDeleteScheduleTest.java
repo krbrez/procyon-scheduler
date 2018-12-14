@@ -19,7 +19,10 @@ import procyonScheduler.scheduler.CreateScheduleRequest;
 import procyonScheduler.scheduler.CreateScheduleResponse;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests CreateMeetingHandler class and CancelMeetingHandler class. These two
+ * classes are tested together so that any time a meeting is created, it can be
+ * cancelled. However, we made every effort to test the functionality as units,
+ * running asserts after each time we use one of the classes.
  */
 public class CreateAndDeleteScheduleTest {
 
@@ -29,6 +32,12 @@ public class CreateAndDeleteScheduleTest {
 		return ctx;
 	}
 
+	/**
+	 * Tests that if correct input is put into creating a schedule and then
+	 * deleting it, they both work
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCreateAndDeleteScheduleWorks() throws Exception {
 		CreateScheduleHandler cHandler = new CreateScheduleHandler();
@@ -67,6 +76,12 @@ public class CreateAndDeleteScheduleTest {
 		Assert.assertEquals(resp2.httpCode, 200);
 	}
 
+	/**
+	 * Test that if incorrect input is given for creating a schedule, it gives a
+	 * 4xx response
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testcreateSchedule422() throws IOException {
 		CreateScheduleHandler handler = new CreateScheduleHandler();
@@ -88,6 +103,12 @@ public class CreateAndDeleteScheduleTest {
 
 	}
 
+	/**
+	 * Test that if incorrect input is given for creating a schedule, it gives a
+	 * 4xx response
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testdeleteSchedule403() throws IOException {
 		DeleteScheduleHandler handler = new DeleteScheduleHandler();

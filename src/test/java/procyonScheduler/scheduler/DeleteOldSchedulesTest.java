@@ -16,7 +16,7 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Schedule;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests the DeleteOldSchedules class
  */
 public class DeleteOldSchedulesTest {
 
@@ -26,9 +26,12 @@ public class DeleteOldSchedulesTest {
 		return ctx;
 	}
 
-	// Play with meeting 'hiQ3vL2P8cxn0JnQ'
-	// Available (open) is 1, unavailable (closed) = 0
-
+	/**
+	 * Test the delete old schedules use case by creating a year old meeting in
+	 * the database
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testDeleteOldSchedules() throws Exception {
 		// Create super old schedule
@@ -38,7 +41,7 @@ public class DeleteOldSchedulesTest {
 		GregorianCalendar created = new GregorianCalendar(2017, 1, 2, 15, 22);
 		Schedule newSched = new Schedule("Kyra", start, end, 15, "2222222222222222", created, "2222222222222222");
 		sDAO.addSchedule(newSched);
-		
+
 		// Delete super old schedule
 		DeleteOldSchedulesHandler delHandler = new DeleteOldSchedulesHandler();
 

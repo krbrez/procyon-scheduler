@@ -19,7 +19,10 @@ import procyonScheduler.scheduler.CreateScheduleRequest;
 import procyonScheduler.scheduler.CreateScheduleResponse;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests CreateMeetingHandler class and CancelMeetingHandler class. These two
+ * classes are tested together so that any time a meeting is created, it can be
+ * cancelled. However, we made every effort to test the functionality as units,
+ * running asserts after each time we use one of the classes.
  */
 public class CreateAndCancelMeetingTest {
 
@@ -29,11 +32,15 @@ public class CreateAndCancelMeetingTest {
 		return ctx;
 	}
 
-	//Play with meeting 'zWw9bmX3N4F8JAMD'
-	
+	/**
+	 * Tests that creating and canceling a meeting works when a participant
+	 * attempts to do both, i.e. using the participantSecretCode to cancel
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCreateAndCancelMeetingWorksForParticipant() throws Exception {
-		//Create
+		// Create
 		CreateMeetingHandler crHandler = new CreateMeetingHandler();
 
 		CreateMeetingRequest crmr = new CreateMeetingRequest("zWw9bmX3N4F8JAMD", "TestingLabel");
@@ -50,11 +57,13 @@ public class CreateAndCancelMeetingTest {
 
 		Assert.assertEquals(crmr.label, resp.label);
 		Assert.assertEquals(resp.httpCode, 200);
-		
-		//Cancel
+
+		// Cancel
 		CancelMeetingHandler cHandler = new CancelMeetingHandler();
 
-		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", resp.secretCode);
+		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", resp.secretCode); // participant
+																									// secret
+																									// code
 		String cancelRequest = new Gson().toJson(cmr);
 		String jsonRequest2 = new Gson().toJson(new HttpRequest(cancelRequest));
 
@@ -70,10 +79,16 @@ public class CreateAndCancelMeetingTest {
 		Assert.assertTrue(resp2.response.contains(cmr.id));
 		Assert.assertEquals(resp2.httpCode, 200);
 	}
-	
+
+	/**
+	 * Tests that if a meeting is created by a participant, the organizer can
+	 * use their secret code to cancel it
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testCancelMeetingWorksForOrganizer() throws Exception {
-		//Create
+		// Create
 		CreateMeetingHandler crHandler = new CreateMeetingHandler();
 
 		CreateMeetingRequest crmr = new CreateMeetingRequest("zWw9bmX3N4F8JAMD", "TestingLabel");
@@ -87,11 +102,13 @@ public class CreateAndCancelMeetingTest {
 
 		HttpResponse put = new Gson().fromJson(output.toString(), HttpResponse.class);
 		CreateMeetingResponse resp = new Gson().fromJson(put.body, CreateMeetingResponse.class);
-		
-		//Cancel
+
+		// Cancel
 		CancelMeetingHandler cHandler = new CancelMeetingHandler();
 
-		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", "8lPq7LYmpQbpa1E4");
+		CancelMeetingRequest cmr = new CancelMeetingRequest("zWw9bmX3N4F8JAMD", "8lPq7LYmpQbpa1E4"); // orgzanizer
+																										// secret
+																										// code
 		String cancelRequest = new Gson().toJson(cmr);
 		String jsonRequest2 = new Gson().toJson(new HttpRequest(cancelRequest));
 
@@ -108,6 +125,11 @@ public class CreateAndCancelMeetingTest {
 		Assert.assertEquals(resp2.httpCode, 200);
 	}
 
+	/**
+	 * Test that createMeeting responds with a 4xx when given an invalid input
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testcreateMeeting422() throws IOException {
 		CreateMeetingHandler handler = new CreateMeetingHandler();
@@ -127,7 +149,12 @@ public class CreateAndCancelMeetingTest {
 		Assert.assertEquals(resp.httpCode, 403);
 
 	}
-	
+
+	/**
+	 * Test that cancel meeting responds with a 4xx when given invalid input
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testCancelMeeting403() throws IOException {
 		CancelMeetingHandler handler = new CancelMeetingHandler();

@@ -12,7 +12,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests for the ManageTimeSlotHandler class
  */
 public class ManageTimeSlotTest {
 
@@ -22,9 +22,11 @@ public class ManageTimeSlotTest {
 		return ctx;
 	}
 
-	// Play with meeting 'hiQ3vL2P8cxn0JnQ'
-	// Available (open) is 1, unavailable (closed) = 0
-
+	/**
+	 * Test that the handler successfully closes and opens time slots
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testManageTimeSlot() throws Exception {
 

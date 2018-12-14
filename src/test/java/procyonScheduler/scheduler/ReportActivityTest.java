@@ -16,7 +16,7 @@ import procyonScheduler.db.SchedulesDAO;
 import procyonScheduler.model.Schedule;
 
 /**
- * A simple test harness for locally invoking your Lambda function handler.
+ * Tests the ReportActivityHandler class
  */
 public class ReportActivityTest {
 
@@ -26,9 +26,16 @@ public class ReportActivityTest {
 		return ctx;
 	}
 
+	/**
+	 * Tests that this class does in fact return a report of the most recent
+	 * classes
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void testReportActivity() throws Exception {
-		// This creates a new schedule to check for in the returns and then deletes it after so as
+		// This creates a new schedule to check for in the returns and then
+		// deletes it after so as
 		// to be able to know what the most recent schedule is and not
 		// have an issue or clutter the database
 
@@ -67,8 +74,8 @@ public class ReportActivityTest {
 
 		Assert.assertEquals(resp2.httpCode, 200);
 		boolean returnsCreated = false;
-		for(Schedule schedule: resp2.schedules){
-			if (schedule.getId().equals(resp.id)){
+		for (Schedule schedule : resp2.schedules) {
+			if (schedule.getId().equals(resp.id)) {
 				returnsCreated = true;
 			}
 		}
