@@ -12,11 +12,7 @@ import org.junit.Test;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
-import procyonScheduler.db.SchedulesDAO;
-import procyonScheduler.model.Schedule;
-import procyonScheduler.scheduler.CreateScheduleHandler;
-import procyonScheduler.scheduler.CreateScheduleRequest;
-import procyonScheduler.scheduler.CreateScheduleResponse;
+
 
 /**
  * Tests CreateMeetingHandler class and CancelMeetingHandler class. These two

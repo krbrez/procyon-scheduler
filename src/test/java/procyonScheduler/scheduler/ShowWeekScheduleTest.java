@@ -2,7 +2,6 @@ package procyonScheduler.scheduler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -11,12 +10,6 @@ import org.junit.Test;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
-
-import procyonScheduler.db.SchedulesDAO;
-import procyonScheduler.model.Schedule;
-import procyonScheduler.scheduler.CreateScheduleHandler;
-import procyonScheduler.scheduler.CreateScheduleRequest;
-import procyonScheduler.scheduler.CreateScheduleResponse;
 
 /**
  * Tests the ShowWeekScheduleHandler class
