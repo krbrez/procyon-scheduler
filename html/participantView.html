@@ -317,7 +317,7 @@ function scheduleSearchedMeeting(e){
       <legend>Search A Schedule</legend>
       <form name="ScheduleSearch" method="put">
         Schedule ID: <input type="text" name="searchScheduleID" value=""><br>
-        Find all open timeslots in:
+        Find all open timeslots in year:
         <input type="text" id="findYear" name="findYear" value="">
       <br>
       Find all open timeslots in:
@@ -383,7 +383,7 @@ function scheduleSearchedMeeting(e){
         <option value="Friday">Fridays</option>
       </select>
       <br>
-      Find all open timeslots at: <input type="time" id="searchTimeslots" name="searchTimeslots">
+      Find all open timeslots at start time: <input type="time" id="searchTimeslots" name="searchTimeslots">
       <br>
       <button type="button" onclick="JavaScript:searchMeetings(this)">Search Open Meetings</button>
     </form>
