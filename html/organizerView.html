@@ -612,18 +612,21 @@ function closeTime(e) {
 		  + lastDayCal + '</th></tr>');
 		  // print out of the main section of the table
       console.log(window.endDate.getHours())
-		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1); i+= (timeSlotSize/60)){
-		    htmlString += ('<tr>');
-		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
-		    for (var j=1; j <= 5; j ++){
-		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
-		        htmlString +=("<td>");
+      var meetingLengthLoop = meetings.length -1;
+      console.log ("loop Length" + meetingLengthLoop);
+      for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; arrayCounter < meetingLengthLoop; i+= (timeSlotSize/60)){
+        htmlString += ('<tr>');
+        htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
+        for (var j=1; j <= 5; j ++){
+          if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
+            htmlString +=("<td>");
+            console.log("ArrayCounter: " + arrayCounter);
             console.log(meetings[arrayCounter]["label"]);
             if (meetings[arrayCounter]["label"] != ""){
               htmlString +=("<b>Meeting with: " + meetings[arrayCounter]["label"] + "</b><br>with ID: " + meetings[arrayCounter]["id"]);
             }
             else{
-             htmlString +=("Unscheduled Meeting with ID: " + meetings[arrayCounter]["id"] + "");
+             htmlString +=("Unscheduled Meeting <br>with ID: " + meetings[arrayCounter]["id"] + "");
             }
             if (meetings[arrayCounter]["available"]){
               htmlString +=("<br>Open Meeting");
@@ -631,30 +634,29 @@ function closeTime(e) {
             else{
               htmlString +=("<br><b>Closed Meeting!</b>");
             }
-		        //all in this area will be inside of the box on the calendar
-            console.log(arrayCounter);
+            //all in this area will be inside of the box on the calendar
             console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
             arrayCounter++;
             htmlString +=("</td>");
-		      }
-		      else {
-		        htmlString +=("<th>This day is out of Schedule!</th>");
-		      }
-		      // this if else handles the end date of the schedule
-		      if (j == 5){
-		        buildScheduleDate.setDate(buildScheduleDate.getDate() - 4);
-		      }
-		      else {
-		        buildScheduleDate.setDate(buildScheduleDate.getDate() + 1);
-		      }
-				}
-		    htmlString +=('</tr>');
-		    d++;
-			}
-		  htmlString +=('</table>');
+          }
+          else {
+            htmlString +=("<th>This day is out of Schedule!</th>");
+          }
+          // this if else handles the end date of the schedule
+          if (j == 5){
+            buildScheduleDate.setDate(buildScheduleDate.getDate() - 4);
+          }
+          else {
+            buildScheduleDate.setDate(buildScheduleDate.getDate() + 1);
+          }
+        }
+        htmlString +=('</tr>');
+        d++;
+      }
+      htmlString +=('</table>');
       console.log(htmlString);
       document.getElementById("htmlCalendar").innerHTML = htmlString;
-		}// end of function buildCalendar
+    }// end of function buildCalendar
 		//buildCalendar(null,null,1)
 		function setWeek(meetings, date, monday, timeslotSize){
 		  console.log("date and Monday in SetWeek " + date + " " + monday);
