@@ -463,7 +463,7 @@ function scheduleSearchedMeeting(e){
       console.log(window.endDate.getHours());
       var meetingLengthLoop = meetings.length -1;
       console.log ("loop Length" + meetingLengthLoop);
-		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; arrayCounter <= meetingLengthLoop; arrayCounter++;){
+		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; arrayCounter < meetingLengthLoop; i+= (timeSlotSize/60)){
 		    htmlString += ('<tr>');
 		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
 		    for (var j=1; j <= 5; j ++){
@@ -485,7 +485,7 @@ function scheduleSearchedMeeting(e){
             }
 		        //all in this area will be inside of the box on the calendar
             console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
-            i+= (timeSlotSize/60);
+            arrayCounter++;
             htmlString +=("</td>");
 		      }
 		      else {
