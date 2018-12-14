@@ -228,8 +228,7 @@ function cancelMeeting(e){
 function searchMeetings(e) {
   var form = document.ScheduleSearch;
   var scheduletobeSearched = form.searchScheduleID.value
-  var a = document.getElementById("findYear");
-  var searchYear = a.options[a.selectedIndex].value;
+  var searchYear = form.findYear.value
   var b = document.getElementById("findMonth");
   var searchMonth = b.options[b.selectedIndex].value;
   var c = document.getElementById("findDay");
@@ -319,12 +318,7 @@ function scheduleSearchedMeeting(e){
       <form name="ScheduleSearch" method="put">
         Schedule ID: <input type="text" name="searchScheduleID" value=""><br>
         Find all open timeslots in:
-        <select id="findYear">
-          <option value="">Year</option>
-          <option value="2018">2018</option>
-          <option value="2019">2019</option>
-          <option value="2020">2020</option>
-        </select>
+        <input type="text" id="findYear" name="findYear" value="">
       <br>
       Find all open timeslots in:
       <select id="findMonth">
@@ -448,7 +442,7 @@ function scheduleSearchedMeeting(e){
 		    }
 		  }
 		  // this prints out the heading of the table
-      
+
 		  htmlString +=(monthDisplay + " " + buildScheduleYear);
       buildScheduleDate.setDate(buildScheduleDate.getDate()+1);
       var nextDayCal = buildScheduleDate.getDate();
