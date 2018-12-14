@@ -460,13 +460,16 @@ function scheduleSearchedMeeting(e){
       + threeDayCal + '</th><th>Fri '
       + lastDayCal + '</th></tr>');
 		  // print out of the main section of the table
-      console.log(window.endDate.getHours())
-		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; i<(window.endDate.getHours()+1); i+= (timeSlotSize/60)){
+      console.log(window.endDate.getHours());
+      var meetingLengthLoop = meetings.length -1;
+      console.log ("loop Length" + meetingLengthLoop);
+		  for (var i=buildScheduleDate.getHours(), d=1, arrayCounter = 0; arrayCounter < meetingLengthLoop; i+= (timeSlotSize/60)){
 		    htmlString += ('<tr>');
 		    htmlString +=('<td>'+ minTommss(i) + " - " + minTommss(i+timeSlotSize/60) + '</td>'); // TODO fix how time is displayed
 		    for (var j=1; j <= 5; j ++){
 		      if ((startOfSchedule.getDay()-1) < j && buildScheduleDate.getTime() >= (window.startDate.getTime()) && buildScheduleDate.getTime() < window.endDate.getTime()){
 		        htmlString +=("<td>");
+            console.log("ArrayCounter: " + arrayCounter);
             console.log(meetings[arrayCounter]["label"]);
             if (meetings[arrayCounter]["label"] != ""){
               htmlString +=("<b>Meeting with: " + meetings[arrayCounter]["label"] + "</b><br>with ID: " + meetings[arrayCounter]["id"]);
@@ -481,7 +484,6 @@ function scheduleSearchedMeeting(e){
               htmlString +=("<br><b>Closed Meeting!</b>");
             }
 		        //all in this area will be inside of the box on the calendar
-            console.log(arrayCounter);
             console.log("meetings inside the loop: " + meetings[arrayCounter]["id"]);
             arrayCounter++;
             htmlString +=("</td>");
