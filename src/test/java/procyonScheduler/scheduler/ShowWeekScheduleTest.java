@@ -29,7 +29,6 @@ public class ShowWeekScheduleTest {
 	 */
 	@Test
 	public void testShowWeekSchedule() throws Exception {
-		// Create
 		ShowWeekScheduleHandler swHandler = new ShowWeekScheduleHandler();
 
 		ShowWeekScheduleRequest swsr = new ShowWeekScheduleRequest("onlt0O2wk7YFyUnG", "2018-12-17");

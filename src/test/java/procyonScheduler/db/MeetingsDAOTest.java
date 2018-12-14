@@ -75,6 +75,9 @@ public class MeetingsDAOTest {
 		m.setParticipantSecretCode("JJJJJJJJJJJJJJJJ");
 		Assert.assertTrue(mDAO.updateMeeting(m));
 		Assert.assertEquals(mDAO.getMeeting(meetingID).getParticipantSecretCode(), "JJJJJJJJJJJJJJJJ");
+
+		// delete after to make other test cases easier
+		mDAO.deleteMeeting(m);
 	}
 
 	/**
